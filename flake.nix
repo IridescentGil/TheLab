@@ -21,13 +21,14 @@
                 inherit system;
             };
         in
-        pkgs.mkShell {
+        pkgs.mkShell.override {stdenv = pkgs.clangStdenv;} {
             packages = with pkgs; [
                 qt6.full
                 qtcreator
                 cmake
                 gnumake
                 gtest
+                clang-tools
             ];
         };
     });
