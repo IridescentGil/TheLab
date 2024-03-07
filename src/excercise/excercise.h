@@ -7,6 +7,7 @@
 
 class Excercise {
    public:
+    Excercise() : name(""), description(""), muscleGroup(""){};
     Excercise(std::string name, std::string desc, std::string mGroup,
               std::vector<std::string> mWorked, std::vector<std::string> eType)
         : name(name),
