@@ -1,6 +1,7 @@
 #ifndef EXCERCISE_H
 #define EXCERCISE_H
 
+#include <cstddef>
 #include <string>
 #include <tuple>
 #include <vector>

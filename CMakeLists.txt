@@ -16,14 +16,17 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES src/main.cpp src/mainwindow.cpp src/mainwindow.h
-                    src/mainwindow.ui)
+                    src/mainwindow.ui src/excercise/excercise.cpp src/excercise/excercise.h)
 include_directories(src)
+include_directories(src/excercise)
 
 if(MSVC)
   add_compile_options(/W4)
 else()
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
+
+add_executable(TheLabCli src/cli/main.cpp src/excercise/excercise.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(
@@ -76,8 +79,38 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 enable_testing()
-add_executable(TheLabTest test/excercise_test.cpp)
+
+if ($ENV{GOOGLETEST_DIR})
+    get_filename_component(_GTEST_BASE $ENV{GOOGLETEST_DIR} REALPATH)
+elseif (EXISTS "") # set by QC
+    get_filename_component(_GTEST_BASE "" REALPATH) # set by QC
+endif()
+
+if (NOT GTEST_ROOT)
+    if (_GTEST_BASE)
+        message("Setting GTEST_ROOT to ${_GTEST_BASE}")
+        set(GTEST_ROOT ${_GTEST_BASE})
+    else()
+        message("No GTEST_ROOT specified - using system defaults.")
+    endif()
+endif()
+
+find_package(GTest REQUIRED)
+if (NOT GTest_FOUND)
+    message (FATAL_ERROR "No GTest Found")
+endif()
+
+
+#add_test(NAME programTests COMMAND programTests)
+
+add_executable(TheLabTest test/excercise_test.cpp src/excercise/excercise.cpp)
 target_link_libraries(TheLabTest GTest::gtest_main)
+
+#target_link_libraries(TheLabTest PRIVATE GTest::GTest)
+#if (GMock_FOUND)
+#    target_link_libraries(TheLabTest INTERFACE GTest::GMock)
+#endif()
 
 include(GoogleTest)
 gtest_discover_tests(TheLabTest)
+

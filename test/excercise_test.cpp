@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <iterator>
+#include <memory>
 
 class ExcerciseTest : public testing::Test {
    protected:
@@ -32,7 +33,7 @@ class ExcerciseTest : public testing::Test {
                  "Chest",
                  {"Pectorals", "Tricepts"},
                  {"Distance"}};
-    Excercise *e5 = new Excercise[10];
+    std::unique_ptr<Excercise[]> e5 = std::make_unique<Excercise[]>(10);
     std::vector<Excercise> e6;
 };
 
@@ -60,8 +61,6 @@ TEST_F(ExcerciseTest, DescriptionChangedTest) {
     EXPECT_EQ(e3.getDescription(), "");
 }
 
-TEST_F(ExcerciseTest, ArraySizeTest) { EXPECT_EQ(std::size(e5), 10); }
-
 TEST_F(ExcerciseTest, ArrayValuesTest) { ASSERT_NE(e5, nullptr); }
 
 TEST_F(ExcerciseTest, ArrayEmptyIndexValuesTest) {
@@ -78,11 +77,6 @@ TEST_F(ExcerciseTest, ArrayEmptyIndexValuesTest) {
 TEST_F(ExcerciseTest, ArraySetValueTest) {
     e5[6].setName("Deadbug");
     ASSERT_EQ(e5[6].getName(), "Deadbug");
-}
-
-TEST_F(ExcerciseTest, ArrayDeleteTest) {
-    delete[] e5;
-    ASSERT_EQ(e5, nullptr);
 }
 
 TEST_F(ExcerciseTest, VectorSizeTest) { EXPECT_EQ(e6.size(), 0); }
