@@ -1,6 +1,7 @@
 #ifndef EXCERCISE_H
 #define EXCERCISE_H
 
+#include <array>
 #include <cstddef>
 #include <string>
 #include <tuple>
@@ -10,12 +11,7 @@ class Excercise {
    public:
     Excercise() : name(""), description(""), muscleGroup(""){};
     Excercise(std::string name, std::string desc, std::string mGroup,
-              std::vector<std::string> mWorked, std::vector<std::string> eType)
-        : name(name),
-          description(desc),
-          muscleGroup(mGroup),
-          musclesWorked(mWorked),
-          type(eType) {}
+              std::vector<std::string> mWorked, std::vector<std::string> eType);
 
     std::tuple<std::string, std::string, std::string, std::vector<std::string>,
                std::vector<std::string>>
@@ -28,9 +24,13 @@ class Excercise {
 
     void setName(std::string);
     void setDescription(std::string);
-    void setMuscleGroup(std::string);
-    void setMusclesWorked(std::vector<std::string>);
-    void setType(std::vector<std::string>);
+    int setMuscleGroup(std::string);
+    int setMusclesWorked(std::vector<std::string>);
+    int setType(std::vector<std::string>);
+
+    bool isMuscleGroup(std::string);
+    bool isMuscle(std::vector<std::string>);
+    bool isType(std::vector<std::string>);
 
    private:
     std::string name;
@@ -38,6 +38,15 @@ class Excercise {
     std::string muscleGroup;
     std::vector<std::string> musclesWorked;
     std::vector<std::string> type;
+
+    const std::vector<std::string> mwCheck{
+        "Neck",     "Trapezius", "Bicep",     "Tricep",     "Forearm",
+        "Pectoral", "Abs",       "Lats",      "Upper-back", "Lower-back",
+        "Quads",    "Glutes",    "Hamstring", "Calf"};
+    const std::vector<std::string> typeCheck{"weight", "reps", "time",
+                                             "distance"};
+    const std::vector<std::string> groupCheck{"Arms", "Chest", "Back",
+                                              "Core", "Legs",  "Cardio"};
 };
 
 #endif  // !EXCERCISE_H
