@@ -14,44 +14,101 @@ class ExcerciseTest : public testing::Test {
 
     Excercise e1{"Deadlift",
                  "Lift Barbell off the floor",
-                 "Leg",
-                 {"Glute", "Hamstring", "Lower-back"},
-                 {"weight", "rep"}};
+                 "Legs",
+                 {"Glutes", "Hamstring", "Lower-back"},
+                 {"weight", "reps"}};
     Excercise e2{"Barbell Squat",
                  "With the bar resting high on the shoulders squat until your "
                  "thigh are perpendicular with the floor",
-                 "Leg",
-                 {"Glute", "Quads"},
-                 {"weight", "rep"}};
+                 "Legs",
+                 {"Glutes", "Quads"},
+                 {"weight", "reps"}};
     Excercise e3{"Row",
                  "Rowg in a row machine",
                  "Cardio",
-                 {"Glute", "Quad", "Lower-back", "Upper-back"},
+                 {"Glutes", "Quads", "Lower-back", "Upper-back"},
                  {"Time"}};
     Excercise e4{"Bench Press",
                  "Flat back bench press with a barbell",
                  "Chest",
-                 {"Pectorals", "Tricepts"},
+                 {"Pectorals", "Triceps"},
                  {"Distance"}};
     std::unique_ptr<Excercise[]> e5 = std::make_unique<Excercise[]>(10);
     std::vector<Excercise> e6;
 };
 
+TEST(TypeCheckingGroup, CorrectMGVariableTest) {
+    Excercise test;
+    EXPECT_TRUE(test.isMuscleGroup("Chest"));
+    EXPECT_TRUE(test.isMuscleGroup("Back"));
+}
+
+TEST(TypeCheckingGroup, WrongMGVariableTest) {
+    Excercise test;
+    EXPECT_FALSE(test.isMuscleGroup("Finger"));
+    EXPECT_FALSE(test.isMuscleGroup("Butt"));
+    EXPECT_FALSE(test.isMuscleGroup("arms"));
+}
+
+TEST(TypeCheckingGroup, CorrectMWVariableTest) {
+    Excercise test;
+    std::vector<std::string> v1{"Bicep", "Upper-back"};
+    std::vector<std::string> v2{"Tricep"};
+
+    EXPECT_TRUE(test.isMuscle(v1));
+    EXPECT_TRUE(test.isMuscle(v2));
+}
+
+TEST(TypeCheckingGroup, WrongMWVariableTest) {
+    Excercise test;
+    std::vector<std::string> v1{"Latimus Bordi"};
+    std::vector<std::string> v2{"Quads", "Hamstring", "Blute"};
+    std::vector<std::string> v3;
+
+    EXPECT_FALSE(test.isMuscle(v1));
+    EXPECT_FALSE(test.isMuscle(v2));
+    EXPECT_FALSE(test.isMuscle(v3));
+}
+
+TEST(TypeCheckingGroup, CorrectTVariableTest) {
+    Excercise test;
+    std::vector<std::string> v1{"weight", "reps"};
+    std::vector<std::string> v2{"distance", "time"};
+    std::vector<std::string> v3{"reps"};
+
+    EXPECT_TRUE(test.isType(v1));
+    EXPECT_TRUE(test.isType(v2));
+    EXPECT_TRUE(test.isType(v3));
+}
+
+TEST(TypeCheckingGroup, WrongTVariableTest) {
+    Excercise test;
+    std::vector<std::string> v1{"weight", "rpm"};
+    std::vector<std::string> v2{"weight", "reps", "drinks"};
+    std::vector<std::string> v3{"wight"};
+    std::vector<std::string> v4;
+
+    EXPECT_FALSE(test.isType(v1));
+    EXPECT_FALSE(test.isType(v2));
+    EXPECT_FALSE(test.isType(v3));
+    EXPECT_FALSE(test.isType(v4));
+}
+
 TEST_F(ExcerciseTest, GetValuesTest) {
     EXPECT_EQ(e1.getName(), "Deadlift");
     EXPECT_EQ(e1.getDescription(), "Lift Barbell off the floor");
-    EXPECT_EQ(e1.getMuscleGroup(), "Leg");
+    EXPECT_EQ(e1.getMuscleGroup(), "Legs");
     std::vector<std::string> tVec = e1.getMusclesWorked();
-    auto it = tVec.begin();
-    EXPECT_EQ(*it, "Glute");
+    auto it = tVec.cbegin();
+    EXPECT_EQ(*it, "Glutes");
     it++;
     EXPECT_EQ(*it, "Hamstring");
     it++;
     EXPECT_EQ(*it, "Lower-back");
     it++;
-    EXPECT_EQ(it, e1.getMusclesWorked().end());
+    EXPECT_EQ(it, tVec.cend());
     std::vector<std::string> tType{"weight", "reps"};
-    EXPECT_EQ(e1.getMusclesWorked(), tType);
+    EXPECT_EQ(e1.getType(), tType);
 }
 
 TEST_F(ExcerciseTest, NameChangedTest) {
@@ -89,8 +146,8 @@ TEST_F(ExcerciseTest, VectorPushBackTest) {
     e6.push_back({"Pushups",
                   "Push up from the ground",
                   "Chest",
-                  {"Pectorals", "Tricepts"},
+                  {"Pectoral", "Tricep"},
                   {"Reps"}});
     EXPECT_NE(e6.begin(), e6.end());
-    EXPECT_EQ((e6.begin())->getName(), "Pushup");
+    EXPECT_EQ((e6.begin())->getName(), "Pushups");
 }
