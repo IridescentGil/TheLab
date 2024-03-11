@@ -2,4 +2,4 @@
 
 #include "database.h"
 
-Body::Body(std::shared_ptr<DBConn> dBase) {}
+Body::Body(std::shared_ptr<DBConn> dBase) : db(dBase) {}

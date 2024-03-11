@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "databse.h"
+#include "database.h"
 
 struct Muscles {
     unsigned short neck;
