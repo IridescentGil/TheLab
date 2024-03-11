@@ -14,19 +14,34 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(SQLiteCpp REQUIRED)
 
-set(PROJECT_SOURCES src/main.cpp src/mainwindow.cpp src/mainwindow.h
-                    src/mainwindow.ui src/excercise/excercise.cpp src/excercise/excercise.h)
-include_directories(src)
-include_directories(src/excercise)
+set(PROJECT_SOURCES
+    src/main.cpp
+    src/mainwindow.cpp
+    src/mainwindow.h
+    src/mainwindow.ui
+    src/excercise/excercise.cpp
+    src/excercise/excercise.h
+    src/body/body.h
+    src/body/body.cpp
+    src/database/database.h
+    src/database/database.cpp)
+include_directories(
+  src
+  src/excercise
+  src/body
+  src/database
+  src/analytics
+  src/cli
+  src/analytics
+  src/calendar)
 
 if(MSVC)
   add_compile_options(/W4)
 else()
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
-
-add_executable(TheLabCli src/cli/main.cpp src/excercise/excercise.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(
@@ -51,7 +66,8 @@ else()
   endif()
 endif()
 
-target_link_libraries(TheLab PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(TheLab PRIVATE Qt${QT_VERSION_MAJOR}::Widgets SQLiteCpp
+                                     sqlite3 pthread dl)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If
 # you are developing for iOS or macOS you should consider setting an explicit,
@@ -80,37 +96,37 @@ endif()
 
 enable_testing()
 
-if ($ENV{GOOGLETEST_DIR})
-    get_filename_component(_GTEST_BASE $ENV{GOOGLETEST_DIR} REALPATH)
-elseif (EXISTS "") # set by QC
-    get_filename_component(_GTEST_BASE "" REALPATH) # set by QC
+if($ENV{GOOGLETEST_DIR})
+  get_filename_component(_GTEST_BASE $ENV{GOOGLETEST_DIR} REALPATH)
+elseif(EXISTS "") # set by QC
+  get_filename_component(_GTEST_BASE "" REALPATH) # set by QC
 endif()
 
-if (NOT GTEST_ROOT)
-    if (_GTEST_BASE)
-        message("Setting GTEST_ROOT to ${_GTEST_BASE}")
-        set(GTEST_ROOT ${_GTEST_BASE})
-    else()
-        message("No GTEST_ROOT specified - using system defaults.")
-    endif()
+if(NOT GTEST_ROOT)
+  if(_GTEST_BASE)
+    message("Setting GTEST_ROOT to ${_GTEST_BASE}")
+    set(GTEST_ROOT ${_GTEST_BASE})
+  else()
+    message("No GTEST_ROOT specified - using system defaults.")
+  endif()
 endif()
 
 find_package(GTest REQUIRED)
-if (NOT GTest_FOUND)
-    message (FATAL_ERROR "No GTest Found")
+if(NOT GTest_FOUND)
+  message(FATAL_ERROR "No GTest Found")
 endif()
 
+# add_test(NAME programTests COMMAND programTests)
 
-#add_test(NAME programTests COMMAND programTests)
+add_executable(
+  TheLabTest
+  test/excercise_test.cpp src/excercise/excercise.cpp test/database_test.cpp
+  src/database/database.cpp test/body_test.cpp src/body/body.cpp)
 
-add_executable(TheLabTest test/excercise_test.cpp src/excercise/excercise.cpp)
-target_link_libraries(TheLabTest GTest::gtest_main)
+target_link_libraries(TheLabTest GTest::gtest_main SQLiteCpp sqlite3 pthread dl)
 
-#target_link_libraries(TheLabTest PRIVATE GTest::GTest)
-#if (GMock_FOUND)
-#    target_link_libraries(TheLabTest INTERFACE GTest::GMock)
-#endif()
+# target_link_libraries(TheLabTest PRIVATE GTest::GTest) if (GMock_FOUND)
+# target_link_libraries(TheLabTest INTERFACE GTest::GMock) endif()
 
 include(GoogleTest)
 gtest_discover_tests(TheLabTest)
-

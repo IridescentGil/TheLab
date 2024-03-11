@@ -29,6 +29,7 @@
                 gnumake
                 gtest
                 clang-tools
+                sqlitecpp
             ];
         };
     });
