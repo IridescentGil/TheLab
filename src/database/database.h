@@ -11,8 +11,10 @@ class DBConn {
     DBConn();
     DBConn(std::string);
 
-    int exec(std::string, auto...);
-    int prepare(std::string, auto...);
+    template <typename T, typename... Args>
+    int exec(const std::string, const T, const Args...);
+    template <typename T, typename... Args>
+    int prepare(const std::string, const T, const Args...);
     int stepExec();
     auto getColumn(int);
 
