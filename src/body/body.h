@@ -49,11 +49,13 @@ class Body {
     unsigned short getWeight();
     unsigned short getAge();
     Muscles getCondition();
+    Measurements getMeasurements();
 
     void setHeight(unsigned short);
     void setWeight(unsigned short);
     void setAge(unsigned short);
-    void setCondition(std::string);
+    void setCondition(Muscles);
+    void setMeasurement(Measurements);
 
    private:
     std::shared_ptr<DBConn> db;

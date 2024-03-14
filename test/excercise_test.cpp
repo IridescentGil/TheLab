@@ -1,4 +1,4 @@
-#include "excercise/excercise.h"
+#include "excercise.h"
 
 #include <gtest/gtest.h>
 
