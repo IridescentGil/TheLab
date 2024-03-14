@@ -7,36 +7,36 @@
 #include "database.h"
 
 struct Muscles {
-    unsigned short neck;
-    unsigned short trapezius;
-    unsigned short bicep;
-    unsigned short tricep;
-    unsigned short forearm;
-    unsigned short pectoral;
-    unsigned short abs;
-    unsigned short lats;
-    unsigned short upperBack;
-    unsigned short lowerBack;
-    unsigned short quads;
-    unsigned short glutes;
-    unsigned short hamstring;
-    unsigned short calf;
+    unsigned short neck = 100;
+    unsigned short trapezius = 100;
+    unsigned short bicep = 100;
+    unsigned short tricep = 100;
+    unsigned short forearm = 100;
+    unsigned short pectoral = 100;
+    unsigned short abs = 100;
+    unsigned short lats = 100;
+    unsigned short upperBack = 100;
+    unsigned short lowerBack = 100;
+    unsigned short quads = 100;
+    unsigned short glutes = 100;
+    unsigned short hamstring = 100;
+    unsigned short calf = 100;
 };
 
 struct Measurements {
-    unsigned short neck;
-    unsigned short shoulders;
-    unsigned short chest;
-    unsigned short waist;
-    unsigned short hips;
-    unsigned short upperArmRight;
-    unsigned short upperArmLeft;
-    unsigned short foreaarmRight;
-    unsigned short forearmLeft;
-    unsigned short thighRight;
-    unsigned short thighLeft;
-    unsigned short calfRight;
-    unsigned short calfLeft;
+    unsigned short neck = 0;
+    unsigned short shoulders = 0;
+    unsigned short chest = 0;
+    unsigned short waist = 0;
+    unsigned short hips = 0;
+    unsigned short upperArmRight = 0;
+    unsigned short upperArmLeft = 0;
+    unsigned short foreaarmRight = 0;
+    unsigned short forearmLeft = 0;
+    unsigned short thighRight = 0;
+    unsigned short thighLeft = 0;
+    unsigned short calfRight = 0;
+    unsigned short calfLeft = 0;
 };
 
 class Body {
