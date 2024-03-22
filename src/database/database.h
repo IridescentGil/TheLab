@@ -15,6 +15,8 @@ class DBConn {
     DBConn(std::string);
 
     int exec(const std::string);
+    int execQuery();
+    int execMulti(const std::string);
 
     // prepareI() is used when the index of a bind is required, the index
     // of the first bind should be input. prepare() is used when the binds can
@@ -30,6 +32,7 @@ class DBConn {
    private:
     SQLite::Database db;
     SQLite::Statement query;
+    void createTables();
 };
 
 template <typename T, typename... Args>
