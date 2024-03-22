@@ -2,7 +2,6 @@
 #define BODY_H
 
 #include <memory>
-#include <string>
 
 #include "database.h"
 
