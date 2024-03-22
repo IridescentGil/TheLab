@@ -30,7 +30,7 @@ struct Measurements {
     unsigned short hips = 0;
     unsigned short upperArmRight = 0;
     unsigned short upperArmLeft = 0;
-    unsigned short foreaarmRight = 0;
+    unsigned short forearmRight = 0;
     unsigned short forearmLeft = 0;
     unsigned short thighRight = 0;
     unsigned short thighLeft = 0;
@@ -63,6 +63,9 @@ class Body {
     unsigned short age;
     Muscles condition;
     Measurements measure;
+    bool bodyEdit = false;
+    bool condEdit = false;
+    bool measEdit = false;
 };
 
 #endif  // BODY_H

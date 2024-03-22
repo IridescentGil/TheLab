@@ -10,6 +10,7 @@
 class BodyTest : public testing::Test {
    protected:
     void SetUp() override {}
+    void TearDown() override { remove("thelab.db"); }
 
     std::shared_ptr<DBConn> db = std::make_shared<DBConn>();
     Body b1{db};
@@ -22,7 +23,7 @@ auto mesEqual = [](Measurements a, Measurements b) -> bool {
         return false;
     else if (a.upperArmRight != b.upperArmRight)
         return false;
-    else if (a.foreaarmRight != b.foreaarmRight)
+    else if (a.forearmRight != b.forearmRight)
         return false;
     else if (a.upperArmLeft != b.upperArmLeft)
         return false;
@@ -98,9 +99,9 @@ TEST_F(BodyTest, EmptyDBTest) {
     Measurements tMes;
     Muscles tMus;
 
-    EXPECT_EQ(b1.getAge(), -1);
-    EXPECT_EQ(b1.getHeight(), -1);
-    EXPECT_EQ(b1.getWeight(), -1);
+    EXPECT_EQ(b1.getAge(), 0);
+    EXPECT_EQ(b1.getHeight(), 0);
+    EXPECT_EQ(b1.getWeight(), 0);
     EXPECT_PRED_FORMAT2(AssertConditionsEqual, tMus, b1.getCondition());
     EXPECT_PRED_FORMAT2(AssertMeasureEqual, tMes, b1.getMeasurements());
 }
