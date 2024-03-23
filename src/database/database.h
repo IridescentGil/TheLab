@@ -22,9 +22,9 @@ class DBConn {
     // of the first bind should be input. prepare() is used when the binds can
     // be done at once.
     template <typename T, typename... Args>
-    int prepareI(const std::string, std::size_t, const T, Args...);
+    int prepareI(const std::string, std::size_t, const T, const Args &...);
     template <typename... Args>
-    int prepare(const std::string, const Args...);
+    int prepare(const std::string, const Args &...);
 
     bool stepExec();
     auto getColumn(std::size_t index) { return query.getColumn(index); }
@@ -37,7 +37,7 @@ class DBConn {
 
 template <typename T, typename... Args>
 int DBConn::prepareI(const std::string queryStr, std::size_t index,
-                     const T fArg, Args... args) {
+                     const T fArg, const Args &...args) {
     try {
         if (index == 0) query = SQLite::Statement(db, queryStr);
         query.bind(index, fArg);
@@ -56,7 +56,7 @@ int DBConn::prepareI(const std::string queryStr, std::size_t index,
 }
 
 template <typename... Args>
-int DBConn::prepare(const std::string queryStr, const Args... args) {
+int DBConn::prepare(const std::string queryStr, const Args &...args) {
     try {
         query = SQLite::Statement(db, queryStr);
         SQLite::bind(query, args...);

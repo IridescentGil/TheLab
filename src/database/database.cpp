@@ -22,7 +22,7 @@ void DBConn::createTables() {
             db.exec(
                 "CREATE TABLE workouts (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
-                "workoutName TEXT NOT NULL, ExOrderNum INTEGER NOT NULL, "
+                "workoutName TEXT NOT NULL, exOrderNum INTEGER NOT NULL, "
                 "excercise "
                 "TEXT "
                 "NOT NULL, type1 "
@@ -93,7 +93,7 @@ void DBConn::createTables() {
 int DBConn::exec(const std::string queryStr) {
     try {
         int ret = db.exec(queryStr);
-        return (ret == 1 || ret == 0) ? 1 : -1;
+        return ret > 0 ? 1 : -1;
     } catch (std::exception &e) {
         std::cerr << "SQLite error: " << e.what() << std::endl;
         return -1;
@@ -121,6 +121,11 @@ int DBConn::execMulti(const std::string queryStr) {
 }
 
 bool DBConn::stepExec() {
-    if (query.executeStep()) return true;
-    return false;
+    try {
+        if (query.executeStep()) return true;
+        return false;
+    } catch (std::exception &e) {
+        std::cerr << "SQLite error: " << e.what() << std::endl;
+        return false;
+    }
 }
