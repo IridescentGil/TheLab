@@ -103,7 +103,7 @@ int DBConn::exec(const std::string queryStr) {
 int DBConn::execQuery() {
     try {
         int ret = query.exec();
-        return (ret == 1 || ret == 0) ? 1 : -1;
+        return (ret >= 0) ? 1 : -1;
     } catch (std::exception &e) {
         std::cerr << "SQLite error: " << e.what() << std::endl;
         return -1;

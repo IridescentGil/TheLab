@@ -185,7 +185,7 @@ TEST_F(DatabaseTest, ThrowTest) {
         1);
     EXPECT_EQ(
         db1.prepareI("INSERT INTO excercises (name, description) VALUES (?, ?)",
-                     0, "Plank"),
+                     1, "Plank"),
         1);
 }
 
@@ -203,7 +203,7 @@ TEST_F(DatabaseTest, ErrorReturnTest) {
 
     // Expect errors when attempting to prepare select statement
     EXPECT_EQ(db1.prepare("SELECT * FROM ?", "history"), -1);
-    EXPECT_EQ(db1.prepareI("SELECT * FROM ?", 0, "history"), -1);
+    EXPECT_EQ(db1.prepareI("SELECT * FROM ?", 1, "history"), -1);
     EXPECT_EQ(db1.prepare("SELECT * FROM history WHERE excercise = ?", "Plank"),
               1);
 }

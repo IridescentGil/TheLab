@@ -39,7 +39,7 @@ template <typename T, typename... Args>
 int DBConn::prepareI(const std::string queryStr, std::size_t index,
                      const T fArg, const Args &...args) {
     try {
-        if (index == 0) query = SQLite::Statement(db, queryStr);
+        if (index == 1) query = SQLite::Statement(db, queryStr);
         query.bind(index, fArg);
         if constexpr (sizeof...(args) > 0) {
             if (prepareI(queryStr, index + 1, args...) == 1)
