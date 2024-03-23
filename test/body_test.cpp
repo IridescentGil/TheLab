@@ -124,7 +124,7 @@ TEST_F(BodyTest, SetDBTest) {
     b1.setCondition(tMus);
     b1.setMeasurement(tMes);
 
-    EXPECT_TRUE(b1.save());
+    EXPECT_EQ(b1.save(), 1);
     Body b2{db};
     EXPECT_EQ(175, b2.getHeight());
     EXPECT_EQ(80, b2.getWeight());

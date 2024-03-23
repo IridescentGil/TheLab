@@ -1,5 +1,7 @@
 #include "body.h"
 
+#include <chrono>
+
 #include "database.h"
 
 Body::Body(std::shared_ptr<DBConn> dBase) : db(dBase) {
@@ -81,8 +83,9 @@ void Body::setHeight(unsigned short nHeight) {
 }
 
 int Body::save() {
-    const std::chrono::time_point<std::chrono::system_clock> now =
-        std::chrono::system_clock::now();
+    auto epoch = std::chrono::duration_cast<std::chrono::milliseconds>(
+                     std::chrono::system_clock::now().time_since_epoch())
+                     .count();
     if (bodyEdit || measEdit) {
         if (db->prepare(
                 "INSERT INTO bodyStats (date, weight, height, age, "
@@ -90,37 +93,39 @@ int Body::save() {
                 "shouldersMeasurement, chestMeasurement, waistMeasurement, "
                 "hipsMeasurement, upperArmRightMeasurement, "
                 "upperArmLeftMeasurement, "
-                "forearmRightMeasurement, forearmLeftMeasurement , "
+                "forearmRightMeasurement, forearmLeftMeasurement, "
                 "thighRightMeasurement, thighLeftMeasurement, "
                 "calfRightMeasurement, "
-                "calfLeftMeasurement)",
-                now.time_since_epoch().count(), weight, height, age,
-                measure.neck, measure.shoulders, measure.chest, measure.waist,
-                measure.hips, measure.upperArmRight, measure.upperArmLeft,
+                "calfLeftMeasurement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                "?, ?, ?, ?, ?, ?)",
+                epoch, weight, height, age, measure.neck, measure.shoulders,
+                measure.chest, measure.waist, measure.hips,
+                measure.upperArmRight, measure.upperArmLeft,
                 measure.forearmRight, measure.forearmLeft, measure.thighRight,
                 measure.thighLeft, measure.calfRight, measure.calfLeft) == -1)
             return -1;
-        if (db->execQuery() == -1) return -1;
+        if (db->execQuery() == -1) return -2;
         measEdit = false;
         bodyEdit = false;
     }
     if (condEdit) {
-        if (db->prepare("INSERT INTO bodyCondtition (date, neckCondition, "
+        if (db->prepare("INSERT INTO bodyCondition (date, neckCondition, "
                         "trapeziusCondition, "
                         "bicepCondition, tricepCondition, forearmCondition, "
                         "pectoralCondition, "
                         "absCondition, latsCondition, upperBackCondition, "
                         "lowerBackCondition, "
                         "quadsCondition, glutesCondition, hamstringCondition, "
-                        "calfCondition)",
-                        now.time_since_epoch().count(), condition.neck,
-                        condition.trapezius, condition.bicep, condition.tricep,
-                        condition.forearm, condition.pectoral, condition.abs,
-                        condition.lats, condition.upperBack,
-                        condition.lowerBack, condition.quads, condition.glutes,
-                        condition.hamstring, condition.calf) == -1)
-            return -1;
-        if (db->execQuery() == -1) return -1;
+                        "calfCondition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                        "?, ?, ?, ?, ?)",
+                        epoch, condition.neck, condition.trapezius,
+                        condition.bicep, condition.tricep, condition.forearm,
+                        condition.pectoral, condition.abs, condition.lats,
+                        condition.upperBack, condition.lowerBack,
+                        condition.quads, condition.glutes, condition.hamstring,
+                        condition.calf) == -1)
+            return -3;
+        if (db->execQuery() == -1) return -4;
         condEdit = false;
     }
 
