@@ -26,15 +26,26 @@ set(PROJECT_SOURCES
     src/body/body.h
     src/body/body.cpp
     src/database/database.h
-    src/database/database.cpp)
+    src/database/database.cpp
+    src/history/history.cpp
+    src/history/history.h
+    src/analytics/analytics.h
+    src/analytics/analytics.cpp
+    src/workoutplan/workoutplan.h
+    src/workoutplan/workoutplan.cppp
+    src/lab/lab.h
+    src/lab/lab.cpp)
+
 include_directories(
   src
   src/excercise
   src/body
   src/database
   src/analytics
+  src/history
+  src/workoutplan
+  src/lab
   src/cli
-  src/analytics
   src/calendar)
 
 if(MSVC)
@@ -120,8 +131,20 @@ endif()
 
 add_executable(
   TheLabTest
-  test/excercise_test.cpp src/excercise/excercise.cpp test/database_test.cpp
-  src/database/database.cpp test/body_test.cpp src/body/body.cpp)
+  test/excercise_test.cpp
+  src/excercise/excercise.cpp
+  test/database_test.cpp
+  src/database/database.cpp
+  test/body_test.cpp
+  src/body/body.cpp
+  src/history/history.cpp
+  test/history_test.cpp
+  src/analytics/analytics.cpp
+  test/test_analytics.cpp
+  src/workoutplan/workoutplan.cpp
+  test/workoutplan_test.cpp
+  src/lab/lab.cpp
+  test/lab_test.cpp)
 
 target_link_libraries(TheLabTest GTest::gtest_main SQLiteCpp sqlite3 pthread dl)
 
