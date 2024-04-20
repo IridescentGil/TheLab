@@ -20,12 +20,15 @@ class WorkoutPlan {
     void remExcercise(std::vector<std::tuple<Excercise, int, int>>::iterator);
     void remExcercise(std::vector<std::tuple<Excercise, int, int>>::iterator,
                       std::vector<std::tuple<Excercise, int, int>>::iterator);
-    void changeExcercise(std::vector<std::tuple<Excercise, int, int>>::iterator,
-                         Excercise, int, int);
-    void changeExcercise(std::vector<std::tuple<Excercise, int, int>>::iterator,
-                         std::vector<std::tuple<Excercise, int, int>>::iterator,
-                         Excercise, int, int);
+    void changeExcercise(
+        std::vector<std::tuple<Excercise, int, int>>::const_iterator, Excercise,
+        int, int);
+    void changeExcercise(
+        std::vector<std::tuple<Excercise, int, int>>::const_iterator,
+        std::vector<std::tuple<Excercise, int, int>>::const_iterator, Excercise,
+        int, int);
     void editName(std::string);
+    std::string getName();
     bool save();
 
    private:
