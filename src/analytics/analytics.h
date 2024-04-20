@@ -9,8 +9,8 @@
 
 namespace analytics {
 namespace excercise {
-size_t repMax(size_t n, Excercise exc, std::shared_ptr<History> hist);
-std::vector<size_t> estimateRepMax(size_t n, Excercise exc,
+size_t repMax(size_t reps, size_t weight, Excercise exc);
+std::vector<size_t> estimateRepMax(Excercise exc,
                                    std::shared_ptr<History> hist);
 std::vector<size_t> maxReps(Excercise exc, std::shared_ptr<History> hist);
 std::vector<size_t> maxWeight(Excercise exc, std::shared_ptr<History> hist);

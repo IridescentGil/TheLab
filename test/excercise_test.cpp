@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <iterator>
 #include <memory>
 
 class ExcerciseTest : public testing::Test {
