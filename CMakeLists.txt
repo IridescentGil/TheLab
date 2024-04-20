@@ -31,8 +31,8 @@ set(PROJECT_SOURCES
     src/history/history.h
     src/analytics/analytics.h
     src/analytics/analytics.cpp
-    src/workoutplan/workoutplan.h
-    src/workoutplan/workoutplan.cppp
+    src/workout/workout.h
+    src/workout/workout.cppp
     src/lab/lab.h
     src/lab/lab.cpp)
 
@@ -141,8 +141,8 @@ add_executable(
   test/history_test.cpp
   src/analytics/analytics.cpp
   test/test_analytics.cpp
-  src/workoutplan/workoutplan.cpp
-  test/workoutplan_test.cpp
+  src/workout/workout.cpp
+  test/workout_test.cpp
   src/lab/lab.cpp
   test/lab_test.cpp)
 

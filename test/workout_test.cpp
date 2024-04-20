@@ -1,5 +1,5 @@
 
-#include "workoutplan.h"
+#include "workout.h"
 
 #include <gtest/gtest.h>
 
@@ -59,9 +59,9 @@ class BodyTest : public testing::Test {
     void TearDown() override { remove("thelab.db"); }
 
     std::shared_ptr<DBConn> db = std::make_shared<DBConn>();
-    WorkoutPlan e1{db};
-    WorkoutPlan e2{db, "Push Day 1"};
-    WorkoutPlan e3{
+    Workout e1{db};
+    Workout e2{db, "Push Day 1"};
+    Workout e3{
         db,
         "Pull Day 1",
         {std::make_tuple(
@@ -78,7 +78,7 @@ class BodyTest : public testing::Test {
                                    "pullup until your chin is over the bar",
                                    "Back", {"Upper-back"}, {"reps"}),
                          10, 0)}};
-    WorkoutPlan e4 = WorkoutPlan(db);
+    Workout e4 = Workout(db);
 };
 
 auto excerEqual = [](Excercise a, Excercise b) -> bool {
