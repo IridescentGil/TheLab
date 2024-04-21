@@ -18,10 +18,10 @@ std::vector<size_t> maxVolume(Excercise exc, std::shared_ptr<History> hist);
 std::vector<size_t> maxWeightForRep(Excercise exc,
                                     std::shared_ptr<History> hist);
 std::vector<size_t> workoutVolume(
-    std::chrono::time_point<std::chrono::system_clock> date,
+    std::chrono::time_point<std::chrono::system_clock> date, Excercise exc,
     std::shared_ptr<History> hist);
 std::vector<size_t> workoutReps(
-    std::chrono::time_point<std::chrono::system_clock> date,
+    std::chrono::time_point<std::chrono::system_clock> date, Excercise exc,
     std::shared_ptr<History> hist);
 }  // namespace excercise
 namespace workout {

@@ -25,7 +25,7 @@ class History {
                         std::chrono::time_point<std::chrono::system_clock>);
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Excercise, int, int>>
-        getItemMulti(
+        getItem(
             std::vector<
                 std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Excercise, int, int>>::iterator,
@@ -38,6 +38,22 @@ class History {
                 std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Excercise, int, int>>::iterator);
     void save();
+    void setHistory(
+        std::vector<
+            std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                       std::string, Excercise, int, int>>);
+    void addItem(std::chrono::time_point<std::chrono::system_clock>,
+                 std::string, Excercise, int, int);
+    void remItem(std::vector<
+                 std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                            std::string, Excercise, int, int>>::iterator);
+    void remItem(
+        std::vector<
+            std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                       std::string, Excercise, int, int>>::iterator,
+        std::vector<
+            std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                       std::string, Excercise, int, int>>::iterator);
 
    private:
     std::shared_ptr<DBConn> db;
