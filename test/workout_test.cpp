@@ -9,7 +9,6 @@
 
 #include "database.h"
 #include "excercise.h"
-#include "gtest/gtest.h"
 
 class BodyTest : public testing::Test {
    protected:
@@ -441,6 +440,10 @@ TEST_F(BodyTest, ChangedMulipleExcerciseTest) {
     }
 }
 
+TEST_F(BodyTest, ChangeExcerciseBadIteratorTest) {
+    // TODO: bad start iterator, reversed start and end iterators
+}
+
 TEST_F(BodyTest, RemoveExcerciseTest) {
     auto woPlan = e3.getWoPlan();
     auto iter = woPlan.begin();
@@ -510,6 +513,10 @@ TEST_F(BodyTest, RemoveMultiExcerciseTest) {
     EXPECT_EQ(woPlan.size(), 3);
     e3.remExcercise(woPlan.begin(), woPlan.end());
     EXPECT_TRUE(woPlan.empty());
+}
+
+TEST_F(BodyTest, RemoveExcerciseBadIteratorTest) {
+    // TODO: bad start iterator, reversed start and end iterators
 }
 
 TEST_F(BodyTest, SaveWorkOutPlanTest) {
