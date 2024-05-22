@@ -37,7 +37,8 @@ class History {
         getItem(std::vector<
                 std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Excercise, int, int>>::iterator);
-    void save();
+    // TODO: Add index based history item retrieval and deletion
+    bool save();
     void setHistory(
         std::vector<
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,
