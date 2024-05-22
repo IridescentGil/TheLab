@@ -7,8 +7,6 @@
 #include <memory>
 #include <string>
 
-#include "gtest/gtest.h"
-
 class DatabaseTest : public testing::Test {
    protected:
     void SetUp() override {}
