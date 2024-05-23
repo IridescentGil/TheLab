@@ -34,7 +34,7 @@ set(PROJECT_SOURCES
     src/analytics/analytics.h
     src/analytics/analytics.cpp
     src/workout/workout.h
-    src/workout/workout.cppp
+    src/workout/workout.cpp
     src/lab/lab.h
     src/lab/lab.cpp)
 
@@ -108,8 +108,7 @@ endif()
 if(DOCUMENTATION)
   find_package(Doxygen REQUIRED dot)
   if(DOXYGEN_FOUND)
-    doxygen_add_docs(DOCS ${PROJECT_SOURCES} ALL CONFIG_FILE
-                     docs/internal/doxygen.in)
+        doxygen_add_docs(DOCS ${PROJECT_SOURCES} ALL)
   endif()
 endif()
 

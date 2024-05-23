@@ -32,7 +32,7 @@
                 sqlite
                 sqlitecpp
                 doxygen
-                dot
+                graphviz
             ];
         };
     });
