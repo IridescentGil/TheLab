@@ -1,5 +1,5 @@
-#ifndef WORKOUT_H
-#define WORKOUT_H
+#pragma once
+///@file
 
 #include <memory>
 #include <tuple>
@@ -36,5 +36,3 @@ class Workout {
     std::shared_ptr<DBConn> db;
     std::vector<std::tuple<Excercise, int, int>> woPlan;
 };
-
-#endif  // !WORKOUT_H

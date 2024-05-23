@@ -1,5 +1,5 @@
-#ifndef HISTORY_H
-#define HISTORY_H
+#pragma once
+///@file
 
 #include <chrono>
 #include <memory>
@@ -62,5 +62,3 @@ class History {
                            std::string, Excercise, int, int>>
         history;
 };
-
-#endif  // !HISTORY_H

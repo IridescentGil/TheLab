@@ -1,5 +1,5 @@
-#ifndef EXCERCISE_H
-#define EXCERCISE_H
+#pragma once
+///@file
 
 #include <string>
 #include <tuple>
@@ -46,5 +46,3 @@ class Excercise {
     const std::vector<std::string> groupCheck{"Arms", "Chest", "Back",
                                               "Core", "Legs",  "Cardio"};
 };
-
-#endif  // !EXCERCISE_H

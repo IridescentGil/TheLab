@@ -1,5 +1,5 @@
-#ifndef ANALYTICS_H
-#define ANALYTICS_H
+#pragma once
+///@file
 
 #include <cstddef>
 #include <memory>
@@ -40,5 +40,3 @@ std::vector<size_t> workoutDurationPerPeriod(std::string type, size_t timeframe,
                                              std::shared_ptr<History> hist);
 }  // namespace workout
 }  // namespace analytics
-
-#endif  // !ANALYTICS_H

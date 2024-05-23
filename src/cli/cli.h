@@ -1,5 +1,5 @@
-#ifndef CLI_H
-#define CLI_H
+#pragma once
+///@file
 
 class NoGraphic {
    public:
@@ -7,5 +7,3 @@ class NoGraphic {
 
    private:
 };
-
-#endif

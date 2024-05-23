@@ -1,5 +1,5 @@
-#ifndef DATABASE_H
-#define DATABASE_H
+#pragma once
+///@file
 
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
@@ -66,5 +66,3 @@ int DBConn::prepare(const std::string queryStr, const Args &...args) {
     }
     return 1;
 }
-
-#endif  // !DATABASE_H

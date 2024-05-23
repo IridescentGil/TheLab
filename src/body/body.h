@@ -1,5 +1,5 @@
-#ifndef BODY_H
-#define BODY_H
+#pragma once
+///@file
 
 #include <memory>
 
@@ -67,5 +67,3 @@ class Body {
     bool condEdit = false;
     bool measEdit = false;
 };
-
-#endif  // BODY_H
