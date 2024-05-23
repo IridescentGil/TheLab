@@ -31,6 +31,8 @@
                 clang-tools
                 sqlite
                 sqlitecpp
+                doxygen
+                dot
             ];
         };
     });

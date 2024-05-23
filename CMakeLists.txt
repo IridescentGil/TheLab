@@ -12,6 +12,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(DOCUMENTATION ON)
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(SQLiteCpp REQUIRED)
@@ -43,10 +45,8 @@ include_directories(
   src/database
   src/analytics
   src/history
-  src/workoutplan
-  src/lab
-  src/cli
-  src/calendar)
+  src/workout
+  src/lab)
 
 if(MSVC)
   add_compile_options(/W4)
@@ -103,6 +103,14 @@ install(
 
 if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(TheLab)
+endif()
+
+if(DOCUMENTATION)
+  find_package(Doxygen REQUIRED dot)
+  if(DOXYGEN_FOUND)
+    doxygen_add_docs(DOCS ${PROJECT_SOURCES} ALL CONFIG_FILE
+                     docs/internal/doxygen.in)
+  endif()
 endif()
 
 enable_testing()
