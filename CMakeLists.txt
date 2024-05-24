@@ -108,7 +108,7 @@ endif()
 if(DOCUMENTATION)
   find_package(Doxygen REQUIRED dot)
   if(DOXYGEN_FOUND)
-        doxygen_add_docs(DOCS ${PROJECT_SOURCES} ALL)
+    doxygen_add_docs(DOCS ${PROJECT_SOURCES} ALL)
   endif()
 endif()
 
@@ -148,7 +148,7 @@ add_executable(
   src/history/history.cpp
   test/history_test.cpp
   src/analytics/analytics.cpp
-  test/test_analytics.cpp
+  test/analytics_test.cpp
   src/workout/workout.cpp
   test/workout_test.cpp
   src/lab/lab.cpp

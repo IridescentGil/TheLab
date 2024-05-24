@@ -111,12 +111,12 @@ int Body::save() {
     if (condEdit) {
         if (db->prepare("INSERT INTO bodyCondition (date, neckCondition, "
                         "trapeziusCondition, "
-                        "bicepCondition, tricepCondition, forearmCondition, "
-                        "pectoralCondition, "
+                        "bicepsCondition, tricepsCondition, forearmsCondition, "
+                        "pectoralsCondition, "
                         "absCondition, latsCondition, upperBackCondition, "
                         "lowerBackCondition, "
-                        "quadsCondition, glutesCondition, hamstringCondition, "
-                        "calfCondition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                        "quadsCondition, glutesCondition, hamstringsCondition, "
+                        "calfsCondition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                         "?, ?, ?, ?, ?)",
                         epoch, condition.neck, condition.trapezius,
                         condition.bicep, condition.tricep, condition.forearm,

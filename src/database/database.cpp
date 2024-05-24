@@ -35,7 +35,7 @@ void DBConn::createTables() {
             db.exec(
                 "CREATE TABLE workoutPlans (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
-                "planName TEXT NOT NULL, workoutID NOT NULL, FOREIGN "
+                "planName TEXT NOT NULL, workoutID INTEGER NOT NULL, FOREIGN "
                 "KEY(workoutID) "
                 "REFERENCES "
                 "workouts(ID))");
@@ -43,7 +43,7 @@ void DBConn::createTables() {
             db.exec(
                 "CREATE TABLE history (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
-                "DATE "
+                "date "
                 "INTEGER NOT NULL, excercise TEXT NOT NULL, workout TEXT, "
                 "type1 TEXT NOT NULL, type2 TEXT, FOREIGN KEY(excercise) "
                 "REFERENCES "
@@ -54,9 +54,11 @@ void DBConn::createTables() {
                 "KEY, "
                 "neckCondition INTEGER NOT NULL, trapeziusCondition INTEGER "
                 "NOT NULL, "
-                "bicepCondition INTEGER NOT NULL, tricepCondition INTEGER NOT "
+                "bicepsCondition INTEGER NOT NULL, tricepsCondition INTEGER "
+                "NOT "
                 "NULL, "
-                "forearmCondition INTEGER NOT NULL, pectoralCondition INTEGER "
+                "forearmsCondition INTEGER NOT NULL, pectoralsCondition "
+                "INTEGER "
                 "NOT "
                 "NULL, "
                 "absCondition INTEGER NOT NULL, latsCondition INTEGER NOT "
@@ -66,7 +68,7 @@ void DBConn::createTables() {
                 "NULL, "
                 "quadsCondition INTEGER NOT NULL, glutesCondition INTEGER NOT "
                 "NULL, "
-                "hamstringCondition INTEGER NOT NULL, calfCondition INTEGER "
+                "hamstringsCondition INTEGER NOT NULL, calfsCondition INTEGER "
                 "NOT NULL)");
         if (!db.tableExists("bodyStats"))
             db.exec(
