@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include "testHelper.h"
+
 TEST(AnalyticsTest, RepMaxTest) {
     // TODO:
 }
