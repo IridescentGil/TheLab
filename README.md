@@ -17,7 +17,7 @@ Documentation is build with doxygen through cmake and requires doxygen and dot.
 
 ## Features
 
-TheLab aims to have a robust set of features. Check out those that are currently implemented at [Features](dev/docs/FEATURES.md).
+TheLab aims to have a robust set of features. Check out those that are currently implemented at [Features](docs/dev/FEATURES.md).
 
 ## Contributing
 
