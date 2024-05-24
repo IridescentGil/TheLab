@@ -11,10 +11,17 @@ Compiling TheLab requires:
 - SQLite
 - SQLitecpp
 - Gtest
+- CMake
+
+Documentation is build with doxygen through cmake and requires doxygen and dot.
+
+## Features
+
+TheLab aims to have a robust set of features. Check out those that are currently implemented at [Features](dev/docs/FEATURES.md).
 
 ## Contributing
 
-If you wish to contribute please read the guidelines at [Contributing](CONTRIBUTING.md). Please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). A list of current tasks can be found at [TODO](TODO.md)
+If you wish to contribute please read the guidelines at [Contributing](CONTRIBUTING.md). Please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). A list of current tasks can be found at [TODO](docs/dev/TODO.md)
 
 ## Donate
 

@@ -4,6 +4,9 @@ First off, thank you for considering contributing to TheLab. It's people like yo
 
 The following is a set of guidelines for contributing to TheLab. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request. Be aware that there are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code. Please ensure you adhere to our [Code of Conduct](CODE_OF_CONDUCT.md)
 
+For a list of tasks that need to be done check out: [TODO](docs/dev/TODO.md).
+For a list of currently implemented features check out: [Features](docs/dev/FEATURES.md)
+
 ## How can I contribute
 ### Bug Reports
 * Check if your bug has already been reported in the issue tracker.

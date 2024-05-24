@@ -1,0 +1,91 @@
+# TODO
+
+## Tasks
+- [ ] Analytics namespace
+  - [x] Analytics header
+  - [ ] Analytics implementation
+  - [ ] Analytics unit tests
+- [x] Body class
+  - [x] Body header
+  - [x] Body implementation
+  - [x] Body unit tests
+- [x] Database class
+  - [x] Database header
+  - [x] Database implementation
+  - [x] Database unit tests
+- [x] Excercise class
+  - [x] Excercise header
+  - [x] Excercise implementation
+  - [x] Excercise unit tests
+- [ ] History class
+  - [x] History header
+  - [ ] History implementation
+  - [x] History unit tests
+- [ ] Workout class
+  - [x] Workout header
+  - [ ] Workout implementation
+  - [x] Workout unit tests
+- [ ] Workout Plan Class
+  - [ ] Workout Plan header
+  - [ ] Workout Plan Implementation
+  - [ ] Workout Plan unit tests
+- [ ] Calendar class
+  - [ ] Calendar header
+  - [ ] Calendar implementation
+  - [ ] Calendar unit tests
+- [ ] Condition namespace
+  - [ ] Muscle wear functions
+    - [ ] function headers
+    - [ ] function implementations
+    - [ ] unit tests
+  - [ ] Muscle recovery functions
+    - [ ] function headers
+    - [ ] function implementations
+    - [ ] unit tests
+- [ ] Injuries class
+  - [ ] Injuries header
+  - [ ] Injuries implementation
+  - [ ] Injuries unit tests
+- [ ] Goals class
+  - [ ] Goals header
+  - [ ] Goals implementation
+  - [ ] Goals unit tests
+- [ ] Records class
+  - [ ] Records header
+  - [ ] Records implementation
+  - [ ] Records unit tests
+- [ ] Lab class
+  - [ ] Lab header
+  - [ ] Lab implementation
+  - [ ] Lab unit tests
+- [ ] Import Data class
+  - [ ] Import Data header
+  - [ ] Import Data implementation
+  - [ ] Import Data unit tests
+- [ ] Export Data class
+  - [ ] Export Data header
+  - [ ] Export Data implementation
+  - [ ] Export Data unit tests
+- [ ] Cli class
+  - [ ] Cli header
+  - [ ] Cli implementation
+  - [ ] Cli unit tests
+- [ ] Create GUI 
+- [ ] Review and source all excercise variables
+- [x] Create Proper Readme
+- [x] Create Contributing guideline
+- [ ] Properly Comment Code
+  - [ ] code comments for doxygen
+  - [ ] implementation comments
+- [ ] Documentation
+  - [x] doxygen code documentation
+  - [ ] Hand written docs
+  - [ ] Wiki
+
+## Change
+- [ ] Add ability to set workouts as rehab workouts
+- [ ] Extend database for calendar, injuries, goals, records
+
+## Review
+- [ ] DB Class thread safe?
+- [ ] Function and variable names
