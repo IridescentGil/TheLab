@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <memory>
-
 #include "database.h"
 #include "testHelper.h"
 
@@ -12,7 +10,7 @@ class BodyTest : public testing::Test {
     void SetUp() override {}
     void TearDown() override { remove("thelab.db"); }
 
-    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
+    Lab::DBConn db;
     Lab::Body b1{db};
 };
 
