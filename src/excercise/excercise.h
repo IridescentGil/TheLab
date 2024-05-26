@@ -5,6 +5,8 @@
 #include <tuple>
 #include <vector>
 
+namespace Lab {
+
 class Excercise {
    public:
     Excercise() : name(""), description(""), muscleGroup(""){};
@@ -46,3 +48,5 @@ class Excercise {
     const std::vector<std::string> groupCheck{"Arms", "Chest", "Back",
                                               "Core", "Legs",  "Cardio"};
 };
+
+}  // namespace Lab

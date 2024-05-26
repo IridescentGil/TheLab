@@ -1,6 +1,6 @@
 #include "testHelper.h"
 
-bool excerEqual(Excercise a, Excercise b) {
+bool excerEqual(Lab::Excercise a, Lab::Excercise b) {
     if (a.getName() != b.getName()) return false;
     if (a.getDescription() != b.getDescription()) return false;
     if (a.getMuscleGroup() != b.getMuscleGroup()) return false;
@@ -9,8 +9,8 @@ bool excerEqual(Excercise a, Excercise b) {
     return true;
 };
 
-bool woTupleEqual(std::tuple<Excercise, int, int> a,
-                  std::tuple<Excercise, int, int> b) {
+bool woTupleEqual(std::tuple<Lab::Excercise, int, int> a,
+                  std::tuple<Lab::Excercise, int, int> b) {
     const auto [aE, aT1, aT2] = a;
     const auto [bE, bT1, bT2] = b;
 
@@ -21,18 +21,19 @@ bool woTupleEqual(std::tuple<Excercise, int, int> a,
 };
 
 testing::AssertionResult AssertExcerciseEqual(const char* m_expr,
-                                              const char* n_expr, Excercise m,
-                                              Excercise n) {
+                                              const char* n_expr,
+                                              Lab::Excercise m,
+                                              Lab::Excercise n) {
     if (excerEqual(m, n)) return testing::AssertionSuccess();
 
     return testing::AssertionFailure()
            << m_expr << "and" << n_expr << " Conditions not equal";
 }
 
-testing::AssertionResult AssertWoTupleEqual(const char* m_expr,
-                                            const char* n_expr,
-                                            std::tuple<Excercise, int, int> m,
-                                            std::tuple<Excercise, int, int> n) {
+testing::AssertionResult AssertWoTupleEqual(
+    const char* m_expr, const char* n_expr,
+    std::tuple<Lab::Excercise, int, int> m,
+    std::tuple<Lab::Excercise, int, int> n) {
     if (woTupleEqual(m, n)) return testing::AssertionSuccess();
 
     return testing::AssertionFailure()
@@ -41,10 +42,10 @@ testing::AssertionResult AssertWoTupleEqual(const char* m_expr,
 
 bool historyEqual(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         a,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         b) {
     if (a.size() != b.size()) return false;
     for (auto iter = a.cbegin(), bter = b.cbegin(); iter != a.cend();
@@ -62,10 +63,10 @@ bool historyEqual(
 
 bool historyNEqual(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         a,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         b,
     int diff) {
     int nDiff = 0;
@@ -132,10 +133,10 @@ bool historyNEqual(
 testing::AssertionResult AssertHistoryEqual(
     const char* m_expr, const char* n_expr,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         m,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         n) {
     if (historyEqual(m, n)) return testing::AssertionSuccess();
 
@@ -146,10 +147,10 @@ testing::AssertionResult AssertHistoryEqual(
 testing::AssertionResult AssertHistoryNEqual(
     const char* m_expr, const char* n_expr, const char* o_expr,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         m,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         n,
     int o) {
     if (historyNEqual(m, n, o)) return testing::AssertionSuccess();
@@ -159,7 +160,7 @@ testing::AssertionResult AssertHistoryNEqual(
            << " Histories difference not the expected: " << o_expr;
 }
 
-bool mesEqual(Measurements a, Measurements b) {
+bool mesEqual(Lab::Measurements a, Lab::Measurements b) {
     if (a.hips != b.hips)
         return false;
     else if (a.neck != b.neck)
@@ -189,7 +190,7 @@ bool mesEqual(Measurements a, Measurements b) {
     return true;
 }
 
-bool musEqual(Muscles a, Muscles b) {
+bool musEqual(Lab::Muscles a, Lab::Muscles b) {
     if (a.upperBack != b.upperBack)
         return false;
     else if (a.trapezius != b.trapezius)
@@ -222,8 +223,8 @@ bool musEqual(Muscles a, Muscles b) {
 }
 
 testing::AssertionResult AssertConditionsEqual(const char* m_expr,
-                                               const char* n_expr, Muscles m,
-                                               Muscles n) {
+                                               const char* n_expr,
+                                               Lab::Muscles m, Lab::Muscles n) {
     if (musEqual(m, n)) return testing::AssertionSuccess();
 
     return testing::AssertionFailure()
@@ -231,10 +232,11 @@ testing::AssertionResult AssertConditionsEqual(const char* m_expr,
 }
 
 testing::AssertionResult AssertMeasureEqual(const char* m_expr,
-                                            const char* n_expr, Measurements m,
-                                            Measurements n) {
+                                            const char* n_expr,
+                                            Lab::Measurements m,
+                                            Lab::Measurements n) {
     if (mesEqual(m, n)) return testing::AssertionSuccess();
 
     return testing::AssertionFailure()
-           << m_expr << "and" << n_expr << " Measurements not equal";
+           << m_expr << "and" << n_expr << " Lab::Measurements not equal";
 }

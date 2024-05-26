@@ -2,9 +2,9 @@
 
 #include <algorithm>
 
-Excercise::Excercise(std::string name, std::string desc, std::string mGroup,
-                     std::vector<std::string> mWorked,
-                     std::vector<std::string> eType)
+Lab::Excercise::Excercise(std::string name, std::string desc,
+                          std::string mGroup, std::vector<std::string> mWorked,
+                          std::vector<std::string> eType)
     : name(name), description(desc) {
     if (isMuscle(mWorked)) musclesWorked = mWorked;
     if (isType(eType)) type = eType;
@@ -13,15 +13,17 @@ Excercise::Excercise(std::string name, std::string desc, std::string mGroup,
 
 std::tuple<std::string, std::string, std::string, std::vector<std::string>,
            std::vector<std::string>>
-Excercise::getDetails() const {
+Lab::Excercise::getDetails() const {
     return std::make_tuple(name, description, muscleGroup, musclesWorked, type);
 }
 
-void Excercise::setName(std::string newName) { name = newName; }
+void Lab::Excercise::setName(std::string newName) { name = newName; }
 
-void Excercise::setDescription(std::string newDesc) { description = newDesc; }
+void Lab::Excercise::setDescription(std::string newDesc) {
+    description = newDesc;
+}
 
-int Excercise::setMuscleGroup(std::string newMG) {
+int Lab::Excercise::setMuscleGroup(std::string newMG) {
     if (isMuscleGroup(newMG))
         muscleGroup = newMG;
     else
@@ -30,7 +32,7 @@ int Excercise::setMuscleGroup(std::string newMG) {
     return 0;
 }
 
-int Excercise::setMusclesWorked(std::vector<std::string> newMW) {
+int Lab::Excercise::setMusclesWorked(std::vector<std::string> newMW) {
     if (isMuscle(newMW))
         musclesWorked = newMW;
     else
@@ -39,7 +41,7 @@ int Excercise::setMusclesWorked(std::vector<std::string> newMW) {
     return 0;
 }
 
-int Excercise::setType(std::vector<std::string> newType) {
+int Lab::Excercise::setType(std::vector<std::string> newType) {
     if (isType(newType))
         type = newType;
     else
@@ -48,14 +50,14 @@ int Excercise::setType(std::vector<std::string> newType) {
     return 0;
 }
 
-bool Excercise::isMuscleGroup(std::string mGroup) {
+bool Lab::Excercise::isMuscleGroup(std::string mGroup) {
     if (std::find(groupCheck.cbegin(), groupCheck.cend(), mGroup) ==
         groupCheck.cend())
         return false;
 
     return true;
 }
-bool Excercise::isMuscle(std::vector<std::string> mWorked) {
+bool Lab::Excercise::isMuscle(std::vector<std::string> mWorked) {
     if (mWorked.size() == 0) return false;
     for (auto it = mWorked.cbegin(); it != mWorked.cend(); it++) {
         if (std::find(mwCheck.cbegin(), mwCheck.cend(), *it) == mwCheck.cend())
@@ -65,7 +67,7 @@ bool Excercise::isMuscle(std::vector<std::string> mWorked) {
     return true;
 }
 
-bool Excercise::isType(std::vector<std::string> nType) {
+bool Lab::Excercise::isType(std::vector<std::string> nType) {
     if (nType.size() > 2 || nType.size() == 0) return false;
     for (auto it = nType.cbegin(); it != nType.cend(); it++) {
         if (std::find(typeCheck.cbegin(), typeCheck.cend(), *it) ==

@@ -7,8 +7,10 @@
 #include "excercise.h"
 #include "history.h"
 
-namespace analytics {
-namespace excercise {
+namespace Lab {
+namespace Analytics {
+/// @brief Individiual excercise analytics functions
+namespace EX {
 size_t repMax(size_t reps, size_t weight, Excercise exc);
 std::vector<size_t> estimateRepMax(Excercise exc,
                                    std::shared_ptr<History> hist);
@@ -23,8 +25,9 @@ std::vector<size_t> workoutVolume(
 std::vector<size_t> workoutReps(
     std::chrono::time_point<std::chrono::system_clock> date, Excercise exc,
     std::shared_ptr<History> hist);
-}  // namespace excercise
-namespace workout {
+}  // namespace EX
+/// @brief workout analytics functions
+namespace WO {
 std::vector<size_t> volumePerW(size_t months, std::shared_ptr<History> hist);
 std::vector<size_t> setsPerW(size_t months, std::shared_ptr<History> hist);
 std::vector<size_t> repsPerW(size_t months, std::shared_ptr<History> hist);
@@ -38,5 +41,6 @@ std::vector<size_t> repsPerPeriod(std::string type, size_t timeframe,
                                   std::shared_ptr<History> hist);
 std::vector<size_t> workoutDurationPerPeriod(std::string type, size_t timeframe,
                                              std::shared_ptr<History> hist);
-}  // namespace workout
-}  // namespace analytics
+}  // namespace WO
+}  // namespace Analytics
+}  // namespace Lab

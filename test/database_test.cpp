@@ -15,12 +15,12 @@ class DatabaseTest : public testing::Test {
         remove("test.db");
     }
 
-    DBConn db1;
-    DBConn db2;
-    DBConn db3{"test.db"};
-    DBConn db4{"test.db"};
-    std::shared_ptr<DBConn> db5 = std::make_shared<DBConn>();
-    std::shared_ptr<DBConn> db6;
+    Lab::DBConn db1;
+    Lab::DBConn db2;
+    Lab::DBConn db3{"test.db"};
+    Lab::DBConn db4{"test.db"};
+    std::shared_ptr<Lab::DBConn> db5 = std::make_shared<Lab::DBConn>();
+    std::shared_ptr<Lab::DBConn> db6;
 };
 
 TEST_F(DatabaseTest, NewDBTest) {

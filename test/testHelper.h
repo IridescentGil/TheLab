@@ -5,59 +5,61 @@
 #include "body.h"
 #include "excercise.h"
 
-bool excerEqual(Excercise a, Excercise b);
-bool woTupleEqual(std::tuple<Excercise, int, int> a,
-                  std::tuple<Excercise, int, int> b);
+bool excerEqual(Lab::Excercise a, Lab::Excercise b);
+bool woTupleEqual(std::tuple<Lab::Excercise, int, int> a,
+                  std::tuple<Lab::Excercise, int, int> b);
 bool historyEqual(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         a,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         b);
 bool historyNEqual(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         a,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         b,
     int diff);
 
 testing::AssertionResult AssertExcerciseEqual(const char* m_expr,
-                                              const char* n_expr, Excercise m,
-                                              Excercise n);
-testing::AssertionResult AssertWoTupleEqual(const char* m_expr,
-                                            const char* n_expr,
-                                            std::tuple<Excercise, int, int> m,
-                                            std::tuple<Excercise, int, int> n);
+                                              const char* n_expr,
+                                              Lab::Excercise m,
+                                              Lab::Excercise n);
+testing::AssertionResult AssertWoTupleEqual(
+    const char* m_expr, const char* n_expr,
+    std::tuple<Lab::Excercise, int, int> m,
+    std::tuple<Lab::Excercise, int, int> n);
 
 testing::AssertionResult AssertHistoryEqual(
     const char* m_expr, const char* n_expr,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         m,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         n);
 
 testing::AssertionResult AssertHistoryNEqual(
     const char* m_expr, const char* n_expr, const char* o_expr,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         m,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         n,
     int o);
 
-bool mesEqual(Measurements a, Measurements b);
-bool musEqual(Muscles a, Muscles b);
+bool mesEqual(Lab::Measurements a, Lab::Measurements b);
+bool musEqual(Lab::Muscles a, Lab::Muscles b);
 
 testing::AssertionResult AssertConditionsEqual(const char* m_expr,
-                                               const char* n_expr, Muscles m,
-                                               Muscles n);
+                                               const char* n_expr,
+                                               Lab::Muscles m, Lab::Muscles n);
 
 testing::AssertionResult AssertMeasureEqual(const char* m_expr,
-                                            const char* n_expr, Measurements m,
-                                            Measurements n);
+                                            const char* n_expr,
+                                            Lab::Measurements m,
+                                            Lab::Measurements n);

@@ -5,6 +5,8 @@
 
 #include "database.h"
 
+namespace Lab {
+
 struct Muscles {
     unsigned short neck = 100;
     unsigned short trapezius = 100;
@@ -40,7 +42,7 @@ struct Measurements {
 
 class Body {
    public:
-    Body(std::shared_ptr<DBConn>);
+    Body(std::shared_ptr<Lab::DBConn>);
 
     int save();
 
@@ -57,7 +59,7 @@ class Body {
     void setMeasurement(Measurements);
 
    private:
-    std::shared_ptr<DBConn> db;
+    std::shared_ptr<Lab::DBConn> db;
     unsigned short height;
     unsigned short weight;
     unsigned short age;
@@ -67,3 +69,4 @@ class Body {
     bool condEdit = false;
     bool measEdit = false;
 };
+}  // namespace Lab

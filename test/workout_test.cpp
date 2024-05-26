@@ -14,26 +14,27 @@
 class WorkoutTest : public testing::Test {
    protected:
     void SetUp() override {
-        std::vector<Excercise> testEx = {
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
-            Excercise("Wide Grip Pull Ups",
-                      "Holding the bar with a wide grip, do a "
-                      "pullup until your chin is over the bar",
-                      "Back", {"Upper-back"}, {"reps"}),
-            Excercise("Jumping Jacks",
-                      "Jump and spread your legs and put your arms to the sky",
-                      "Cardio", {""}, {"reps"}),
-            Excercise(
+        std::vector<Lab::Excercise> testEx = {
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Wide Grip Pull Ups",
+                           "Holding the bar with a wide grip, do a "
+                           "pullup until your chin is over the bar",
+                           "Back", {"Upper-back"}, {"reps"}),
+            Lab::Excercise(
+                "Jumping Jacks",
+                "Jump and spread your legs and put your arms to the sky",
+                "Cardio", {""}, {"reps"}),
+            Lab::Excercise(
                 "Plank",
                 "In pushup position, lift yourself on your elbows and toes",
                 "Core", {"Abs"}, {"time", "reps"}),
-            Excercise("Calf Press",
-                      "Lift yourself on your tiptoes with your calf", "Legs",
-                      {"Calf"}, {"weight", "reps"})};
+            Lab::Excercise("Calf Press",
+                           "Lift yourself on your tiptoes with your calf",
+                           "Legs", {"Calf"}, {"weight", "reps"})};
         for (auto iter : testEx) {
             std::string musclesWorked = "";
             std::string type = "";
@@ -58,27 +59,29 @@ class WorkoutTest : public testing::Test {
     }
     void TearDown() override { remove("thelab.db"); }
 
-    std::shared_ptr<DBConn> db = std::make_shared<DBConn>();
-    Workout e1{db};
-    Workout e2{db, "Push Day 1"};
-    Workout e3{
+    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
+    Lab::Workout e1{db};
+    Lab::Workout e2{db, "Push Day 1"};
+    Lab::Workout e3{
         db,
         "Pull Day 1",
         {std::make_tuple(
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              50, 5),
          std::make_tuple(
-             Excercise("Dumbbell Flys",
-                       "Standing bent forward, lift dumbbell outwards", "Back",
-                       {"Upper-back"}, {"weight", "reps"}),
+             Lab::Excercise("Dumbbell Flys",
+                            "Standing bent forward, lift dumbbell outwards",
+                            "Back", {"Upper-back"}, {"weight", "reps"}),
              10, 10),
-         std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                   "Holding the bar with a wide grip, do a "
-                                   "pullup until your chin is over the bar",
-                                   "Back", {"Upper-back"}, {"reps"}),
-                         10, 0)}};
-    Workout e4 = Workout(db);
+         std::make_tuple(
+             Lab::Excercise("Wide Grip Pull Ups",
+                            "Holding the bar with a wide grip, do a "
+                            "pullup until your chin is over the bar",
+                            "Back", {"Upper-back"}, {"reps"}),
+             10, 0)}};
+    Lab::Workout e4 = Lab::Workout(db);
 };
 
 TEST_F(WorkoutTest, EmptyWorkOutPlanTest) {
@@ -107,24 +110,26 @@ TEST_F(WorkoutTest, SetNameTest) {
 }
 
 TEST_F(WorkoutTest, SetWoPlanTest) {
-    std::vector<std::tuple<Excercise, int, int>> plan1{
+    std::vector<std::tuple<Lab::Excercise, int, int>> plan1{
         std::make_tuple(
-            Excercise("Scull-Crushers",
-                      "Laying Down on a bench, hold a bar straight and bend at "
-                      "the elbow to bring the bar towards your head",
-                      "Arms", {"Tricep"}, {"weight", "reps"}),
+            Lab::Excercise(
+                "Scull-Crushers",
+                "Laying Down on a bench, hold a bar straight and bend at "
+                "the elbow to bring the bar towards your head",
+                "Arms", {"Tricep"}, {"weight", "reps"}),
             40, 8),
         std::make_tuple(
-            Excercise("Overhead Press", "Press the bar overhead while standing",
-                      "Chest", {"Pectorals", "Tricep"}, {"weight", "reps"}),
+            Lab::Excercise("Overhead Press",
+                           "Press the bar overhead while standing", "Chest",
+                           {"Pectorals", "Tricep"}, {"weight", "reps"}),
             100, 1),
-        std::make_tuple(Excercise("Jump Rope", "Skip with skipping rope",
-                                  "Cardio", {""}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Jump Rope", "Skip with skipping rope",
+                                       "Cardio", {""}, {"reps"}),
                         55, 0),
         std::make_tuple(
-            Excercise("Helms Row",
-                      "Bent over row, with chest supported by the bench",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Helms Row",
+                           "Bent over row, with chest supported by the bench",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             80, 12)};
     e1.setWoPlan(plan1);
     auto plan1Check = e1.getWoPlan();
@@ -132,63 +137,68 @@ TEST_F(WorkoutTest, SetWoPlanTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Scull-Crushers",
-                      "Laying Down on a bench, hold a bar straight and bend at "
-                      "the elbow to bring the bar towards your head",
-                      "Arms", {"Tricep"}, {"weight", "reps"}),
+            Lab::Excercise(
+                "Scull-Crushers",
+                "Laying Down on a bench, hold a bar straight and bend at "
+                "the elbow to bring the bar towards your head",
+                "Arms", {"Tricep"}, {"weight", "reps"}),
             40, 8));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertExcerciseEqual, std::get<0>(*iter),
-        Excercise("Overhead Press", "Press the bar overhead while standing",
-                  "Chest", {"Pectorals", "Tricep"}, {"weight", "reps"}));
+        Lab::Excercise("Overhead Press",
+                       "Press the bar overhead while standing", "Chest",
+                       {"Pectorals", "Tricep"}, {"weight", "reps"}));
     EXPECT_EQ(std::get<1>(*iter), 100);
     EXPECT_EQ(std::get<2>(*iter), 1);
     iter++;
     const auto [excer, type1, type2] = *iter;
     EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer,
-                        Excercise("Jump Rope", "Skip with skipping rope",
-                                  "Cardio", {""}, {"reps"}));
+                        Lab::Excercise("Jump Rope", "Skip with skipping rope",
+                                       "Cardio", {""}, {"reps"}));
     EXPECT_EQ(type1, 55);
     EXPECT_EQ(type2, 0);
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Helms Row",
-                      "Bent over row, with chest supported by the bench",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Helms Row",
+                           "Bent over row, with chest supported by the bench",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             80, 12));
     iter++;
     EXPECT_EQ(iter, plan1Check.cend());
 }
 
 TEST_F(WorkoutTest, OverrideWoPlanTest) {
-    std::vector<std::tuple<Excercise, int, int>> newWoPlan = {
+    std::vector<std::tuple<Lab::Excercise, int, int>> newWoPlan = {
         std::make_tuple(
-            Excercise("Running (Treadmill)", "Running on a treadmill", "Cardio",
-                      {""}, {"time"}),
+            Lab::Excercise("Running (Treadmill)", "Running on a treadmill",
+                           "Cardio", {""}, {"time"}),
             3600, 0),
         std::make_tuple(
-            Excercise("Decline Bench-Press",
-                      "Bench Press with the bench int a declined position",
-                      "Chest", {"Pectorals", "Tricep"}, {"weight", "reps"}),
+            Lab::Excercise("Decline Bench-Press",
+                           "Bench Press with the bench int a declined position",
+                           "Chest", {"Pectorals", "Tricep"},
+                           {"weight", "reps"}),
             120, 10)};
     e3.setWoPlan(newWoPlan);
     auto woPlan = e3.getWoPlan();
     auto iter = woPlan.cbegin();
-    EXPECT_PRED_FORMAT2(AssertWoTupleEqual, *iter,
-                        std::make_tuple(Excercise("Running (Treadmill)",
-                                                  "Running on a treadmill",
-                                                  "Cardio", {""}, {"time"}),
-                                        3600, 0));
+    EXPECT_PRED_FORMAT2(
+        AssertWoTupleEqual, *iter,
+        std::make_tuple(
+            Lab::Excercise("Running (Treadmill)", "Running on a treadmill",
+                           "Cardio", {""}, {"time"}),
+            3600, 0));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Decline Bench-Press",
-                      "Bench Press with the bench int a declined position",
-                      "Chest", {"Pectorals", "Tricep"}, {"weight", "reps"}),
+            Lab::Excercise("Decline Bench-Press",
+                           "Bench Press with the bench int a declined position",
+                           "Chest", {"Pectorals", "Tricep"},
+                           {"weight", "reps"}),
             120, 10));
     iter++;
     EXPECT_EQ(iter, woPlan.cend());
@@ -197,7 +207,7 @@ TEST_F(WorkoutTest, OverrideWoPlanTest) {
 TEST_F(WorkoutTest, AddExcerciseTest) {
     EXPECT_TRUE(e2.getWoPlan().empty());
     e2.addExcercise(
-        Excercise(
+        Lab::Excercise(
             "Kettlebell Swing",
             "With the kettlebell on the ground hinge at the hips and hike the "
             "kettlebell between your legs, push the kettlebell with your hips "
@@ -206,7 +216,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
         20, 10);
     EXPECT_EQ(e2.getWoPlan().size(), 1);
     e2.addExcercise(
-        Excercise(
+        Lab::Excercise(
             "Kettlebell Swing",
             "With the kettlebell on the ground hinge at the hips and hike the "
             "kettlebell between your legs, push the kettlebell with your hips "
@@ -215,7 +225,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
         20, 10);
     EXPECT_EQ(e2.getWoPlan().size(), 2);
     e2.addExcercise(
-        Excercise(
+        Lab::Excercise(
             "Kettlebell Swing",
             "With the kettlebell on the ground hinge at the hips and hike the "
             "kettlebell between your legs, push the kettlebell with your hips "
@@ -224,7 +234,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
         20, 10);
     EXPECT_EQ(e2.getWoPlan().size(), 3);
     e2.addExcercise(
-        Excercise(
+        Lab::Excercise(
             "Kettlebell Swing",
             "With the kettlebell on the ground hinge at the hips and hike the "
             "kettlebell between your legs, push the kettlebell with your hips "
@@ -233,18 +243,21 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
         20, 10);
     EXPECT_EQ(e2.getWoPlan().size(), 4);
     e2.addExcercise(
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         60, 12);
     EXPECT_EQ(e2.getWoPlan().size(), 5);
     e2.addExcercise(
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         60, 12);
     EXPECT_EQ(e2.getWoPlan().size(), 6);
     e2.addExcercise(
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         60, 12);
     EXPECT_EQ(e2.getWoPlan().size(), 7);
 
@@ -254,21 +267,22 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
         if (i < 4) {
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Kettlebell Swing",
-                          "With the kettlebell on the ground hinge at the hips "
-                          "and hike the kettlebell between your legs, push the "
-                          "kettlebell with your hips as you straighten and let "
-                          "it lift to chest height and fall again",
-                          "Core", {"Abs", "Glutes", "Lower-Back"},
-                          {"weight", "reps"}));
+                Lab::Excercise(
+                    "Kettlebell Swing",
+                    "With the kettlebell on the ground hinge at the hips "
+                    "and hike the kettlebell between your legs, push the "
+                    "kettlebell with your hips as you straighten and let "
+                    "it lift to chest height and fall again",
+                    "Core", {"Abs", "Glutes", "Lower-Back"},
+                    {"weight", "reps"}));
             EXPECT_EQ(type1, 20);
             EXPECT_EQ(type2, 10);
         } else {
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Chest Supported Row",
-                          "Row at a chest supported row machine", "Back",
-                          {"Upper-Back", "Lats"}, {"weight", "reps"}));
+                Lab::Excercise("Chest Supported Row",
+                               "Row at a chest supported row machine", "Back",
+                               {"Upper-Back", "Lats"}, {"weight", "reps"}));
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 12);
         }
@@ -278,8 +292,9 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
 TEST_F(WorkoutTest, AppendExcerciseTest) {
     EXPECT_EQ(e3.getWoPlan().size(), 3);
     e3.addExcercise(
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         50, 14);
     EXPECT_EQ(e3.getWoPlan().size(), 4);
     auto woPlan = e3.getWoPlan();
@@ -287,32 +302,32 @@ TEST_F(WorkoutTest, AppendExcerciseTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Chest Supported Row",
-                      "Row at a chest supported row machine", "Back",
-                      {"Upper-Back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Chest Supported Row",
+                           "Row at a chest supported row machine", "Back",
+                           {"Upper-Back", "Lats"}, {"weight", "reps"}),
             50, 14));
     iter++;
     EXPECT_EQ(iter, woPlan.cend());
@@ -324,36 +339,37 @@ TEST_F(WorkoutTest, ChangeExcerciseTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
     e3.changeExcercise(
         iter,
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         50, 14);
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Chest Supported Row",
-                      "Row at a chest supported row machine", "Back",
-                      {"Upper-Back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Chest Supported Row",
+                           "Row at a chest supported row machine", "Back",
+                           {"Upper-Back", "Lats"}, {"weight", "reps"}),
             50, 14));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_EQ(iter, woPlan.cend());
@@ -365,39 +381,40 @@ TEST_F(WorkoutTest, ChangedMulipleExcerciseTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_EQ(iter, woPlan.cend());
     e3.changeExcercise(
         woPlan.cbegin(), woPlan.cbegin() + 3,
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         50, 14);
     for (auto plan : woPlan) {
         EXPECT_PRED_FORMAT2(
             AssertWoTupleEqual, *iter,
             std::make_tuple(
-                Excercise("Chest Supported Row",
-                          "Row at a chest supported row machine", "Back",
-                          {"Upper-Back", "Lats"}, {"weight", "reps"}),
+                Lab::Excercise("Chest Supported Row",
+                               "Row at a chest supported row machine", "Back",
+                               {"Upper-Back", "Lats"}, {"weight", "reps"}),
                 50, 14));
     }
 }
@@ -408,84 +425,86 @@ TEST_F(WorkoutTest, ChangeExcerciseBadIteratorTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_EQ(iter, woPlan.cend());
     e3.changeExcercise(
         woPlan.cbegin() - 3, woPlan.cbegin() + 3,
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         50, 14);
     iter = woPlan.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_EQ(iter, woPlan.cend());
     e3.changeExcercise(
         woPlan.cbegin() + 2, woPlan.cbegin(),
-        Excercise("Chest Supported Row", "Row at a chest supported row machine",
-                  "Back", {"Upper-Back", "Lats"}, {"weight", "reps"}),
+        Lab::Excercise("Chest Supported Row",
+                       "Row at a chest supported row machine", "Back",
+                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
         50, 14);
     iter = woPlan.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_EQ(iter, woPlan.cend());
@@ -498,24 +517,24 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_EQ(iter, woPlan.end());
@@ -525,17 +544,17 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
-        std::make_tuple(Excercise("Wide Grip Pull Ups",
-                                  "Holding the bar with a wide grip, do a "
-                                  "pullup until your chin is over the bar",
-                                  "Back", {"Upper-back"}, {"reps"}),
+        std::make_tuple(Lab::Excercise("Wide Grip Pull Ups",
+                                       "Holding the bar with a wide grip, do a "
+                                       "pullup until your chin is over the bar",
+                                       "Back", {"Upper-back"}, {"reps"}),
                         10, 0));
     iter++;
     EXPECT_EQ(iter, woPlan.end());
@@ -545,9 +564,9 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
         std::make_tuple(
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
     iter++;
     EXPECT_EQ(iter, woPlan.end());
@@ -620,22 +639,23 @@ TEST_F(WorkoutTest, SaveWorkOutPlanTest) {
     EXPECT_FALSE(db->stepExec());
 
     // Added more items workout save
-    std::vector<std::tuple<Excercise, int, int>> plan{
+    std::vector<std::tuple<Lab::Excercise, int, int>> plan{
         std::make_tuple(
-            Excercise("Jumping Jacks",
-                      "Jump and spread your legs and put your arms to the sky",
-                      "Cardio", {""}, {"reps"}),
+            Lab::Excercise(
+                "Jumping Jacks",
+                "Jump and spread your legs and put your arms to the sky",
+                "Cardio", {""}, {"reps"}),
             10, 0),
         std::make_tuple(
-            Excercise(
+            Lab::Excercise(
                 "Plank",
                 "In pushup position, lift yourself on your elbows and toes",
                 "Core", {"Abs"}, {"time", "reps"}),
             60, 4),
         std::make_tuple(
-            Excercise("Calf Press",
-                      "Lift yourself on your tiptoes with your calf", "Legs",
-                      {"Calf"}, {"weight", "reps"}),
+            Lab::Excercise("Calf Press",
+                           "Lift yourself on your tiptoes with your calf",
+                           "Legs", {"Calf"}, {"weight", "reps"}),
             250, 4)};
     e2.setWoPlan(plan);
     e2.editName("Full Body Plan");
@@ -684,9 +704,9 @@ TEST_F(WorkoutTest, WoPlanSetSaveTest) {
     e4.editName("Calf Crusher");
     for (int i = 0; i < 4; i++)
         e4.addExcercise(
-            Excercise("Calf Press",
-                      "Lift yourself on your tiptoes with your calf", "Legs",
-                      {"Calf"}, {"weight", "reps"}),
+            Lab::Excercise("Calf Press",
+                           "Lift yourself on your tiptoes with your calf",
+                           "Legs", {"Calf"}, {"weight", "reps"}),
             30, 10);
     e4.save();
     db->execMulti("SELECT * FROM workouts");
@@ -701,8 +721,8 @@ TEST_F(WorkoutTest, WoPlanSetSaveTest) {
 }
 
 TEST_F(WorkoutTest, InvalidExcerciseSaveTest) {
-    e1.addExcercise(
-        Excercise("Front flips", "Do a front flip", "Cardio", {""}, {"reps"}),
-        100, 0);
+    e1.addExcercise(Lab::Excercise("Front flips", "Do a front flip", "Cardio",
+                                   {""}, {"reps"}),
+                    100, 0);
     EXPECT_FALSE(e1.save());
 }

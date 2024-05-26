@@ -11,46 +11,48 @@ class ExcerciseTest : public testing::Test {
         e3.setDescription("");
     }
 
-    Excercise e1{"Deadlift",
-                 "Lift Barbell off the floor",
-                 "Legs",
-                 {"Glutes", "Hamstring", "Lower-back"},
-                 {"weight", "reps"}};
-    Excercise e2{"Barbell Squat",
-                 "With the bar resting high on the shoulders squat until your "
-                 "thigh are perpendicular with the floor",
-                 "Legs",
-                 {"Glutes", "Quads"},
-                 {"weight", "reps"}};
-    Excercise e3{"Row",
-                 "Rowg in a row machine",
-                 "Cardio",
-                 {"Glutes", "Quads", "Lower-back", "Upper-back"},
-                 {"Time"}};
-    Excercise e4{"Bench Press",
-                 "Flat back bench press with a barbell",
-                 "Chest",
-                 {"Pectorals", "Triceps"},
-                 {"Distance"}};
-    std::unique_ptr<Excercise[]> e5 = std::make_unique<Excercise[]>(10);
-    std::vector<Excercise> e6;
+    Lab::Excercise e1{"Deadlift",
+                      "Lift Barbell off the floor",
+                      "Legs",
+                      {"Glutes", "Hamstring", "Lower-back"},
+                      {"weight", "reps"}};
+    Lab::Excercise e2{
+        "Barbell Squat",
+        "With the bar resting high on the shoulders squat until your "
+        "thigh are perpendicular with the floor",
+        "Legs",
+        {"Glutes", "Quads"},
+        {"weight", "reps"}};
+    Lab::Excercise e3{"Row",
+                      "Rowg in a row machine",
+                      "Cardio",
+                      {"Glutes", "Quads", "Lower-back", "Upper-back"},
+                      {"Time"}};
+    Lab::Excercise e4{"Bench Press",
+                      "Flat back bench press with a barbell",
+                      "Chest",
+                      {"Pectorals", "Triceps"},
+                      {"Distance"}};
+    std::unique_ptr<Lab::Excercise[]> e5 =
+        std::make_unique<Lab::Excercise[]>(10);
+    std::vector<Lab::Excercise> e6;
 };
 
 TEST(TypeCheckingGroup, CorrectMGVariableTest) {
-    Excercise test;
+    Lab::Excercise test;
     EXPECT_TRUE(test.isMuscleGroup("Chest"));
     EXPECT_TRUE(test.isMuscleGroup("Back"));
 }
 
 TEST(TypeCheckingGroup, WrongMGVariableTest) {
-    Excercise test;
+    Lab::Excercise test;
     EXPECT_FALSE(test.isMuscleGroup("Finger"));
     EXPECT_FALSE(test.isMuscleGroup("Butt"));
     EXPECT_FALSE(test.isMuscleGroup("arms"));
 }
 
 TEST(TypeCheckingGroup, CorrectMWVariableTest) {
-    Excercise test;
+    Lab::Excercise test;
     std::vector<std::string> v1{"Bicep", "Upper-back"};
     std::vector<std::string> v2{"Tricep"};
 
@@ -59,7 +61,7 @@ TEST(TypeCheckingGroup, CorrectMWVariableTest) {
 }
 
 TEST(TypeCheckingGroup, WrongMWVariableTest) {
-    Excercise test;
+    Lab::Excercise test;
     std::vector<std::string> v1{"Latimus Bordi"};
     std::vector<std::string> v2{"Quads", "Hamstring", "Blute"};
     std::vector<std::string> v3;
@@ -70,7 +72,7 @@ TEST(TypeCheckingGroup, WrongMWVariableTest) {
 }
 
 TEST(TypeCheckingGroup, CorrectTVariableTest) {
-    Excercise test;
+    Lab::Excercise test;
     std::vector<std::string> v1{"weight", "reps"};
     std::vector<std::string> v2{"distance", "time"};
     std::vector<std::string> v3{"reps"};
@@ -81,7 +83,7 @@ TEST(TypeCheckingGroup, CorrectTVariableTest) {
 }
 
 TEST(TypeCheckingGroup, WrongTVariableTest) {
-    Excercise test;
+    Lab::Excercise test;
     std::vector<std::string> v1{"weight", "rpm"};
     std::vector<std::string> v2{"weight", "reps", "drinks"};
     std::vector<std::string> v3{"wight"};

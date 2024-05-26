@@ -9,6 +9,8 @@
 #include <iostream>
 #include <string>
 
+namespace Lab {
+
 class DBConn {
    public:
     DBConn();
@@ -66,3 +68,5 @@ int DBConn::prepare(const std::string queryStr, const Args &...args) {
     }
     return 1;
 }
+
+}  // namespace Lab

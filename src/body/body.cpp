@@ -4,7 +4,7 @@
 
 #include "database.h"
 
-Body::Body(std::shared_ptr<DBConn> dBase) : db(dBase) {
+Lab::Body::Body(std::shared_ptr<Lab::DBConn> dBase) : db(dBase) {
     db->execMulti("SELECT * FROM bodyStats ORDER BY date DESC LIMIT 1");
     if (db->stepExec()) {
         weight = db->getColumn(1);
@@ -47,42 +47,42 @@ Body::Body(std::shared_ptr<DBConn> dBase) : db(dBase) {
     }
 }
 
-Muscles Body::getCondition() { return condition; }
+Lab::Muscles Lab::Body::getCondition() { return condition; }
 
-Measurements Body::getMeasurements() { return measure; }
+Lab::Measurements Lab::Body::getMeasurements() { return measure; }
 
-unsigned short Body::getAge() { return age; }
+unsigned short Lab::Body::getAge() { return age; }
 
-unsigned short Body::getHeight() { return height; }
+unsigned short Lab::Body::getHeight() { return height; }
 
-unsigned short Body::getWeight() { return weight; }
+unsigned short Lab::Body::getWeight() { return weight; }
 
-void Body::setMeasurement(Measurements nMes) {
+void Lab::Body::setMeasurement(Measurements nMes) {
     measure = nMes;
     measEdit = true;
 }
 
-void Body::setCondition(Muscles nMus) {
+void Lab::Body::setCondition(Muscles nMus) {
     condition = nMus;
     condEdit = true;
 }
 
-void Body::setAge(unsigned short nAge) {
+void Lab::Body::setAge(unsigned short nAge) {
     age = nAge;
     bodyEdit = true;
 }
 
-void Body::setWeight(unsigned short nWeight) {
+void Lab::Body::setWeight(unsigned short nWeight) {
     weight = nWeight;
     bodyEdit = true;
 }
 
-void Body::setHeight(unsigned short nHeight) {
+void Lab::Body::setHeight(unsigned short nHeight) {
     height = nHeight;
     bodyEdit = true;
 }
 
-int Body::save() {
+int Lab::Body::save() {
     auto epoch = std::chrono::duration_cast<std::chrono::milliseconds>(
                      std::chrono::system_clock::now().time_since_epoch())
                      .count();

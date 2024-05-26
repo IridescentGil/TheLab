@@ -15,26 +15,27 @@
 class HistoryTest : public testing::Test {
    protected:
     void SetUp() override {
-        std::vector<Excercise> testEx = {
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
-            Excercise("Dumbbell Flys",
-                      "Standing bent forward, lift dumbbell outwards", "Back",
-                      {"Upper-back"}, {"weight", "reps"}),
-            Excercise("Wide Grip Pull Ups",
-                      "Holding the bar with a wide grip, do a "
-                      "pullup until your chin is over the bar",
-                      "Back", {"Upper-back"}, {"reps"}),
-            Excercise("Jumping Jacks",
-                      "Jump and spread your legs and put your arms to the sky",
-                      "Cardio", {""}, {"reps"}),
-            Excercise(
+        std::vector<Lab::Excercise> testEx = {
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            Lab::Excercise("Dumbbell Flys",
+                           "Standing bent forward, lift dumbbell outwards",
+                           "Back", {"Upper-back"}, {"weight", "reps"}),
+            Lab::Excercise("Wide Grip Pull Ups",
+                           "Holding the bar with a wide grip, do a "
+                           "pullup until your chin is over the bar",
+                           "Back", {"Upper-back"}, {"reps"}),
+            Lab::Excercise(
+                "Jumping Jacks",
+                "Jump and spread your legs and put your arms to the sky",
+                "Cardio", {""}, {"reps"}),
+            Lab::Excercise(
                 "Plank",
                 "In pushup position, lift yourself on your elbows and toes",
                 "Core", {"Abs"}, {"time", "reps"}),
-            Excercise("Calf Press",
-                      "Lift yourself on your tiptoes with your calf", "Legs",
-                      {"Calf"}, {"weight", "reps"})};
+            Lab::Excercise("Calf Press",
+                           "Lift yourself on your tiptoes with your calf",
+                           "Legs", {"Calf"}, {"weight", "reps"})};
         for (auto iter : testEx) {
             std::string musclesWorked = "";
             std::string type = "";
@@ -59,7 +60,7 @@ class HistoryTest : public testing::Test {
     }
     void TearDown() override { remove("thelab.db"); }
 
-    std::shared_ptr<DBConn> db = std::make_shared<DBConn>();
+    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
         tpMarch4 = std::chrono::sys_days{std::chrono::March / 4 / 2024} +
@@ -78,171 +79,186 @@ class HistoryTest : public testing::Test {
                   std::chrono::hours(12);
 
     // Object to test general history class funtionality
-    History h1{
+    Lab::History h1{
         db,
         {std::make_tuple(
              tpMarch4, "Upper-Body Workout",
-             Excercise("Barbell Overhead Press",
-                       "Standing bent over row with Barbell", "Chest",
-                       {"Pectoral", "Tricep"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Overhead Press",
+                            "Standing bent over row with Barbell", "Chest",
+                            {"Pectoral", "Tricep"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpMarch4, "Upper-Body Workout",
-             Excercise("Barbell Overhead Press",
-                       "Standing bent over row with Barbell", "Chest",
-                       {"Pectoral", "Tricep"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Overhead Press",
+                            "Standing bent over row with Barbell", "Chest",
+                            {"Pectoral", "Tricep"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpMarch4, "Upper-Body Workout",
-             Excercise("Barbell Overhead Press",
-                       "Standing bent over row with Barbell", "Chest",
-                       {"Pectoral", "Tricep"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Overhead Press",
+                            "Standing bent over row with Barbell", "Chest",
+                            {"Pectoral", "Tricep"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpMarch4, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              75, 10),
          std::make_tuple(
              tpMarch4, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              75, 10),
          std::make_tuple(
              tpMarch4, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              75, 10)}};
 
     // Object to test functionailty with empty history
-    History h2{db};
+    Lab::History h2{db};
 
     // Object to test history date slices functionality
-    History h3{
+    Lab::History h3{
         db,
         {std::make_tuple(
              tpFeb10, "Upper-Body Workout",
-             Excercise("Barbell Overhead Press",
-                       "Standing bent over row with Barbell", "Chest",
-                       {"Pectoral", "Tricep"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Overhead Press",
+                            "Standing bent over row with Barbell", "Chest",
+                            {"Pectoral", "Tricep"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpFeb10, "Upper-Body Workout",
-             Excercise("Barbell Overhead Press",
-                       "Standing bent over row with Barbell", "Chest",
-                       {"Pectoral", "Tricep"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Overhead Press",
+                            "Standing bent over row with Barbell", "Chest",
+                            {"Pectoral", "Tricep"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpFeb10, "Upper-Body Workout",
-             Excercise("Barbell Overhead Press",
-                       "Standing bent over row with Barbell", "Chest",
-                       {"Pectoral", "Tricep"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Overhead Press",
+                            "Standing bent over row with Barbell", "Chest",
+                            {"Pectoral", "Tricep"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpFeb20, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              75, 10),
          std::make_tuple(
              tpFeb20, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              75, 10),
          std::make_tuple(
              tpFeb20, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              75, 10)}};
 
     // Object to test saving to database
-    History h4{
+    Lab::History h4{
         db,
         {std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Barbell Row", "Standing bent over row with Barbell",
-                       "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+             Lab::Excercise("Barbell Row",
+                            "Standing bent over row with Barbell", "Back",
+                            {"Upper-back", "Lats"}, {"weight", "reps"}),
              60, 10),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Dumbbell Flys",
-                       "Standing bent forward, lift dumbbell outwards", "Back",
-                       {"Upper-back"}, {"weight", "reps"}),
+             Lab::Excercise("Dumbbell Flys",
+                            "Standing bent forward, lift dumbbell outwards",
+                            "Back", {"Upper-back"}, {"weight", "reps"}),
              20, 12),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Dumbbell Flys",
-                       "Standing bent forward, lift dumbbell outwards", "Back",
-                       {"Upper-back"}, {"weight", "reps"}),
+             Lab::Excercise("Dumbbell Flys",
+                            "Standing bent forward, lift dumbbell outwards",
+                            "Back", {"Upper-back"}, {"weight", "reps"}),
              20, 12),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Dumbbell Flys",
-                       "Standing bent forward, lift dumbbell outwards", "Back",
-                       {"Upper-back"}, {"weight", "reps"}),
+             Lab::Excercise("Dumbbell Flys",
+                            "Standing bent forward, lift dumbbell outwards",
+                            "Back", {"Upper-back"}, {"weight", "reps"}),
              20, 12),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Excercise("Wide Grip Pull Ups",
-                                   "Holding the bar with a wide grip, do a "
-                                   "pullup until your chin is over the bar",
-                                   "Back", {"Upper-back"}, {"reps"}),
-                         10, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Excercise("Wide Grip Pull Ups",
-                                   "Holding the bar with a wide grip, do a "
-                                   "pullup until your chin is over the bar",
-                                   "Back", {"Upper-back"}, {"reps"}),
-                         10, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Excercise("Wide Grip Pull Ups",
-                                   "Holding the bar with a wide grip, do a "
-                                   "pullup until your chin is over the bar",
-                                   "Back", {"Upper-back"}, {"reps"}),
-                         10, 0),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Jumping Jacks",
-                       "Jump and spread your legs and put your arms to the sky",
-                       "Cardio", {""}, {"reps"}),
+             Lab::Excercise("Wide Grip Pull Ups",
+                            "Holding the bar with a wide grip, do a "
+                            "pullup until your chin is over the bar",
+                            "Back", {"Upper-back"}, {"reps"}),
+             10, 0),
+         std::make_tuple(
+             tpJan13, "Full-Body Workout",
+             Lab::Excercise("Wide Grip Pull Ups",
+                            "Holding the bar with a wide grip, do a "
+                            "pullup until your chin is over the bar",
+                            "Back", {"Upper-back"}, {"reps"}),
+             10, 0),
+         std::make_tuple(
+             tpJan13, "Full-Body Workout",
+             Lab::Excercise("Wide Grip Pull Ups",
+                            "Holding the bar with a wide grip, do a "
+                            "pullup until your chin is over the bar",
+                            "Back", {"Upper-back"}, {"reps"}),
+             10, 0),
+         std::make_tuple(
+             tpJan13, "Full-Body Workout",
+             Lab::Excercise(
+                 "Jumping Jacks",
+                 "Jump and spread your legs and put your arms to the sky",
+                 "Cardio", {""}, {"reps"}),
              20, 0),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Jumping Jacks",
-                       "Jump and spread your legs and put your arms to the sky",
-                       "Cardio", {""}, {"reps"}),
+             Lab::Excercise(
+                 "Jumping Jacks",
+                 "Jump and spread your legs and put your arms to the sky",
+                 "Cardio", {""}, {"reps"}),
              20, 0),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise("Jumping Jacks",
-                       "Jump and spread your legs and put your arms to the sky",
-                       "Cardio", {""}, {"reps"}),
+             Lab::Excercise(
+                 "Jumping Jacks",
+                 "Jump and spread your legs and put your arms to the sky",
+                 "Cardio", {""}, {"reps"}),
              20, 0),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise(
+             Lab::Excercise(
                  "Plank",
                  "In pushup position, lift yourself on your elbows and toes",
                  "Core", {"Abs"}, {"time", "reps"}),
              60, 10),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise(
+             Lab::Excercise(
                  "Plank",
                  "In pushup position, lift yourself on your elbows and toes",
                  "Core", {"Abs"}, {"time", "reps"}),
              60, 10),
          std::make_tuple(
              tpJan13, "Full-Body Workout",
-             Excercise(
+             Lab::Excercise(
                  "Plank",
                  "In pushup position, lift yourself on your elbows and toes",
                  "Core", {"Abs"}, {"time", "reps"}),
@@ -268,9 +284,9 @@ TEST_F(HistoryTest, GetHistoryTest) {
             EXPECT_EQ(woPlan, "Upper-Body Workout");
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Barbell Overhead Press",
-                          "Standing bent over row with Barbell", "Chest",
-                          {"Pectoral", "Tricep"}, {"weight", "reps"}));
+                Lab::Excercise("Barbell Overhead Press",
+                               "Standing bent over row with Barbell", "Chest",
+                               {"Pectoral", "Tricep"}, {"weight", "reps"}));
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 10);
         } else {
@@ -278,8 +294,9 @@ TEST_F(HistoryTest, GetHistoryTest) {
             EXPECT_EQ(woPlan, "Full-Body Workout");
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Barbell Row", "Standing bent over row with Barbell",
-                          "Back", {"Upper-back", "Lats"}, {"weight", "reps"}));
+                Lab::Excercise("Barbell Row",
+                               "Standing bent over row with Barbell", "Back",
+                               {"Upper-back", "Lats"}, {"weight", "reps"}));
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
@@ -299,8 +316,8 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         EXPECT_EQ(woPlan, "Full-Body Workout");
         EXPECT_PRED_FORMAT2(
             AssertExcerciseEqual, excer,
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}));
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}));
         EXPECT_EQ(type1, 75);
         EXPECT_EQ(type2, 10);
     }
@@ -314,9 +331,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         EXPECT_EQ(woPlan, "Upper-Body Workout");
         EXPECT_PRED_FORMAT2(
             AssertExcerciseEqual, excer,
-            Excercise("Barbell Overhead Press",
-                      "Standing bent over row with Barbell", "Chest",
-                      {"Pectoral", "Tricep"}, {"weight", "reps"}));
+            Lab::Excercise("Barbell Overhead Press",
+                           "Standing bent over row with Barbell", "Chest",
+                           {"Pectoral", "Tricep"}, {"weight", "reps"}));
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -330,9 +347,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         EXPECT_EQ(woPlan, "Upper-Body Workout");
         EXPECT_PRED_FORMAT2(
             AssertExcerciseEqual, excer,
-            Excercise("Barbell Overhead Press",
-                      "Standing bent over row with Barbell", "Chest",
-                      {"Pectoral", "Tricep"}, {"weight", "reps"}));
+            Lab::Excercise("Barbell Overhead Press",
+                           "Standing bent over row with Barbell", "Chest",
+                           {"Pectoral", "Tricep"}, {"weight", "reps"}));
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -348,9 +365,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         EXPECT_EQ(woPlan, "Upper-Body Workout");
         EXPECT_PRED_FORMAT2(
             AssertExcerciseEqual, excer,
-            Excercise("Barbell Overhead Press",
-                      "Standing bent over row with Barbell", "Chest",
-                      {"Pectoral", "Tricep"}, {"weight", "reps"}));
+            Lab::Excercise("Barbell Overhead Press",
+                           "Standing bent over row with Barbell", "Chest",
+                           {"Pectoral", "Tricep"}, {"weight", "reps"}));
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -366,9 +383,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
             EXPECT_EQ(woPlan, "Upper-Body Workout");
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Barbell Overhead Press",
-                          "Standing bent over row with Barbell", "Chest",
-                          {"Pectoral", "Tricep"}, {"weight", "reps"}));
+                Lab::Excercise("Barbell Overhead Press",
+                               "Standing bent over row with Barbell", "Chest",
+                               {"Pectoral", "Tricep"}, {"weight", "reps"}));
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 10);
         } else {
@@ -376,8 +393,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
             EXPECT_EQ(woPlan, "Full-Body Workout");
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Barbell Row", "Standing bent over row with Barbell",
-                          "Back", {"Upper-back", "Lats"}, {"weight", "reps"}));
+                Lab::Excercise("Barbell Row",
+                               "Standing bent over row with Barbell", "Back",
+                               {"Upper-back", "Lats"}, {"weight", "reps"}));
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
@@ -396,9 +414,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
             EXPECT_EQ(woPlan, "Upper-Body Workout");
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Barbell Overhead Press",
-                          "Standing bent over row with Barbell", "Chest",
-                          {"Pectoral", "Tricep"}, {"weight", "reps"}));
+                Lab::Excercise("Barbell Overhead Press",
+                               "Standing bent over row with Barbell", "Chest",
+                               {"Pectoral", "Tricep"}, {"weight", "reps"}));
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 10);
         } else {
@@ -406,8 +424,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
             EXPECT_EQ(woPlan, "Full-Body Workout");
             EXPECT_PRED_FORMAT2(
                 AssertExcerciseEqual, excer,
-                Excercise("Barbell Row", "Standing bent over row with Barbell",
-                          "Back", {"Upper-back", "Lats"}, {"weight", "reps"}));
+                Lab::Excercise("Barbell Row",
+                               "Standing bent over row with Barbell", "Back",
+                               {"Upper-back", "Lats"}, {"weight", "reps"}));
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
@@ -483,9 +502,9 @@ TEST_F(HistoryTest, GetHistoryItemTest) {
     EXPECT_EQ(woPlan, "Upper-Body Workout");
     EXPECT_PRED_FORMAT2(
         AssertExcerciseEqual, excer,
-        Excercise("Barbell Overhead Press",
-                  "Standing bent over row with Barbell", "Chest",
-                  {"Pectoral", "Tricep"}, {"weight", "reps"}));
+        Lab::Excercise("Barbell Overhead Press",
+                       "Standing bent over row with Barbell", "Chest",
+                       {"Pectoral", "Tricep"}, {"weight", "reps"}));
     EXPECT_EQ(type1, 60);
     EXPECT_EQ(type2, 10);
 }
@@ -503,9 +522,9 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
         EXPECT_EQ(woPlan, "Upper-Body Workout");
         EXPECT_PRED_FORMAT2(
             AssertExcerciseEqual, excer,
-            Excercise("Barbell Overhead Press",
-                      "Standing bent over row with Barbell", "Chest",
-                      {"Pectoral", "Tricep"}, {"weight", "reps"}));
+            Lab::Excercise("Barbell Overhead Press",
+                           "Standing bent over row with Barbell", "Chest",
+                           {"Pectoral", "Tricep"}, {"weight", "reps"}));
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -516,8 +535,8 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
         EXPECT_EQ(woPlan, "Full-Body Workout");
         EXPECT_PRED_FORMAT2(
             AssertExcerciseEqual, excer,
-            Excercise("Barbell Row", "Standing bent over row with Barbell",
-                      "Back", {"Upper-back", "Lats"}, {"weight", "reps"}));
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}));
         EXPECT_EQ(type1, 75);
         EXPECT_EQ(type2, 10);
     }
@@ -538,41 +557,44 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsBadIteratorTest) {
 TEST_F(HistoryTest, OverrideExistingHistoryTest) {
     auto hist1 = h1.getHistory();
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         newHist = {
             std::make_tuple(
                 tpMarch4, "Arm Workout",
-                Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                          {"Biceps"}, {"weight", "reps"}),
+                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                               "Arms", {"Biceps"}, {"weight", "reps"}),
                 50, 15),
             std::make_tuple(
                 tpMarch4, "Arm Workout",
-                Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                          {"Biceps"}, {"weight", "reps"}),
+                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                               "Arms", {"Biceps"}, {"weight", "reps"}),
                 50, 15),
             std::make_tuple(
                 tpMarch4, "Arm Workout",
-                Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                          {"Biceps"}, {"weight", "reps"}),
+                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                               "Arms", {"Biceps"}, {"weight", "reps"}),
                 50, 15),
-            std::make_tuple(tpMarch4, "Arm Workout",
-                            Excercise("Tricep Extensions",
-                                      "Tricep extensions on machine pullies",
-                                      "Arms", {"Triceps"}, {"weight", "reps"}),
-                            50, 15),
-            std::make_tuple(tpMarch4, "Arm Workout",
-                            Excercise("Tricep Extensions",
-                                      "Tricep extensions on machine pullies",
-                                      "Arms", {"Triceps"}, {"weight", "reps"}),
-                            50, 15),
-            std::make_tuple(tpMarch4, "Arm Workout",
-                            Excercise("Tricep Extensions",
-                                      "Tricep extensions on machine pullies",
-                                      "Arms", {"Triceps"}, {"weight", "reps"}),
-                            50, 15),
+            std::make_tuple(
+                tpMarch4, "Arm Workout",
+                Lab::Excercise("Tricep Extensions",
+                               "Tricep extensions on machine pullies", "Arms",
+                               {"Triceps"}, {"weight", "reps"}),
+                50, 15),
+            std::make_tuple(
+                tpMarch4, "Arm Workout",
+                Lab::Excercise("Tricep Extensions",
+                               "Tricep extensions on machine pullies", "Arms",
+                               {"Triceps"}, {"weight", "reps"}),
+                50, 15),
+            std::make_tuple(
+                tpMarch4, "Arm Workout",
+                Lab::Excercise("Tricep Extensions",
+                               "Tricep extensions on machine pullies", "Arms",
+                               {"Triceps"}, {"weight", "reps"}),
+                50, 15),
             std::make_tuple(tpJan13, "Marathon Practice",
-                            Excercise("Running", "Long distance timed run",
-                                      "Cardio", {}, {"distance", "time"}),
+                            Lab::Excercise("Running", "Long distance timed run",
+                                           "Cardio", {}, {"distance", "time"}),
                             10, 100)};
     h1.setHistory(newHist);
     auto hist2 = h1.getHistory();
@@ -585,23 +607,23 @@ TEST_F(HistoryTest, OverrideExistingHistoryTest) {
 TEST_F(HistoryTest, OverrideEmptyHistoryTest) {
     auto hist1 = h2.getHistory();
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         newHist = {
             std::make_tuple(tpJan13, "Marathon Practice",
-                            Excercise("Running", "Long distance timed run",
-                                      "Cardio", {}, {"distance", "time"}),
+                            Lab::Excercise("Running", "Long distance timed run",
+                                           "Cardio", {}, {"distance", "time"}),
                             10, 100),
             std::make_tuple(tpFeb10, "Marathon Practice",
-                            Excercise("Running", "Long distance timed run",
-                                      "Cardio", {}, {"distance", "time"}),
+                            Lab::Excercise("Running", "Long distance timed run",
+                                           "Cardio", {}, {"distance", "time"}),
                             10, 100),
             std::make_tuple(tpFeb20, "Marathon Practice",
-                            Excercise("Running", "Long distance timed run",
-                                      "Cardio", {}, {"distance", "time"}),
+                            Lab::Excercise("Running", "Long distance timed run",
+                                           "Cardio", {}, {"distance", "time"}),
                             10, 100),
             std::make_tuple(tpMarch4, "Marathon Practice",
-                            Excercise("Running", "Long distance timed run",
-                                      "Cardio", {}, {"distance", "time"}),
+                            Lab::Excercise("Running", "Long distance timed run",
+                                           "Cardio", {}, {"distance", "time"}),
                             10, 100)};
     h2.setHistory(newHist);
     auto hist2 = h2.getHistory();
@@ -614,34 +636,35 @@ TEST_F(HistoryTest, OverrideEmptyHistoryTest) {
 TEST_F(HistoryTest, AddItemToEmptyHistoryTest) {
     auto hist1 = h2.getHistory();
     h2.addItem(tpMarch4, "Arm Workout",
-               Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                         {"Biceps"}, {"weight", "reps"}),
+               Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                              "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     h2.addItem(tpMarch4, "Arm Workout",
-               Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                         {"Biceps"}, {"weight", "reps"}),
+               Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                              "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     h2.addItem(tpMarch4, "Arm Workout",
-               Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                         {"Biceps"}, {"weight", "reps"}),
+               Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                              "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
-        newHist = {std::make_tuple(
-                       tpMarch4, "Arm Workout",
-                       Excercise("Dumbell Curls", "Alternate curling dumbells",
-                                 "Arms", {"Biceps"}, {"weight", "reps"}),
-                       50, 15),
-                   std::make_tuple(
-                       tpMarch4, "Arm Workout",
-                       Excercise("Dumbell Curls", "Alternate curling dumbells",
-                                 "Arms", {"Biceps"}, {"weight", "reps"}),
-                       50, 15),
-                   std::make_tuple(
-                       tpMarch4, "Arm Workout",
-                       Excercise("Dumbell Curls", "Alternate curling dumbells",
-                                 "Arms", {"Biceps"}, {"weight", "reps"}),
-                       50, 15)};
+                           std::string, Lab::Excercise, int, int>>
+        newHist = {
+            std::make_tuple(
+                tpMarch4, "Arm Workout",
+                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                               "Arms", {"Biceps"}, {"weight", "reps"}),
+                50, 15),
+            std::make_tuple(
+                tpMarch4, "Arm Workout",
+                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                               "Arms", {"Biceps"}, {"weight", "reps"}),
+                50, 15),
+            std::make_tuple(
+                tpMarch4, "Arm Workout",
+                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                               "Arms", {"Biceps"}, {"weight", "reps"}),
+                50, 15)};
     auto hist2 = h2.getHistory();
     EXPECT_TRUE(hist1.empty());
     EXPECT_EQ(hist2.size(), 3);
@@ -651,35 +674,35 @@ TEST_F(HistoryTest, AddItemToEmptyHistoryTest) {
 TEST_F(HistoryTest, AppendHistoryTest) {
     auto hist1 = h1.getHistory();
     h1.addItem(tpMarch4, "Arm Workout",
-               Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                         {"Biceps"}, {"weight", "reps"}),
+               Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                              "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     h1.addItem(tpMarch4, "Arm Workout",
-               Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                         {"Biceps"}, {"weight", "reps"}),
+               Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                              "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     h1.addItem(tpMarch4, "Arm Workout",
-               Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                         {"Biceps"}, {"weight", "reps"}),
+               Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                              "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     auto hist2 = h1.getHistory();
     EXPECT_EQ(hist1.size(), 3);
 
-    hist1.push_back(
-        std::make_tuple(tpMarch4, "Arm Workout",
-                        Excercise("Dumbell Curls", "Alternate curling dumbells",
-                                  "Arms", {"Biceps"}, {"weight", "reps"}),
-                        50, 15));
-    hist1.push_back(
-        std::make_tuple(tpMarch4, "Arm Workout",
-                        Excercise("Dumbell Curls", "Alternate curling dumbells",
-                                  "Arms", {"Biceps"}, {"weight", "reps"}),
-                        50, 15));
-    hist1.push_back(
-        std::make_tuple(tpMarch4, "Arm Workout",
-                        Excercise("Dumbell Curls", "Alternate curling dumbells",
-                                  "Arms", {"Biceps"}, {"weight", "reps"}),
-                        50, 15));
+    hist1.push_back(std::make_tuple(
+        tpMarch4, "Arm Workout",
+        Lab::Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
+                       {"Biceps"}, {"weight", "reps"}),
+        50, 15));
+    hist1.push_back(std::make_tuple(
+        tpMarch4, "Arm Workout",
+        Lab::Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
+                       {"Biceps"}, {"weight", "reps"}),
+        50, 15));
+    hist1.push_back(std::make_tuple(
+        tpMarch4, "Arm Workout",
+        Lab::Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
+                       {"Biceps"}, {"weight", "reps"}),
+        50, 15));
     EXPECT_EQ(hist1.size(), 6);
     EXPECT_EQ(hist2.size(), 6);
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist1, hist2);
@@ -694,23 +717,25 @@ TEST_F(HistoryTest, RemoveItemTest) {
     h3.remItem(hist3.begin());
     auto hist4 = h3.getHistory();
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         newHist = {
             std::make_tuple(
                 tpFeb10, "Upper-Body Workout",
-                Excercise("Barbell Overhead Press",
-                          "Standing bent over row with Barbell", "Chest",
-                          {"Pectoral", "Tricep"}, {"weight", "reps"}),
+                Lab::Excercise("Barbell Overhead Press",
+                               "Standing bent over row with Barbell", "Chest",
+                               {"Pectoral", "Tricep"}, {"weight", "reps"}),
                 60, 10),
             std::make_tuple(
                 tpFeb20, "Full-Body Workout",
-                Excercise("Barbell Row", "Standing bent over row with Barbell",
-                          "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+                Lab::Excercise("Barbell Row",
+                               "Standing bent over row with Barbell", "Back",
+                               {"Upper-back", "Lats"}, {"weight", "reps"}),
                 75, 10),
             std::make_tuple(
                 tpFeb20, "Full-Body Workout",
-                Excercise("Barbell Row", "Standing bent over row with Barbell",
-                          "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+                Lab::Excercise("Barbell Row",
+                               "Standing bent over row with Barbell", "Back",
+                               {"Upper-back", "Lats"}, {"weight", "reps"}),
                 75, 10)};
     EXPECT_EQ(hist1.size(), 6);
     EXPECT_EQ(hist2.size(), 5);
@@ -723,18 +748,19 @@ TEST_F(HistoryTest, RemoveMultipleItemsTest) {
     auto hist1 = h3.getHistory();
     h3.remItem(hist1.begin() + 2, hist1.begin() + 4);
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Excercise, int, int>>
+                           std::string, Lab::Excercise, int, int>>
         newHist = {
             std::make_tuple(
                 tpFeb10, "Upper-Body Workout",
-                Excercise("Barbell Overhead Press",
-                          "Standing bent over row with Barbell", "Chest",
-                          {"Pectoral", "Tricep"}, {"weight", "reps"}),
+                Lab::Excercise("Barbell Overhead Press",
+                               "Standing bent over row with Barbell", "Chest",
+                               {"Pectoral", "Tricep"}, {"weight", "reps"}),
                 60, 10),
             std::make_tuple(
                 tpFeb20, "Full-Body Workout",
-                Excercise("Barbell Row", "Standing bent over row with Barbell",
-                          "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+                Lab::Excercise("Barbell Row",
+                               "Standing bent over row with Barbell", "Back",
+                               {"Upper-back", "Lats"}, {"weight", "reps"}),
                 75, 10)};
     EXPECT_EQ(hist1.size(), 2);
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist1, newHist);
@@ -856,8 +882,8 @@ TEST_F(HistoryTest, OverwriteEmptyHistorySaveTest) {
 
 TEST_F(HistoryTest, InvalidSaveHistoryTest) {
     h4.addItem(tpMarch4, "Arm Workout",
-               Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
-                         {"Biceps"}, {"weight", "reps"}),
+               Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                              "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     EXPECT_FALSE(h4.save());
 }

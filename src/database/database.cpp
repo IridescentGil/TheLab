@@ -1,17 +1,17 @@
 #include "database.h"
 
-DBConn::DBConn()
+Lab::DBConn::DBConn()
     : db("thelab.db", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE),
       query(db, "") {
     createTables();
 }
 
-DBConn::DBConn(std::string name)
+Lab::DBConn::DBConn(std::string name)
     : db(name, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE), query(db, "") {
     createTables();
 }
 
-void DBConn::createTables() {
+void Lab::DBConn::createTables() {
     try {
         if (!db.tableExists("excercises"))
             db.exec(
@@ -92,7 +92,7 @@ void DBConn::createTables() {
     }
 }
 
-int DBConn::exec(const std::string queryStr) {
+int Lab::DBConn::exec(const std::string queryStr) {
     try {
         int ret = db.exec(queryStr);
         return ret > 0 ? 1 : -1;
@@ -102,7 +102,7 @@ int DBConn::exec(const std::string queryStr) {
     }
 }
 
-int DBConn::execQuery() {
+int Lab::DBConn::execQuery() {
     try {
         int ret = query.exec();
         return (ret >= 0) ? 1 : -1;
@@ -112,7 +112,7 @@ int DBConn::execQuery() {
     }
 }
 
-int DBConn::execMulti(const std::string queryStr) {
+int Lab::DBConn::execMulti(const std::string queryStr) {
     try {
         query = SQLite::Statement(db, queryStr);
         return 1;
@@ -122,7 +122,7 @@ int DBConn::execMulti(const std::string queryStr) {
     }
 }
 
-bool DBConn::stepExec() {
+bool Lab::DBConn::stepExec() {
     try {
         if (query.executeStep()) return true;
         return false;
