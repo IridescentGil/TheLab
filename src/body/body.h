@@ -40,8 +40,13 @@ struct Measurements {
 
 class Body {
    public:
-    Body(Lab::DBConn &);
+    Body(Lab::DBConn &dbBase);
 
+    /**
+     * @brief Update database if any values have been changed
+     * @return An int 1 for success, -1 and -3 for statement preparation errors
+     * and -2 and -4 for statement execution errors
+     */
     int save();
 
     unsigned short getHeight();
@@ -50,11 +55,11 @@ class Body {
     Muscles getCondition();
     Measurements getMeasurements();
 
-    void setHeight(unsigned short);
-    void setWeight(unsigned short);
-    void setAge(unsigned short);
-    void setCondition(Muscles);
-    void setMeasurement(Measurements);
+    void setHeight(unsigned short newHeight);
+    void setWeight(unsigned short newWeight);
+    void setAge(unsigned short newAge);
+    void setCondition(Muscles newMuscles);
+    void setMeasurement(Measurements newMeasurements);
 
    private:
     Lab::DBConn &db;

@@ -7,6 +7,7 @@
 #include "excercise.h"
 #include "history.h"
 
+///@brief Lab classes, namespaces and functions
 namespace Lab {
 namespace Analytics {
 /// @brief Individiual excercise analytics functions

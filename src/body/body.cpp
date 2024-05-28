@@ -4,7 +4,7 @@
 
 #include "database.h"
 
-Lab::Body::Body(Lab::DBConn& dBase) : db(dBase) {
+Lab::Body::Body(Lab::DBConn& dbBase) : db(dbBase) {
     db.execMulti("SELECT * FROM bodyStats ORDER BY date DESC LIMIT 1");
     if (db.stepExec()) {
         weight = db.getColumn(1);
@@ -57,28 +57,28 @@ unsigned short Lab::Body::getHeight() { return height; }
 
 unsigned short Lab::Body::getWeight() { return weight; }
 
-void Lab::Body::setMeasurement(Measurements nMes) {
-    measure = nMes;
+void Lab::Body::setMeasurement(Measurements newMeasurements) {
+    measure = newMeasurements;
     measEdit = true;
 }
 
-void Lab::Body::setCondition(Muscles nMus) {
-    condition = nMus;
+void Lab::Body::setCondition(Muscles newMuscles) {
+    condition = newMuscles;
     condEdit = true;
 }
 
-void Lab::Body::setAge(unsigned short nAge) {
-    age = nAge;
+void Lab::Body::setAge(unsigned short newAge) {
+    age = newAge;
     bodyEdit = true;
 }
 
-void Lab::Body::setWeight(unsigned short nWeight) {
-    weight = nWeight;
+void Lab::Body::setWeight(unsigned short newWeight) {
+    weight = newWeight;
     bodyEdit = true;
 }
 
-void Lab::Body::setHeight(unsigned short nHeight) {
-    height = nHeight;
+void Lab::Body::setHeight(unsigned short newHeight) {
+    height = newHeight;
     bodyEdit = true;
 }
 

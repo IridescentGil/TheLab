@@ -22,15 +22,15 @@ class Excercise {
     std::vector<std::string> getMusclesWorked() const { return musclesWorked; };
     std::vector<std::string> getType() const { return type; };
 
-    void setName(std::string);
-    void setDescription(std::string);
-    int setMuscleGroup(std::string);
-    int setMusclesWorked(std::vector<std::string>);
-    int setType(std::vector<std::string>);
+    void setName(std::string newName);
+    void setDescription(std::string newDesc);
+    int setMuscleGroup(std::string newMG);
+    int setMusclesWorked(std::vector<std::string> newMW);
+    int setType(std::vector<std::string> newType);
 
-    bool isMuscleGroup(std::string);
-    bool isMuscle(std::vector<std::string>);
-    bool isType(std::vector<std::string>);
+    bool isMuscleGroup(std::string mGroup);
+    bool isMuscle(std::vector<std::string> mWorked);
+    bool isType(std::vector<std::string> nType);
 
    private:
     std::string name;

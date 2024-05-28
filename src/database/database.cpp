@@ -6,7 +6,7 @@ Lab::DBConn::DBConn()
     createTables();
 }
 
-Lab::DBConn::DBConn(std::string name)
+Lab::DBConn::DBConn(std::string_view name)
     : db(name, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE), query(db, "") {
     createTables();
 }

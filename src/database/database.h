@@ -10,25 +10,57 @@
 #include <string>
 
 namespace Lab {
-
+/**
+ * @brief Creates a database and provides functions to execute queries
+ *
+ * Created database is names TheLab if string is not provided upon creation
+ */
 class DBConn {
    public:
     DBConn();
-    DBConn(std::string);
+    DBConn(std::string_view);
 
-    int exec(const std::string);
+    ///@brief Execute the query string; will not retrieve results
+    int exec(const std::string queryStr);
+    ///@brief Execute prepared query that doesnt retrieve results
     int execQuery();
-    int execMulti(const std::string);
+    ///@brief prepare query that doesnt need replacements
+    int execMulti(const std::string queryStr);
 
-    // prepareI() is used when the index of a bind is required, the index
-    // of the first bind should be input. prepare() is used when the binds can
-    // be done at once.
-    template <typename T, typename... Args>
-    int prepareI(const std::string, std::size_t, const T, const Args &...);
+    /**
+     * @name prepare
+     * @param queryStr String containing the query to prepare
+     * @return  1 Statement prepared successfully
+     *          -1 Error in preparing statement
+     */
+    ///@{
+    /**
+     * @brief Prepare a SQL statement
+     * @param args[in]
+     */
     template <typename... Args>
-    int prepare(const std::string, const Args &...);
+    int prepare(const std::string queryStr, const Args &...args);
+    /**
+     * @brief Prepare a SQL statement giving the index of the first variable to
+     * replace
+     * @param index Index of the place to replace starts at 1
+     * @param fArg[in]
+     * @param args[in]
+     */
+    template <typename T, typename... Args>
+    int prepare(std::size_t index, const std::string queryStr, const T &fArg,
+                const Args &...args);
+    ///@}
 
+    ///@brief Retrieve the results of a prepared query
+    ///@return True if any data is retrieved
     bool stepExec();
+
+    /**
+     * @brief Retrieve the column that corresponds to the index
+     * starts at 0
+     * @returns Column
+     */
     auto getColumn(std::size_t index) { return query.getColumn(index); }
 
    private:
@@ -38,13 +70,13 @@ class DBConn {
 };
 
 template <typename T, typename... Args>
-int DBConn::prepareI(const std::string queryStr, std::size_t index,
-                     const T fArg, const Args &...args) {
+int DBConn::prepare(std::size_t index, const std::string queryStr,
+                    const T &fArg, const Args &...args) {
     try {
         if (index == 1) query = SQLite::Statement(db, queryStr);
         query.bind(index, fArg);
         if constexpr (sizeof...(args) > 0) {
-            if (prepareI(queryStr, index + 1, args...) == 1)
+            if (this->prepare(index + 1, queryStr, args...) == 1)
                 return 1;
             else {
                 return -1;
