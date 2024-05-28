@@ -58,11 +58,12 @@ TEST_F(DatabaseTest, PrepareIndexFunctionTest) {
                        "('Shoulder Press'), ('Pull up')"),
               1);
     EXPECT_EQ(
-        db2.prepareI("INSERT INTO workouts (workoutName, exOrderNum, "
-                     "excercise, type1, type2) "
-                     "VALUES (?, ?, ?, ?, ?), (?, ?, ?, ?, ?), (?, ?, ?, ?, ?)",
-                     1, "Push 1", 0, "Bench Press", 20, 15, "Push 1", 1,
-                     "Shoulder Press", 2, 8, "Pull 1", 0, "Pull up", 15, 0),
+        db2.prepare(1,
+                    "INSERT INTO workouts (workoutName, exOrderNum, "
+                    "excercise, type1, type2) "
+                    "VALUES (?, ?, ?, ?, ?), (?, ?, ?, ?, ?), (?, ?, ?, ?, ?)",
+                    "Push 1", 0, "Bench Press", 20, 15, "Push 1", 1,
+                    "Shoulder Press", 2, 8, "Pull 1", 0, "Pull up", 15, 0),
         1);
     EXPECT_EQ(db2.execQuery(), 1);
     EXPECT_EQ(db2.execMulti("SELECT * FROM workouts"), 1);
@@ -172,8 +173,8 @@ TEST_F(DatabaseTest, ThrowTest) {
     EXPECT_EQ(db1.prepare("INSERT INTO excercises (name) VALUES (?)", "Plank",
                           "Crunch"),
               -1);
-    EXPECT_EQ(db1.prepareI("INSERT INTO excercises (name) VALUES (?)", 0,
-                           "Plank", "Crunch"),
+    EXPECT_EQ(db1.prepare(1, "INSERT INTO excercises (name) VALUES (?)",
+                          "Plank", "Crunch"),
               -1);
 
     // Test preparing query with too few variables to bind
@@ -181,10 +182,10 @@ TEST_F(DatabaseTest, ThrowTest) {
         db1.prepare("INSERT INTO excercises (name, description) VALUES (?, ?)",
                     "Plank"),
         1);
-    EXPECT_EQ(
-        db1.prepareI("INSERT INTO excercises (name, description) VALUES (?, ?)",
-                     1, "Plank"),
-        1);
+    EXPECT_EQ(db1.prepare(
+                  1, "INSERT INTO excercises (name, description) VALUES (?, ?)",
+                  "Plank"),
+              1);
 }
 
 TEST_F(DatabaseTest, ErrorReturnTest) {
@@ -201,7 +202,7 @@ TEST_F(DatabaseTest, ErrorReturnTest) {
 
     // Expect errors when attempting to prepare select statement
     EXPECT_EQ(db1.prepare("SELECT * FROM ?", "history"), -1);
-    EXPECT_EQ(db1.prepareI("SELECT * FROM ?", 1, "history"), -1);
+    EXPECT_EQ(db1.prepare(1, "SELECT * FROM ?", "history"), -1);
     EXPECT_EQ(db1.prepare("SELECT * FROM history WHERE excercise = ?", "Plank"),
               1);
 }

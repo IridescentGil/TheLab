@@ -84,9 +84,9 @@ class WorkoutTest : public testing::Test {
 };
 
 TEST_F(WorkoutTest, EmptyWorkOutPlanTest) {
-    EXPECT_TRUE(e1.getWoPlan().empty());
-    EXPECT_TRUE(e2.getWoPlan().empty());
-    EXPECT_FALSE(e3.getWoPlan().empty());
+    EXPECT_TRUE(e1.getWorkout().empty());
+    EXPECT_TRUE(e2.getWorkout().empty());
+    EXPECT_FALSE(e3.getWorkout().empty());
 }
 
 TEST_F(WorkoutTest, NameTest) {
@@ -130,8 +130,8 @@ TEST_F(WorkoutTest, SetWoPlanTest) {
                            "Bent over row, with chest supported by the bench",
                            "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             80, 12)};
-    e1.setWoPlan(plan1);
-    auto plan1Check = e1.getWoPlan();
+    e1.setWorkout(plan1);
+    auto plan1Check = e1.getWorkout();
     auto iter = plan1Check.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
@@ -181,8 +181,8 @@ TEST_F(WorkoutTest, OverrideWoPlanTest) {
                            "Chest", {"Pectorals", "Tricep"},
                            {"weight", "reps"}),
             120, 10)};
-    e3.setWoPlan(newWoPlan);
-    auto woPlan = e3.getWoPlan();
+    e3.setWorkout(newWoPlan);
+    auto woPlan = e3.getWorkout();
     auto iter = woPlan.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
@@ -204,7 +204,7 @@ TEST_F(WorkoutTest, OverrideWoPlanTest) {
 }
 
 TEST_F(WorkoutTest, AddExcerciseTest) {
-    EXPECT_TRUE(e2.getWoPlan().empty());
+    EXPECT_TRUE(e2.getWorkout().empty());
     e2.addExcercise(
         Lab::Excercise(
             "Kettlebell Swing",
@@ -213,7 +213,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
             "as you straighten and let it lift to chest height and fall again",
             "Core", {"Abs", "Glutes", "Lower-Back"}, {"weight", "reps"}),
         20, 10);
-    EXPECT_EQ(e2.getWoPlan().size(), 1);
+    EXPECT_EQ(e2.getWorkout().size(), 1);
     e2.addExcercise(
         Lab::Excercise(
             "Kettlebell Swing",
@@ -222,7 +222,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
             "as you straighten and let it lift to chest height and fall again",
             "Core", {"Abs", "Glutes", "Lower-Back"}, {"weight", "reps"}),
         20, 10);
-    EXPECT_EQ(e2.getWoPlan().size(), 2);
+    EXPECT_EQ(e2.getWorkout().size(), 2);
     e2.addExcercise(
         Lab::Excercise(
             "Kettlebell Swing",
@@ -231,7 +231,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
             "as you straighten and let it lift to chest height and fall again",
             "Core", {"Abs", "Glutes", "Lower-Back"}, {"weight", "reps"}),
         20, 10);
-    EXPECT_EQ(e2.getWoPlan().size(), 3);
+    EXPECT_EQ(e2.getWorkout().size(), 3);
     e2.addExcercise(
         Lab::Excercise(
             "Kettlebell Swing",
@@ -240,28 +240,28 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
             "as you straighten and let it lift to chest height and fall again",
             "Core", {"Abs", "Glutes", "Lower-Back"}, {"weight", "reps"}),
         20, 10);
-    EXPECT_EQ(e2.getWoPlan().size(), 4);
+    EXPECT_EQ(e2.getWorkout().size(), 4);
     e2.addExcercise(
         Lab::Excercise("Chest Supported Row",
                        "Row at a chest supported row machine", "Back",
                        {"Upper-Back", "Lats"}, {"weight", "reps"}),
         60, 12);
-    EXPECT_EQ(e2.getWoPlan().size(), 5);
+    EXPECT_EQ(e2.getWorkout().size(), 5);
     e2.addExcercise(
         Lab::Excercise("Chest Supported Row",
                        "Row at a chest supported row machine", "Back",
                        {"Upper-Back", "Lats"}, {"weight", "reps"}),
         60, 12);
-    EXPECT_EQ(e2.getWoPlan().size(), 6);
+    EXPECT_EQ(e2.getWorkout().size(), 6);
     e2.addExcercise(
         Lab::Excercise("Chest Supported Row",
                        "Row at a chest supported row machine", "Back",
                        {"Upper-Back", "Lats"}, {"weight", "reps"}),
         60, 12);
-    EXPECT_EQ(e2.getWoPlan().size(), 7);
+    EXPECT_EQ(e2.getWorkout().size(), 7);
 
     int i = 0;
-    for (auto woPlan : e2.getWoPlan()) {
+    for (auto woPlan : e2.getWorkout()) {
         const auto [excer, type1, type2] = woPlan;
         if (i < 4) {
             EXPECT_PRED_FORMAT2(
@@ -289,14 +289,14 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
 }
 
 TEST_F(WorkoutTest, AppendExcerciseTest) {
-    EXPECT_EQ(e3.getWoPlan().size(), 3);
+    EXPECT_EQ(e3.getWorkout().size(), 3);
     e3.addExcercise(
         Lab::Excercise("Chest Supported Row",
                        "Row at a chest supported row machine", "Back",
                        {"Upper-Back", "Lats"}, {"weight", "reps"}),
         50, 14);
-    EXPECT_EQ(e3.getWoPlan().size(), 4);
-    auto woPlan = e3.getWoPlan();
+    EXPECT_EQ(e3.getWorkout().size(), 4);
+    auto woPlan = e3.getWorkout();
     auto iter = woPlan.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
@@ -333,7 +333,7 @@ TEST_F(WorkoutTest, AppendExcerciseTest) {
 }
 
 TEST_F(WorkoutTest, ChangeExcerciseTest) {
-    auto woPlan = e3.getWoPlan();
+    auto woPlan = e3.getWorkout();
     auto iter = woPlan.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
@@ -375,7 +375,7 @@ TEST_F(WorkoutTest, ChangeExcerciseTest) {
 }
 
 TEST_F(WorkoutTest, ChangedMulipleExcerciseTest) {
-    auto woPlan = e3.getWoPlan();
+    auto woPlan = e3.getWorkout();
     auto iter = woPlan.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
@@ -419,7 +419,7 @@ TEST_F(WorkoutTest, ChangedMulipleExcerciseTest) {
 }
 
 TEST_F(WorkoutTest, ChangeExcerciseBadIteratorTest) {
-    auto woPlan = e3.getWoPlan();
+    auto woPlan = e3.getWorkout();
     auto iter = woPlan.cbegin();
     EXPECT_PRED_FORMAT2(
         AssertWoTupleEqual, *iter,
@@ -510,7 +510,7 @@ TEST_F(WorkoutTest, ChangeExcerciseBadIteratorTest) {
 }
 
 TEST_F(WorkoutTest, RemoveExcerciseTest) {
-    auto woPlan = e3.getWoPlan();
+    auto woPlan = e3.getWorkout();
     auto iter = woPlan.begin();
     EXPECT_EQ(woPlan.size(), 3);
     EXPECT_PRED_FORMAT2(
@@ -574,14 +574,14 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
 }
 
 TEST_F(WorkoutTest, RemoveMultiExcerciseTest) {
-    auto woPlan = e3.getWoPlan();
+    auto woPlan = e3.getWorkout();
     EXPECT_EQ(woPlan.size(), 3);
     e3.remExcercise(woPlan.begin(), woPlan.end());
     EXPECT_TRUE(woPlan.empty());
 }
 
 TEST_F(WorkoutTest, RemoveExcerciseBadIteratorTest) {
-    auto woPlan = e3.getWoPlan();
+    auto woPlan = e3.getWorkout();
     EXPECT_EQ(woPlan.size(), 3);
     e3.remExcercise(woPlan.begin() + 2, woPlan.end() - 3);
     EXPECT_FALSE(woPlan.empty());
@@ -656,7 +656,7 @@ TEST_F(WorkoutTest, SaveWorkOutPlanTest) {
                            "Lift yourself on your tiptoes with your calf",
                            "Legs", {"Calf"}, {"weight", "reps"}),
             250, 4)};
-    e2.setWoPlan(plan);
+    e2.setWorkout(plan);
     e2.editName("Full Body Plan");
     EXPECT_TRUE(e2.save());
     EXPECT_EQ(0, db.execMulti("SELECT * FROM workouts"));
