@@ -47,37 +47,27 @@ Lab::Body::Body(std::shared_ptr<Lab::DBConn> dbBase) : db(dbBase) {
     }
 }
 
-Lab::Muscles Lab::Body::getCondition() { return condition; }
-
-Lab::Measurements Lab::Body::getMeasurements() { return measure; }
-
-unsigned short Lab::Body::getAge() { return age; }
-
-unsigned short Lab::Body::getHeight() { return height; }
-
-unsigned short Lab::Body::getWeight() { return weight; }
-
-void Lab::Body::setMeasurement(Measurements newMeasurements) {
+void Lab::Body::setMeasurement(const Measurements &newMeasurements) {
     measure = newMeasurements;
     measEdit = true;
 }
 
-void Lab::Body::setCondition(Muscles newMuscles) {
+void Lab::Body::setCondition(const Muscles &newMuscles) {
     condition = newMuscles;
     condEdit = true;
 }
 
-void Lab::Body::setAge(unsigned short newAge) {
+void Lab::Body::setAge(const unsigned short &newAge) {
     age = newAge;
     bodyEdit = true;
 }
 
-void Lab::Body::setWeight(unsigned short newWeight) {
+void Lab::Body::setWeight(const unsigned short &newWeight) {
     weight = newWeight;
     bodyEdit = true;
 }
 
-void Lab::Body::setHeight(unsigned short newHeight) {
+void Lab::Body::setHeight(const unsigned short &newHeight) {
     height = newHeight;
     bodyEdit = true;
 }

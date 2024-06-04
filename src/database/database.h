@@ -61,7 +61,7 @@ class DBConn {
      * starts at 0
      * @returns Column
      */
-    auto getColumn(std::size_t index) { return query.getColumn(index); }
+    auto getColumn(const std::size_t &index) { return query.getColumn(index); }
 
    private:
     SQLite::Database db;

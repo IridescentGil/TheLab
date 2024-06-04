@@ -22,12 +22,13 @@ class History {
 
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
-    getHistory();
+    getHistory() const;
 
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
-    getSliceHistory(std::chrono::time_point<std::chrono::system_clock> start,
-                    std::chrono::time_point<std::chrono::system_clock> end);
+    getSliceHistory(
+        const std::chrono::time_point<std::chrono::system_clock> &start,
+        const std::chrono::time_point<std::chrono::system_clock> &end) const;
 
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
@@ -37,25 +38,26 @@ class History {
                        std::string, Lab::Excercise, int, int>>::iterator start,
         std::vector<
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>>::iterator end);
+                       std::string, Lab::Excercise, int, int>>::iterator end)
+        const;
     std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
                Lab::Excercise, int, int>
     getItem(std::vector<
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>>::iterator it);
+                       std::string, Lab::Excercise, int, int>>::iterator it)
+        const;
     // TODO: Add index based history item retrieval and deletion
 
     bool save();
 
     void setHistory(
-        std::vector<
+        const std::vector<
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>>
-            newHistory);
+                       std::string, Lab::Excercise, int, int>> &newHistory);
 
-    void addItem(std::chrono::time_point<std::chrono::system_clock> date,
-                 std::string workoutName, Lab::Excercise ex, int type1Val,
-                 int type2Val);
+    void addItem(const std::chrono::time_point<std::chrono::system_clock> &date,
+                 const std::string &workoutName, const Lab::Excercise &ex,
+                 const int &type1Val, const int &type2Val);
 
     void remItem(
         std::vector<

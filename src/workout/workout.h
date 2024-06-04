@@ -17,12 +17,13 @@ class Workout {
     Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName,
             std::vector<std::tuple<Lab::Excercise, int, int>> newWorkout);
 
-    std::vector<std::tuple<Lab::Excercise, int, int>> getWorkout();
+    std::vector<std::tuple<Lab::Excercise, int, int>> getWorkout() const;
 
     void setWorkout(
-        std::vector<std::tuple<Lab::Excercise, int, int>> newWorkout);
+        const std::vector<std::tuple<Lab::Excercise, int, int>> &newWorkout);
 
-    void addExcercise(Lab::Excercise newExcercise, int type1Val, int type2Val);
+    void addExcercise(const Lab::Excercise &newExcercise, const int &type1Val,
+                      const int &type2Val);
 
     void remExcercise(
         std::vector<std::tuple<Lab::Excercise, int, int>>::iterator);
@@ -32,15 +33,17 @@ class Workout {
 
     void changeExcercise(
         std::vector<std::tuple<Lab::Excercise, int, int>>::const_iterator it,
-        Lab::Excercise newExcercise, int type1Val, int type2Val);
+        const Lab::Excercise &newExcercise, const int &type1Val,
+        const int &type2Val);
     void changeExcercise(
         std::vector<std::tuple<Lab::Excercise, int, int>>::const_iterator start,
         std::vector<std::tuple<Lab::Excercise, int, int>>::const_iterator end,
-        Lab::Excercise newExcercise, int type1Val, int type2Val);
+        const Lab::Excercise &newExcercise, const int &type1Val,
+        const int &type2Val);
 
-    void editName(std::string workoutName);
+    void editName(const std::string &workoutName);
 
-    std::string getName();
+    std::string getName() const;
     bool save();
 
    private:

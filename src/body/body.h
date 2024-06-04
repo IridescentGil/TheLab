@@ -51,17 +51,17 @@ class Body {
      */
     int save();
 
-    unsigned short getHeight();
-    unsigned short getWeight();
-    unsigned short getAge();
-    Muscles getCondition();
-    Measurements getMeasurements();
+    unsigned short getHeight() const { return height; };
+    unsigned short getWeight() const { return weight; };
+    unsigned short getAge() const { return age; };
+    Muscles getCondition() const { return condition; };
+    Measurements getMeasurements() const { return measure; };
 
-    void setHeight(unsigned short newHeight);
-    void setWeight(unsigned short newWeight);
-    void setAge(unsigned short newAge);
-    void setCondition(Muscles newMuscles);
-    void setMeasurement(Measurements newMeasurements);
+    void setHeight(const unsigned short &newHeight);
+    void setWeight(const unsigned short &newWeight);
+    void setAge(const unsigned short &newAge);
+    void setCondition(const Muscles &newMuscles);
+    void setMeasurement(const Measurements &newMeasurements);
 
    private:
     std::shared_ptr<Lab::DBConn> db;
