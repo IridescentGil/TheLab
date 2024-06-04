@@ -2,6 +2,7 @@
 ///@file
 
 #include <chrono>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -12,8 +13,8 @@ namespace Lab {
 
 class History {
    public:
-    History(Lab::DBConn &newDB);
-    History(Lab::DBConn &newDB,
+    History(std::shared_ptr<Lab::DBConn> newDB);
+    History(std::shared_ptr<Lab::DBConn> newDB,
             std::vector<
                 std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
@@ -69,7 +70,7 @@ class History {
                        std::string, Lab::Excercise, int, int>>::iterator end);
 
    private:
-    Lab::DBConn &db;
+    std::shared_ptr<Lab::DBConn> db;
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
         history;

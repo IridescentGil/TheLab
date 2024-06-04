@@ -10,7 +10,7 @@ class BodyTest : public testing::Test {
     void SetUp() override {}
     void TearDown() override { remove("thelab.db"); }
 
-    Lab::DBConn db;
+    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
     Lab::Body b1{db};
 };
 

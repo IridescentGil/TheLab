@@ -50,7 +50,7 @@ class HistoryTest : public testing::Test {
                     type += ", ";
                 }
             }
-            db.prepare(
+            db->prepare(
                 "INSERT INTO excercises (excercises, description, muscleGroup, "
                 "musclesTargeted, type) VALUES (?, ?, ?, ?, ?)",
                 iter.getName(), iter.getDescription(), iter.getMuscleGroup(),
@@ -59,7 +59,7 @@ class HistoryTest : public testing::Test {
     }
     void TearDown() override { remove("thelab.db"); }
 
-    Lab::DBConn db;
+    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
         tpMarch4 = std::chrono::sys_days{std::chrono::March / 4 / 2024} +
@@ -784,57 +784,57 @@ TEST_F(HistoryTest, RemoveMultipleItemsBadIteratorTest) {
 TEST_F(HistoryTest, SaveHistoryTest) {
     int iter = 0;
     EXPECT_TRUE(h4.save());
-    db.execMulti("SELECT * FROM history");
-    while (db.stepExec()) {
+    db->execMulti("SELECT * FROM history");
+    while (db->stepExec()) {
         if (iter < 3) {
-            EXPECT_EQ(db.getColumn(1).getInt64(),
+            EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
-            EXPECT_EQ(db.getColumn(2).getString(),
+            EXPECT_EQ(db->getColumn(2).getString(),
                       static_cast<std::string>("Full-Body Workout"));
-            EXPECT_EQ(db.getColumn(3).getString(),
+            EXPECT_EQ(db->getColumn(3).getString(),
                       static_cast<std::string>("Barbell Row"));
-            EXPECT_EQ(db.getColumn(4).getInt(), 60);
-            EXPECT_EQ(db.getColumn(5).getInt(), 10);
+            EXPECT_EQ(db->getColumn(4).getInt(), 60);
+            EXPECT_EQ(db->getColumn(5).getInt(), 10);
         }
         if (iter < 6) {
-            EXPECT_EQ(db.getColumn(1).getInt64(),
+            EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
-            EXPECT_EQ(db.getColumn(2).getString(),
+            EXPECT_EQ(db->getColumn(2).getString(),
                       static_cast<std::string>("Full-Body Workout"));
-            EXPECT_EQ(db.getColumn(3).getString(),
+            EXPECT_EQ(db->getColumn(3).getString(),
                       static_cast<std::string>("Dumbbell Flys"));
-            EXPECT_EQ(db.getColumn(4).getInt(), 20);
-            EXPECT_EQ(db.getColumn(5).getInt(), 12);
+            EXPECT_EQ(db->getColumn(4).getInt(), 20);
+            EXPECT_EQ(db->getColumn(5).getInt(), 12);
         }
         if (iter < 9) {
-            EXPECT_EQ(db.getColumn(1).getInt64(),
+            EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
-            EXPECT_EQ(db.getColumn(2).getString(),
+            EXPECT_EQ(db->getColumn(2).getString(),
                       static_cast<std::string>("Full-Body Workout"));
-            EXPECT_EQ(db.getColumn(3).getString(),
+            EXPECT_EQ(db->getColumn(3).getString(),
                       static_cast<std::string>("Wide Grip Pull Ups"));
-            EXPECT_EQ(db.getColumn(4).getInt(), 10);
-            EXPECT_EQ(db.getColumn(5).getInt(), 0);
+            EXPECT_EQ(db->getColumn(4).getInt(), 10);
+            EXPECT_EQ(db->getColumn(5).getInt(), 0);
         }
         if (iter < 12) {
-            EXPECT_EQ(db.getColumn(1).getInt64(),
+            EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
-            EXPECT_EQ(db.getColumn(2).getString(),
+            EXPECT_EQ(db->getColumn(2).getString(),
                       static_cast<std::string>("Full-Body Workout"));
-            EXPECT_EQ(db.getColumn(3).getString(),
+            EXPECT_EQ(db->getColumn(3).getString(),
                       static_cast<std::string>("Jumping Jacks"));
-            EXPECT_EQ(db.getColumn(4).getInt(), 20);
-            EXPECT_EQ(db.getColumn(5).getInt(), 0);
+            EXPECT_EQ(db->getColumn(4).getInt(), 20);
+            EXPECT_EQ(db->getColumn(5).getInt(), 0);
         }
         if (iter < 15) {
-            EXPECT_EQ(db.getColumn(1).getInt64(),
+            EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
-            EXPECT_EQ(db.getColumn(2).getString(),
+            EXPECT_EQ(db->getColumn(2).getString(),
                       static_cast<std::string>("Full-Body Workout"));
-            EXPECT_EQ(db.getColumn(3).getString(),
+            EXPECT_EQ(db->getColumn(3).getString(),
                       static_cast<std::string>("Plank"));
-            EXPECT_EQ(db.getColumn(4).getInt(), 60);
-            EXPECT_EQ(db.getColumn(5).getInt(), 10);
+            EXPECT_EQ(db->getColumn(4).getInt(), 60);
+            EXPECT_EQ(db->getColumn(5).getInt(), 10);
         }
         iter++;
     }
@@ -846,27 +846,27 @@ TEST_F(HistoryTest, SaveHistoryOverwriteTest) {
     h4.remItem(hist.begin() + 3, hist.begin() + 12);
     int iter = 0;
     EXPECT_TRUE(h4.save());
-    db.execMulti("SELECT * FROM history");
-    while (db.stepExec()) {
+    db->execMulti("SELECT * FROM history");
+    while (db->stepExec()) {
         if (iter < 3) {
-            EXPECT_EQ(db.getColumn(1).getInt64(),
+            EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
-            EXPECT_EQ(db.getColumn(2).getString(),
+            EXPECT_EQ(db->getColumn(2).getString(),
                       static_cast<std::string>("Full-Body Workout"));
-            EXPECT_EQ(db.getColumn(3).getString(),
+            EXPECT_EQ(db->getColumn(3).getString(),
                       static_cast<std::string>("Barbell Row"));
-            EXPECT_EQ(db.getColumn(4).getInt(), 60);
-            EXPECT_EQ(db.getColumn(5).getInt(), 10);
+            EXPECT_EQ(db->getColumn(4).getInt(), 60);
+            EXPECT_EQ(db->getColumn(5).getInt(), 10);
         }
         if (iter < 6) {
-            EXPECT_EQ(db.getColumn(1).getInt64(),
+            EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
-            EXPECT_EQ(db.getColumn(2).getString(),
+            EXPECT_EQ(db->getColumn(2).getString(),
                       static_cast<std::string>("Full-Body Workout"));
-            EXPECT_EQ(db.getColumn(3).getString(),
+            EXPECT_EQ(db->getColumn(3).getString(),
                       static_cast<std::string>("Plank"));
-            EXPECT_EQ(db.getColumn(4).getInt(), 60);
-            EXPECT_EQ(db.getColumn(5).getInt(), 10);
+            EXPECT_EQ(db->getColumn(4).getInt(), 60);
+            EXPECT_EQ(db->getColumn(5).getInt(), 10);
         }
         iter++;
     }
@@ -875,8 +875,8 @@ TEST_F(HistoryTest, SaveHistoryOverwriteTest) {
 TEST_F(HistoryTest, OverwriteEmptyHistorySaveTest) {
     EXPECT_TRUE(h4.save());
     EXPECT_TRUE(h2.save());
-    db.execMulti("SELECT * FROM history");
-    EXPECT_FALSE(db.stepExec());
+    db->execMulti("SELECT * FROM history");
+    EXPECT_FALSE(db->stepExec());
 }
 
 TEST_F(HistoryTest, InvalidSaveHistoryTest) {

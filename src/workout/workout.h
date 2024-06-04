@@ -1,6 +1,7 @@
 #pragma once
 ///@file
 
+#include <memory>
 #include <tuple>
 #include <vector>
 
@@ -11,9 +12,9 @@ namespace Lab {
 
 class Workout {
    public:
-    Workout(Lab::DBConn &initDB);
-    Workout(Lab::DBConn &initDB, std::string workoutName);
-    Workout(Lab::DBConn &initDB, std::string workoutName,
+    Workout(std::shared_ptr<Lab::DBConn> initDB);
+    Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName);
+    Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName,
             std::vector<std::tuple<Lab::Excercise, int, int>> newWorkout);
 
     std::vector<std::tuple<Lab::Excercise, int, int>> getWorkout();
@@ -44,7 +45,7 @@ class Workout {
 
    private:
     std::string name;
-    Lab::DBConn &db;
+    std::shared_ptr<Lab::DBConn> db;
     std::vector<std::tuple<Lab::Excercise, int, int>> workout;
 };
 
