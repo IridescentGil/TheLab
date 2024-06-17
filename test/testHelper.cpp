@@ -9,8 +9,7 @@ bool excerEqual(Lab::Excercise a, Lab::Excercise b) {
     return true;
 };
 
-bool woTupleEqual(std::tuple<Lab::Excercise, int, int> a,
-                  std::tuple<Lab::Excercise, int, int> b) {
+bool workoutEqual(Lab::ExcerciseData a, Lab::ExcerciseData b) {
     const auto [aE, aT1, aT2] = a;
     const auto [bE, bT1, bT2] = b;
 
@@ -30,14 +29,14 @@ testing::AssertionResult AssertExcerciseEqual(const char* m_expr,
            << m_expr << "and" << n_expr << " Conditions not equal";
 }
 
-testing::AssertionResult AssertWoTupleEqual(
-    const char* m_expr, const char* n_expr,
-    std::tuple<Lab::Excercise, int, int> m,
-    std::tuple<Lab::Excercise, int, int> n) {
-    if (woTupleEqual(m, n)) return testing::AssertionSuccess();
+testing::AssertionResult AssertWorkoutEqual(const char* m_expr,
+                                            const char* n_expr,
+                                            Lab::ExcerciseData m,
+                                            Lab::ExcerciseData n) {
+    if (workoutEqual(m, n)) return testing::AssertionSuccess();
 
     return testing::AssertionFailure()
-           << m_expr << "and" << n_expr << " Conditions not equal";
+           << m_expr << "and" << n_expr << " workout data are not equal";
 }
 
 bool historyEqual(

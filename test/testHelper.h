@@ -4,10 +4,10 @@
 
 #include "body.h"
 #include "excercise.h"
+#include "workout.h"
 
 bool excerEqual(Lab::Excercise a, Lab::Excercise b);
-bool woTupleEqual(std::tuple<Lab::Excercise, int, int> a,
-                  std::tuple<Lab::Excercise, int, int> b);
+bool workoutEqual(Lab::ExcerciseData a, Lab::ExcerciseData b);
 bool historyEqual(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
@@ -28,10 +28,10 @@ testing::AssertionResult AssertExcerciseEqual(const char* m_expr,
                                               const char* n_expr,
                                               Lab::Excercise m,
                                               Lab::Excercise n);
-testing::AssertionResult AssertWoTupleEqual(
-    const char* m_expr, const char* n_expr,
-    std::tuple<Lab::Excercise, int, int> m,
-    std::tuple<Lab::Excercise, int, int> n);
+testing::AssertionResult AssertWorkoutEqual(const char* m_expr,
+                                            const char* n_expr,
+                                            Lab::ExcerciseData m,
+                                            Lab::ExcerciseData n);
 
 testing::AssertionResult AssertHistoryEqual(
     const char* m_expr, const char* n_expr,
