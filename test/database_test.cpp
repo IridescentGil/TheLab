@@ -68,26 +68,26 @@ TEST_F(DatabaseTest, PrepareIndexFunctionTest) {
     EXPECT_EQ(db2.execQuery(), 1);
     EXPECT_EQ(db2.execMulti("SELECT * FROM workouts"), 1);
     EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(1).getString(), static_cast<std::string>("Push 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(2)), 0);
-    EXPECT_EQ(db2.getColumn(3).getString(),
+    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Push 1"));
+    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 0);
+    EXPECT_EQ(db2.getColumn(2).getString(),
               static_cast<std::string>("Bench Press"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 20);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(5)), 15);
-    EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(1).getString(), static_cast<std::string>("Push 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(2)), 1);
-    EXPECT_EQ(db2.getColumn(3).getString(),
-              static_cast<std::string>("Shoulder Press"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 2);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(5)), 8);
-    EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(1).getString(), static_cast<std::string>("Pull 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(2)), 0);
-    EXPECT_EQ(db2.getColumn(3).getString(),
-              static_cast<std::string>("Pull up"));
+    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 20);
     EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 15);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(5)), 0);
+    EXPECT_TRUE(db2.stepExec());
+    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Push 1"));
+    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 1);
+    EXPECT_EQ(db2.getColumn(2).getString(),
+              static_cast<std::string>("Shoulder Press"));
+    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 2);
+    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 8);
+    EXPECT_TRUE(db2.stepExec());
+    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Pull 1"));
+    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 0);
+    EXPECT_EQ(db2.getColumn(2).getString(),
+              static_cast<std::string>("Pull up"));
+    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 15);
+    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 0);
     EXPECT_FALSE(db2.stepExec());
 }
 
@@ -109,12 +109,12 @@ TEST_F(DatabaseTest, PrepareVariadicFunctionTest) {
                             "'Incline Bench Press'"),
               1);
     EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(1).getString(), static_cast<std::string>("Push 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(2)), 0);
-    EXPECT_EQ(db2.getColumn(3).getString(),
+    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Push 1"));
+    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 0);
+    EXPECT_EQ(db2.getColumn(2).getString(),
               static_cast<std::string>("Incline Bench Press"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 15);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(5)), 12);
+    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 15);
+    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 12);
     EXPECT_FALSE(db2.stepExec());
 }
 

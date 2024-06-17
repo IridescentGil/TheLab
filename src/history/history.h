@@ -20,8 +20,9 @@ class History {
                            std::string, Lab::Excercise, int, int>>
                 newHistory);
 
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>> &
     getHistory() const;
 
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,

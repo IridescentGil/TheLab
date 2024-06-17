@@ -20,16 +20,11 @@ void Lab::DBConn::createTables() {
                 "TEXT, muscleGroup TEXT, musclesTargeted TEXT, type TEXT)");
         if (!db.tableExists("workouts"))
             db.exec(
-                "CREATE TABLE workouts (ID INTEGER NOT NULL PRIMARY KEY "
-                "AUTOINCREMENT, "
+                "CREATE TABLE workouts ("
                 "workoutName TEXT NOT NULL, exOrderNum INTEGER NOT NULL, "
-                "excercise "
-                "TEXT "
-                "NOT NULL, type1 "
-                "INTEGER "
-                "NOT "
-                "NULL, "
-                "type2 INTEGER, FOREIGN KEY(excercise) REFERENCES "
+                "excercise TEXT NOT NULL, type1 INTEGER NOT NULL, "
+                "type2 INTEGER, PRIMARY KEY (workoutName, exOrderNum), FOREIGN "
+                "KEY(excercise) REFERENCES "
                 "excercises(name))");
         if (!db.tableExists("workoutPlans"))
             db.exec(
@@ -44,8 +39,8 @@ void Lab::DBConn::createTables() {
                 "CREATE TABLE history (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
                 "date "
-                "INTEGER NOT NULL, excercise TEXT NOT NULL, workout TEXT, "
-                "type1 TEXT NOT NULL, type2 TEXT, FOREIGN KEY(excercise) "
+                "INTEGER NOT NULL, workout TEXT, excercise TEXT NOT NULL, "
+                "type1 INTEGER NOT NULL, type2 INTEGER, FOREIGN KEY(excercise) "
                 "REFERENCES "
                 "excercises(name))");
         if (!db.tableExists("bodyCondition"))
