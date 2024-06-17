@@ -309,8 +309,8 @@ class AnalyticsTest : public testing::Test {
 };
 
 TEST_F(AnalyticsTest, RepMaxTest) {
-    std::map<size_t, size_t> repMax = Lab::Analytics::mapRepEstimates(12, 30);
-    std::map<size_t, size_t> repTest{
+    std::map<size_t, float> repMax = Lab::Analytics::mapRepEstimates(12, 30);
+    std::map<size_t, float> repTest{
         {1, 43.2}, {2, 41},   {3, 38.8}, {4, 38},    {5, 37.2},  {6, 35.9},
         {7, 34.6}, {8, 33.7}, {9, 32.8}, {10, 32.4}, {11, 31.1}, {12, 30}};
     for (auto iter = repMax.cbegin(), bter = repTest.cbegin();

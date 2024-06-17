@@ -12,7 +12,7 @@
 ///@brief Lab classes, namespaces and functions
 namespace Lab {
 namespace Analytics {
-std::map<size_t, size_t> mapRepEstimates(size_t reps, size_t weight);
+std::map<size_t, float> mapRepEstimates(size_t reps, float weight);
 
 /**
 @brief Map the highest value of a type on particular days
