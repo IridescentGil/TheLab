@@ -13,6 +13,7 @@ Lab::DBConn::DBConn(std::string_view name)
 
 void Lab::DBConn::createTables() {
     try {
+        db.exec("PRAGMA foreign_keys = ON");
         if (!db.tableExists("excercises"))
             db.exec(
                 "CREATE TABLE excercises (name TEXT NOT NULL PRIMARY KEY, "
@@ -25,15 +26,17 @@ void Lab::DBConn::createTables() {
                 "excercise TEXT NOT NULL, type1 INTEGER NOT NULL, "
                 "type2 INTEGER, PRIMARY KEY (workoutName, exOrderNum), FOREIGN "
                 "KEY(excercise) REFERENCES "
-                "excercises(name))");
+                "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
         if (!db.tableExists("workoutPlans"))
             db.exec(
                 "CREATE TABLE workoutPlans (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
-                "planName TEXT NOT NULL, workoutID INTEGER NOT NULL, FOREIGN "
-                "KEY(workoutID) "
+                "planName TEXT NOT NULL, workoutName TEXT NOT NULL, "
+                "initialExcercise INTEGER NOT NULL, FOREIGN "
+                "KEY(workoutName, initialExcercise) "
                 "REFERENCES "
-                "workouts(ID))");
+                "workouts(workoutName, exOrderNum) ON UPDATE CASCADE ON DELETE "
+                "CASCADE)");
         if (!db.tableExists("history"))
             db.exec(
                 "CREATE TABLE history (ID INTEGER NOT NULL PRIMARY KEY "
@@ -42,7 +45,7 @@ void Lab::DBConn::createTables() {
                 "INTEGER NOT NULL, workout TEXT, excercise TEXT NOT NULL, "
                 "type1 INTEGER NOT NULL, type2 INTEGER, FOREIGN KEY(excercise) "
                 "REFERENCES "
-                "excercises(name))");
+                "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
         if (!db.tableExists("bodyCondition"))
             db.exec(
                 "CREATE TABLE bodyCondition (date INTEGER NOT NULL PRIMARY "
