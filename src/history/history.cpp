@@ -51,6 +51,12 @@ Lab::History::History(
         newHistory)
     : db(newDB), history(newHistory) {}
 
+std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                       std::string, Lab::Excercise, int, int>> &
+Lab::History::getHistory() {
+    return history;
+}
+
 const std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                              std::string, Lab::Excercise, int, int>> &
 Lab::History::getHistory() const {
@@ -137,9 +143,9 @@ bool Lab::History::save() {
     unsigned int size = 0;
     unsigned int index = 0;
     db->execMulti("SELECT ID FROM history");
-    while (db->stepExec()) {
-        size++;
-    }
+    while (db->stepExec()) size++;
+
+    if (history.size() < size) db->exec("DELETE FROM history");
 
     for (auto const &iter : history) {
         const auto &[date, workoutName, excerciseName, type1, type2] = iter;

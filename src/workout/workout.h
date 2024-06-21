@@ -50,6 +50,7 @@ class Workout {
     const std::vector<Lab::ExcerciseData> &getWorkout() const {
         return workout;
     };
+    std::vector<Lab::ExcerciseData> &getWorkout() { return workout; };
 
     void setWorkout(const std::vector<Lab::ExcerciseData> &newWorkout);
 

@@ -195,12 +195,12 @@ Lab::Analytics::mapWeightForRep(const Excercise &exc, const History &hist) {
                                 ? std::get<3>(historyIter)
                                 : dateIndex->second;
                     }
-                }
-            } else {
-                map[std::get<4>(historyIter)] =
-                    std::map<std::chrono::time_point<std::chrono::system_clock>,
-                             size_t>(
+                } else {
+                    map[std::get<4>(historyIter)] = std::map<
+                        std::chrono::time_point<std::chrono::system_clock>,
+                        size_t>(
                         {{std::get<0>(historyIter), std::get<3>(historyIter)}});
+                }
             }
         }
     }
@@ -295,6 +295,18 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
+        } else if (valueType == "sets") {
+            for (auto const &historyIter : hist.getHistory()) {
+                auto date = std::chrono::time_point_cast<std::chrono::days>(
+                    std::get<0>(historyIter));
+                auto index = map.find(date);
+
+                if (index == map.end()) {
+                    map[date] = 1;
+                } else {
+                    index->second += 1;
+                }
+            }
         } else if (valueType == "volume") {
             for (auto const &historyIter : hist.getHistory()) {
                 if (std::get<2>(historyIter).getType() ==
@@ -312,7 +324,7 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
-        } else if (valueType == "sets") {
+        } else if (valueType == "workouts") {
             std::vector<std::chrono::time_point<std::chrono::system_clock>>
                 dayCounted;
             for (auto const &historyIter : hist.getHistory()) {
@@ -361,6 +373,18 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
+        } else if (valueType == "sets") {
+            for (auto const &historyIter : hist.getHistory()) {
+                auto date = std::chrono::time_point_cast<std::chrono::weeks>(
+                    std::get<0>(historyIter));
+                auto index = map.find(date);
+
+                if (index == map.end()) {
+                    map[date] = 1;
+                } else {
+                    index->second += 1;
+                }
+            }
         } else if (valueType == "volume") {
             for (auto const &historyIter : hist.getHistory()) {
                 if (std::get<2>(historyIter).getType() ==
@@ -379,7 +403,7 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
-        } else if (valueType == "sets") {
+        } else if (valueType == "workouts") {
             std::vector<std::chrono::time_point<std::chrono::system_clock>>
                 dayCounted;
             for (auto const &historyIter : hist.getHistory()) {
@@ -429,6 +453,18 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
+        } else if (valueType == "sets") {
+            for (auto const &historyIter : hist.getHistory()) {
+                auto date = std::chrono::time_point_cast<std::chrono::months>(
+                    std::get<0>(historyIter));
+                auto index = map.find(date);
+
+                if (index == map.end()) {
+                    map[date] = 1;
+                } else {
+                    index->second += 1;
+                }
+            }
         } else if (valueType == "volume") {
             for (auto const &historyIter : hist.getHistory()) {
                 if (std::get<2>(historyIter).getType() ==
@@ -447,7 +483,7 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
-        } else if (valueType == "sets") {
+        } else if (valueType == "workouts") {
             std::vector<std::chrono::time_point<std::chrono::system_clock>>
                 dayCounted;
             for (auto const &historyIter : hist.getHistory()) {
@@ -497,6 +533,18 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
+        } else if (valueType == "sets") {
+            for (auto const &historyIter : hist.getHistory()) {
+                auto date = std::chrono::time_point_cast<std::chrono::years>(
+                    std::get<0>(historyIter));
+                auto index = map.find(date);
+
+                if (index == map.end()) {
+                    map[date] = 1;
+                } else {
+                    index->second += 1;
+                }
+            }
         } else if (valueType == "volume") {
             for (auto const &historyIter : hist.getHistory()) {
                 if (std::get<2>(historyIter).getType() ==
@@ -515,7 +563,7 @@ Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
                     }
                 }
             }
-        } else if (valueType == "sets") {
+        } else if (valueType == "workouts") {
             std::vector<std::chrono::time_point<std::chrono::system_clock>>
                 dayCounted;
             for (auto const &historyIter : hist.getHistory()) {

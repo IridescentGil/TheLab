@@ -1,10 +1,10 @@
 # TODO
 
 ## Tasks
-- [ ] Analytics namespace
+- [x] Analytics namespace
   - [x] Analytics header
-  - [ ] Analytics implementation
-  - [ ] Analytics unit tests
+  - [x] Analytics implementation
+  - [x] Analytics unit tests
 - [x] Body class
   - [x] Body header
   - [x] Body implementation
@@ -17,13 +17,13 @@
   - [x] Excercise header
   - [x] Excercise implementation
   - [x] Excercise unit tests
-- [ ] History class
+- [x] History class
   - [x] History header
-  - [ ] History implementation
+  - [x] History implementation
   - [x] History unit tests
-- [ ] Workout class
+- [x] Workout class
   - [x] Workout header
-  - [ ] Workout implementation
+  - [x] Workout implementation
   - [x] Workout unit tests
 - [ ] Workout Plan Class
   - [ ] Workout Plan header

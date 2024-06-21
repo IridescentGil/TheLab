@@ -15,7 +15,6 @@ Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB,
 
 void Lab::Workout::setWorkout(
     const std::vector<Lab::ExcerciseData> &newWorkout) {
-    // workout.assign(newWorkout.cbegin(), newWorkout.cend());
     workout = newWorkout;
 }
 
@@ -58,6 +57,8 @@ bool Lab::Workout::save() {
     size_t size = 0;
     db->prepare("SELECT exOrderNum FROM workouts WHERE workoutName = ?", name);
     while (db->stepExec()) size++;
+
+    if (workout.size() < size) db->exec("DELETE FROM workouts");
 
     size_t index = 0;
     for (auto iter = workout.cbegin(); iter != workout.cend(); iter++) {

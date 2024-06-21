@@ -20,6 +20,9 @@ class History {
                            std::string, Lab::Excercise, int, int>>
                 newHistory);
 
+    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                           std::string, Lab::Excercise, int, int>> &
+    getHistory();
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                    std::string, Lab::Excercise, int, int>> &
@@ -47,7 +50,6 @@ class History {
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                        std::string, Lab::Excercise, int, int>>::iterator it)
         const;
-    // TODO: Add index based history item retrieval and deletion
 
     bool save();
 
