@@ -51,7 +51,8 @@ include_directories(
 if(MSVC)
   add_compile_options(/W4)
 else()
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -Wpedantic "$<$<CONFIG:DEBUG>:-O0;-g3;>"
+                      "$<$<CONFIG:RELEASE>:-O2;>")
 endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
