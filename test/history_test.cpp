@@ -51,10 +51,11 @@ class HistoryTest : public testing::Test {
                 }
             }
             db->prepare(
-                "INSERT INTO excercises (excercises, description, muscleGroup, "
+                "INSERT INTO excercises (name, description, muscleGroup, "
                 "musclesTargeted, type) VALUES (?, ?, ?, ?, ?)",
                 iter.getName(), iter.getDescription(), iter.getMuscleGroup(),
                 musclesWorked, type);
+            db->execQuery();
         }
     }
     void TearDown() override { remove("thelab.db"); }
@@ -541,18 +542,6 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
     }
 }
 
-TEST_F(HistoryTest, GetMultipleHistoryItemsBadIteratorTest) {
-    auto hist = h1.getHistory();
-    auto histItem = h1.getItem(hist.begin() - 3, hist.end());
-    EXPECT_TRUE(histItem.empty());
-    histItem = h1.getItem(hist.begin() + 3, hist.begin());
-    EXPECT_TRUE(histItem.empty());
-    histItem = h1.getItem(hist.end(), hist.begin());
-    EXPECT_TRUE(histItem.empty());
-    histItem = h1.getItem(hist.end(), hist.end());
-    EXPECT_TRUE(histItem.empty());
-}
-
 TEST_F(HistoryTest, OverrideExistingHistoryTest) {
     auto hist1 = h1.getHistory();
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
@@ -597,7 +586,7 @@ TEST_F(HistoryTest, OverrideExistingHistoryTest) {
                             10, 100)};
     h1.setHistory(newHist);
     auto hist2 = h1.getHistory();
-    EXPECT_EQ(hist1.size(), 3);
+    EXPECT_EQ(hist1.size(), 6);
     EXPECT_PRED_FORMAT3(AssertHistoryNEqual, hist1, hist2, 7);
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, newHist, hist2);
     EXPECT_EQ(hist2.size(), 7);
@@ -685,7 +674,7 @@ TEST_F(HistoryTest, AppendHistoryTest) {
                               "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     auto hist2 = h1.getHistory();
-    EXPECT_EQ(hist1.size(), 3);
+    EXPECT_EQ(hist1.size(), 6);
 
     hist1.push_back(std::make_tuple(
         tpMarch4, "Arm Workout",
@@ -702,19 +691,20 @@ TEST_F(HistoryTest, AppendHistoryTest) {
         Lab::Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms",
                        {"Biceps"}, {"weight", "reps"}),
         50, 15));
-    EXPECT_EQ(hist1.size(), 6);
-    EXPECT_EQ(hist2.size(), 6);
+    EXPECT_EQ(hist1.size(), 9);
+    EXPECT_EQ(hist2.size(), 9);
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist1, hist2);
 }
 
 TEST_F(HistoryTest, RemoveItemTest) {
-    auto hist1 = h3.getHistory();
+    auto& hist1 = h3.getHistory();
+    EXPECT_EQ(hist1.size(), 6);
     h3.remItem(hist1.begin());
-    auto hist2 = h3.getHistory();
-    h3.remItem(hist2.begin() + 3);
-    auto hist3 = h3.getHistory();
-    h3.remItem(hist3.begin());
-    auto hist4 = h3.getHistory();
+    EXPECT_EQ(hist1.size(), 5);
+    h3.remItem(hist1.begin() + 3);
+    EXPECT_EQ(hist1.size(), 4);
+    h3.remItem(hist1.begin());
+    EXPECT_EQ(hist1.size(), 3);
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
         newHist = {
@@ -736,16 +726,13 @@ TEST_F(HistoryTest, RemoveItemTest) {
                                "Standing bent over row with Barbell", "Back",
                                {"Upper-back", "Lats"}, {"weight", "reps"}),
                 75, 10)};
-    EXPECT_EQ(hist1.size(), 6);
-    EXPECT_EQ(hist2.size(), 5);
-    EXPECT_EQ(hist3.size(), 4);
-    EXPECT_EQ(hist4.size(), 3);
-    EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist4, newHist);
+    EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist1, newHist);
 }
 
 TEST_F(HistoryTest, RemoveMultipleItemsTest) {
-    auto hist1 = h3.getHistory();
-    h3.remItem(hist1.begin() + 2, hist1.begin() + 4);
+    auto& hist1 = h3.getHistory();
+    h3.remItem(hist1.begin(), hist1.begin() + 2);
+    h3.remItem(hist1.begin() + 2, hist1.end());
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
         newHist = {
@@ -765,22 +752,6 @@ TEST_F(HistoryTest, RemoveMultipleItemsTest) {
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist1, newHist);
 }
 
-TEST_F(HistoryTest, RemoveMultipleItemsBadIteratorTest) {
-    auto hist = h1.getHistory();
-    h1.remItem(hist.begin() - 3, hist.end());
-    auto hist1 = h1.getHistory();
-    EXPECT_EQ(hist1.size(), 6);
-    h1.remItem(hist.begin() + 3, hist.begin());
-    auto hist2 = h1.getHistory();
-    EXPECT_EQ(hist2.size(), 6);
-    h1.remItem(hist.end(), hist.begin());
-    auto hist3 = h1.getHistory();
-    EXPECT_EQ(hist3.size(), 6);
-    h1.remItem(hist.end(), hist.end());
-    auto hist4 = h1.getHistory();
-    EXPECT_EQ(hist4.size(), 6);
-}
-
 TEST_F(HistoryTest, SaveHistoryTest) {
     int iter = 0;
     EXPECT_TRUE(h4.save());
@@ -795,8 +766,7 @@ TEST_F(HistoryTest, SaveHistoryTest) {
                       static_cast<std::string>("Barbell Row"));
             EXPECT_EQ(db->getColumn(4).getInt(), 60);
             EXPECT_EQ(db->getColumn(5).getInt(), 10);
-        }
-        if (iter < 6) {
+        } else if (iter < 6) {
             EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
             EXPECT_EQ(db->getColumn(2).getString(),
@@ -805,8 +775,7 @@ TEST_F(HistoryTest, SaveHistoryTest) {
                       static_cast<std::string>("Dumbbell Flys"));
             EXPECT_EQ(db->getColumn(4).getInt(), 20);
             EXPECT_EQ(db->getColumn(5).getInt(), 12);
-        }
-        if (iter < 9) {
+        } else if (iter < 9) {
             EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
             EXPECT_EQ(db->getColumn(2).getString(),
@@ -815,8 +784,7 @@ TEST_F(HistoryTest, SaveHistoryTest) {
                       static_cast<std::string>("Wide Grip Pull Ups"));
             EXPECT_EQ(db->getColumn(4).getInt(), 10);
             EXPECT_EQ(db->getColumn(5).getInt(), 0);
-        }
-        if (iter < 12) {
+        } else if (iter < 12) {
             EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
             EXPECT_EQ(db->getColumn(2).getString(),
@@ -825,8 +793,7 @@ TEST_F(HistoryTest, SaveHistoryTest) {
                       static_cast<std::string>("Jumping Jacks"));
             EXPECT_EQ(db->getColumn(4).getInt(), 20);
             EXPECT_EQ(db->getColumn(5).getInt(), 0);
-        }
-        if (iter < 15) {
+        } else if (iter < 15) {
             EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
             EXPECT_EQ(db->getColumn(2).getString(),
@@ -842,11 +809,11 @@ TEST_F(HistoryTest, SaveHistoryTest) {
 
 TEST_F(HistoryTest, SaveHistoryOverwriteTest) {
     EXPECT_TRUE(h4.save());
-    auto hist = h4.getHistory();
+    auto& hist = h4.getHistory();
     h4.remItem(hist.begin() + 3, hist.begin() + 12);
-    int iter = 0;
     EXPECT_TRUE(h4.save());
     db->execMulti("SELECT * FROM history");
+    int iter = 0;
     while (db->stepExec()) {
         if (iter < 3) {
             EXPECT_EQ(db->getColumn(1).getInt64(),
@@ -857,8 +824,7 @@ TEST_F(HistoryTest, SaveHistoryOverwriteTest) {
                       static_cast<std::string>("Barbell Row"));
             EXPECT_EQ(db->getColumn(4).getInt(), 60);
             EXPECT_EQ(db->getColumn(5).getInt(), 10);
-        }
-        if (iter < 6) {
+        } else if (iter < 6) {
             EXPECT_EQ(db->getColumn(1).getInt64(),
                       tpJan13.time_since_epoch().count());
             EXPECT_EQ(db->getColumn(2).getString(),

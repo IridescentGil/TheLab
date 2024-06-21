@@ -18,9 +18,14 @@
 class AnalyticsTest : public testing::Test {
    protected:
     void SetUp() override {}
-    void TearDown() override { remove("thelab.db"); }
+    void TearDown() override {
+        remove("thelab.db");
+        remove("empty.db");
+    }
 
     std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
+    std::shared_ptr<Lab::DBConn> emptyDb =
+        std::make_shared<Lab::DBConn>("empty.db");
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
         tpMarch4 = std::chrono::sys_days{std::chrono::March / 4 / 2024} +
@@ -39,28 +44,31 @@ class AnalyticsTest : public testing::Test {
                   std::chrono::hours(12);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
-        tpJanWeek2 = std::chrono::sys_days{std::chrono::January / 8 / 2024};
+        tpJanWeek2 = std::chrono::time_point_cast<std::chrono::weeks>(tpJan13);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
-        tpFebWeek1 = std::chrono::sys_days{std::chrono::February / 5 / 2024};
+        tpFebWeek1 = std::chrono::time_point_cast<std::chrono::weeks>(tpFeb10);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
-        tpFebWeek3 = std::chrono::sys_days{std::chrono::February / 19 / 2024};
+        tpFebWeek3 = std::chrono::time_point_cast<std::chrono::weeks>(tpFeb20);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
-        tpMarchWeek1 = std::chrono::sys_days{std::chrono::March / 4 / 2024};
+        tpMarchWeek1 =
+            std::chrono::time_point_cast<std::chrono::weeks>(tpMarch4);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock> tpFeb =
-        std::chrono::sys_days{std::chrono::February / 1 / 2024};
+        std::chrono::time_point_cast<std::chrono::months>(tpFeb10);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
-        tpMarch = std::chrono::sys_days{std::chrono::March / 1 / 2024};
+        tpMarch = std::chrono::time_point_cast<std::chrono::months>(tpMarch4);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock> tpJan =
-        std::chrono::sys_days{std::chrono::January / 1 / 2024};
+        std::chrono::time_point_cast<std::chrono::months>(tpJan13);
 
     constexpr static std::chrono::time_point<std::chrono::system_clock> tp2024 =
-        std::chrono::sys_days{std::chrono::January / 1 / 2024};
+        std::chrono::time_point_cast<std::chrono::years>(tpJan13);
+
+    Lab::History emptyHist{emptyDb};
 
     Lab::History hist{
         db,
@@ -310,9 +318,10 @@ class AnalyticsTest : public testing::Test {
 
 TEST_F(AnalyticsTest, RepMaxTest) {
     std::map<size_t, float> repMax = Lab::Analytics::mapRepEstimates(12, 30);
-    std::map<size_t, float> repTest{
-        {1, 43.2}, {2, 41},   {3, 38.8}, {4, 38},    {5, 37.2},  {6, 35.9},
-        {7, 34.6}, {8, 33.7}, {9, 32.8}, {10, 32.4}, {11, 31.1}, {12, 30}};
+    std::map<size_t, float> repTest{{1, 43.2},   {2, 41.04},   {3, 38.88},
+                                    {4, 38.016}, {5, 37.152},  {6, 35.856},
+                                    {7, 34.56},  {8, 33.696},  {9, 32.832},
+                                    {10, 32.4},  {11, 31.104}, {12, 30}};
     for (auto iter = repMax.cbegin(), bter = repTest.cbegin();
          iter != repMax.cend(); iter++, bter++) {
         EXPECT_EQ(iter->first, bter->first);
@@ -353,8 +362,7 @@ TEST_F(AnalyticsTest, MapHighestValuesNoHistoryTest) {
                        "Chest",
                        {"Pectoral", "Tricep"},
                        {"weight", "reps"}};
-    auto maxRep =
-        Lab::Analytics::mapHighestValues("reps", exc, Lab::History(nullptr));
+    auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, emptyHist);
     EXPECT_TRUE(maxRep.empty());
 }
 
@@ -446,8 +454,7 @@ TEST_F(AnalyticsTest, MapWeightForRepNoHistoryTest) {
                        "Chest",
                        {"Pectoral", "Tricep"},
                        {"weight", "reps"}};
-    auto maxWeightForRep =
-        Lab::Analytics::mapWeightForRep(exc, Lab::History(nullptr));
+    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(exc, emptyHist);
     EXPECT_TRUE(maxWeightForRep.empty());
 }
 
@@ -495,7 +502,7 @@ TEST_F(AnalyticsTest, MapTotalValuesNoHistoryTest) {
                        {"Pectoral", "Tricep"},
                        {"weight", "reps"}};
     auto workoutVolume =
-        Lab::Analytics::mapTotalValues("volume", exc, Lab::History(nullptr));
+        Lab::Analytics::mapTotalValues("volume", exc, emptyHist);
     EXPECT_TRUE(workoutVolume.empty());
 }
 
@@ -513,7 +520,11 @@ TEST_F(AnalyticsTest, MapTotalValuesExcerciseHasNoValuesInHistoryTest) {
 TEST_F(AnalyticsTest, MapValuesPerPeriodDayTest) {
     auto workoutSets = Lab::Analytics::mapValuesPerPeriod("sets", "days", hist);
     std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
-        testSets{{tpJan13, 16}, {tpFeb10, 3}, {tpFeb20, 12}, {tpMarch4, 8}};
+        testSets{
+            {std::chrono::time_point_cast<std::chrono::days>(tpJan13), 16},
+            {std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 3},
+            {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 12},
+            {std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 8}};
     for (auto iter = workoutSets.cbegin(), bter = testSets.cbegin();
          iter != workoutSets.cend(); iter++, bter++) {
         EXPECT_EQ(iter->first, bter->first);
@@ -561,8 +572,7 @@ TEST_F(AnalyticsTest, MapValuesPerPeriodYearTest) {
 }
 
 TEST_F(AnalyticsTest, MapValuesPerPeriodNoHistoryTest) {
-    auto data = Lab::Analytics::mapValuesPerPeriod("sets", "months",
-                                                   Lab::History(nullptr));
+    auto data = Lab::Analytics::mapValuesPerPeriod("sets", "months", emptyHist);
     EXPECT_TRUE(data.empty());
 }
 
