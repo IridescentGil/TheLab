@@ -53,6 +53,11 @@ if(MSVC)
 else()
   add_compile_options(-Wall -Wextra -Wpedantic "$<$<CONFIG:DEBUG>:-O0;-g3;>"
                       "$<$<CONFIG:RELEASE>:-O2;>")
+  set(CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_CXX_FLAGS_DEBUG} --coverage")
+  set(CMAKE_EXE_LINKER_FLAGS_COVERAGE
+      "${CMAKE_EXE_LINKER_FLAGS_DEBUG} --coverage")
+  set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE
+      "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} --coverage")
 endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

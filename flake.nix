@@ -31,8 +31,33 @@
                 clang-tools
                 sqlite
                 sqlitecpp
+
                 doxygen
                 graphviz
+
+                lcov
+            ];
+        };
+        devShells.gcc = let
+            pkgs = import nixpkgs {
+                inherit system;
+            };
+        in
+        pkgs.mkShell.override {stdenv = pkgs.gccStdenv;} {
+            packages = with pkgs; [
+                qt6.full
+                qtcreator
+                cmake
+                gnumake
+                gtest
+                clang-tools
+                sqlite
+                sqlitecpp
+
+                doxygen
+                graphviz
+
+                lcov
             ];
         };
     });
