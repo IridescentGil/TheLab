@@ -23,7 +23,7 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(newDB) {
             db->getColumn(5)));
     }
 
-    for (auto const iter : tempHist) {
+    for (auto const &iter : tempHist) {
         auto const &[date, workoutName, excercise, type1, type2] = iter;
         std::vector<std::string> mWorked, exType;
         db->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
@@ -143,9 +143,12 @@ bool Lab::History::save() {
     unsigned int size = 0;
     unsigned int index = 0;
     db->execMulti("SELECT ID FROM history");
-    while (db->stepExec()) size++;
+    while (db->stepExec()) ++size;
 
-    if (history.size() < size) db->exec("DELETE FROM history");
+    if (history.size() < size) {
+        db->exec("DELETE FROM history");
+        size = 0;
+    }
 
     for (auto const &iter : history) {
         const auto &[date, workoutName, excerciseName, type1, type2] = iter;
@@ -164,7 +167,7 @@ bool Lab::History::save() {
                 return false;
             if (db->execQuery() == -1) return false;
         }
-        index++;
+        ++index;
     }
     return true;
 }

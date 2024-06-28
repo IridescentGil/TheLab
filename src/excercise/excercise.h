@@ -15,20 +15,20 @@ class Excercise {
     Excercise(Excercise &&other)
         : name(std::move(other.name)),
           description(std::move(other.description)),
-          muscleGroup(std::move(other.description)),
+          muscleGroup(std::move(other.muscleGroup)),
           musclesWorked(std::move(other.musclesWorked)),
           type(std::move(other.type)) {}
     Excercise(const Excercise &other)
         : name(other.name),
           description(other.description),
-          muscleGroup(other.description),
+          muscleGroup(other.muscleGroup),
           musclesWorked(other.musclesWorked),
           type(other.type) {}
     Excercise &operator=(Excercise &&other) {
         if (&other != this) {
             name = std::move(other.name);
             description = std::move(other.description);
-            muscleGroup = std::move(other.description);
+            muscleGroup = std::move(other.muscleGroup);
             musclesWorked = std::move(other.musclesWorked);
             type = std::move(other.type);
         }
@@ -38,7 +38,7 @@ class Excercise {
         if (&other != this) {
             name = other.name;
             description = other.description;
-            muscleGroup = other.description;
+            muscleGroup = other.muscleGroup;
             musclesWorked = other.musclesWorked;
             type = other.type;
         }

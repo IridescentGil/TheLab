@@ -59,7 +59,7 @@ bool Lab::Excercise::isMuscleGroup(const std::string &mGroup) {
 }
 bool Lab::Excercise::isMuscle(const std::vector<std::string> &mWorked) {
     if (mWorked.size() == 0) return false;
-    for (auto it = mWorked.cbegin(); it != mWorked.cend(); it++) {
+    for (auto it = mWorked.cbegin(); it != mWorked.cend(); ++it) {
         if (std::find(mwCheck.cbegin(), mwCheck.cend(), *it) == mwCheck.cend())
             return false;
     }
@@ -69,7 +69,7 @@ bool Lab::Excercise::isMuscle(const std::vector<std::string> &mWorked) {
 
 bool Lab::Excercise::isType(const std::vector<std::string> &nType) {
     if (nType.size() > 2 || nType.size() == 0) return false;
-    for (auto it = nType.cbegin(); it != nType.cend(); it++) {
+    for (auto it = nType.cbegin(); it != nType.cend(); ++it) {
         if (std::find(typeCheck.cbegin(), typeCheck.cend(), *it) ==
             typeCheck.cend())
             return false;

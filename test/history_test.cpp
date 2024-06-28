@@ -35,7 +35,7 @@ class HistoryTest : public testing::Test {
             Lab::Excercise("Calf Press",
                            "Lift yourself on your tiptoes with your calf",
                            "Legs", {"Calf"}, {"weight", "reps"})};
-        for (auto iter : testEx) {
+        for (auto const& iter : testEx) {
             std::string musclesWorked = "";
             std::string type = "";
             for (auto bter : iter.getMusclesWorked()) {
@@ -277,7 +277,7 @@ TEST_F(HistoryTest, GetHistoryTest) {
     EXPECT_FALSE(hist.empty());
     EXPECT_EQ(hist.size(), 6);
     int index = 0;
-    for (auto iter : hist) {
+    for (auto const& iter : hist) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         if (index < 3) {
             EXPECT_EQ(time, tpMarch4);
@@ -300,7 +300,7 @@ TEST_F(HistoryTest, GetHistoryTest) {
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
-        index++;
+        ++index;
     }
     EXPECT_EQ(index, 6);
 }
@@ -310,7 +310,8 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         std::chrono::sys_days{std::chrono::February / 15 / 2024},
         std::chrono::sys_days{std::chrono::February / 25 / 2024});
 
-    for (auto iter : slice) {
+    EXPECT_FALSE(slice.empty());
+    for (auto const& iter : slice) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb20);
         EXPECT_EQ(woPlan, "Full-Body Workout");
@@ -325,7 +326,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
     slice = h3.getSliceHistory(
         std::chrono::sys_days{std::chrono::February / 05 / 2024},
         std::chrono::sys_days{std::chrono::February / 15 / 2024});
-    for (auto iter : slice) {
+
+    EXPECT_FALSE(slice.empty());
+    for (auto const& iter : slice) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb10);
         EXPECT_EQ(woPlan, "Upper-Body Workout");
@@ -339,9 +342,13 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
     }
 
     slice = h3.getSliceHistory(
-        std::chrono::sys_days{std::chrono::February / 10 / 2024},
-        std::chrono::sys_days{std::chrono::February / 10 / 2024});
-    for (auto iter : slice) {
+        std::chrono::sys_days{std::chrono::February / 10 / 2024} +
+            std::chrono::hours(12),
+        std::chrono::sys_days{std::chrono::February / 10 / 2024} +
+            std::chrono::hours(12) + std::chrono::seconds(1));
+
+    EXPECT_FALSE(slice.empty());
+    for (auto const& iter : slice) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb10);
         EXPECT_EQ(woPlan, "Upper-Body Workout");
@@ -359,7 +366,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         std::chrono::sys_days{std::chrono::February / 10 / 2024} +
             std::chrono::hours(23) + std::chrono::minutes(59) +
             std::chrono::seconds(59) + std::chrono::milliseconds(99));
-    for (auto iter : slice) {
+
+    EXPECT_FALSE(slice.empty());
+    for (auto const& iter : slice) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb10);
         EXPECT_EQ(woPlan, "Upper-Body Workout");
@@ -376,7 +385,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         std::chrono::sys_days{std::chrono::February / 05 / 2024},
         std::chrono::sys_days{std::chrono::February / 25 / 2024});
     int index = 0;
-    for (auto iter : slice) {
+
+    EXPECT_FALSE(slice.empty());
+    for (auto const& iter : slice) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         if (index < 3) {
             EXPECT_EQ(time, tpFeb10);
@@ -399,7 +410,7 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
-        index++;
+        ++index;
     }
     EXPECT_EQ(index, 6);
 
@@ -407,7 +418,9 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         std::chrono::sys_days{std::chrono::July / 05 / 2022},
         std::chrono::sys_days{std::chrono::August / 16 / 2026});
     index = 0;
-    for (auto iter : slice) {
+
+    EXPECT_FALSE(slice.empty());
+    for (auto const& iter : slice) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         if (index < 3) {
             EXPECT_EQ(time, tpFeb10);
@@ -430,13 +443,18 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
-        index++;
+        ++index;
     }
     EXPECT_EQ(index, 6);
 }
 
 TEST_F(HistoryTest, GetHistoryEmptySliceTest) {
     auto slice = h3.getSliceHistory(
+        std::chrono::sys_days{std::chrono::February / 10 / 2024},
+        std::chrono::sys_days{std::chrono::February / 10 / 2024});
+    EXPECT_TRUE(slice.empty());
+
+    slice = h3.getSliceHistory(
         std::chrono::sys_days{std::chrono::January / 7 / 2024},
         std::chrono::sys_days{std::chrono::February / 4 / 2024});
     EXPECT_TRUE(slice.empty());
@@ -493,7 +511,7 @@ TEST_F(HistoryTest, GetHistoryBadSliceTest) {
 TEST_F(HistoryTest, GetHistoryItemTest) {
     auto hist = h1.getHistory();
     auto iter = hist.begin();
-    iter++;
+    ++iter;
     auto histItem = h1.getItem(iter);
 
     EXPECT_EQ(hist.size(), 6);
@@ -528,7 +546,7 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
-    iter++;
+    ++iter;
     {
         const auto [date, woPlan, excer, type1, type2] = *iter;
         EXPECT_EQ(date, tpMarch4);
@@ -803,7 +821,7 @@ TEST_F(HistoryTest, SaveHistoryTest) {
             EXPECT_EQ(db->getColumn(4).getInt(), 60);
             EXPECT_EQ(db->getColumn(5).getInt(), 10);
         }
-        iter++;
+        ++iter;
     }
 }
 
@@ -834,8 +852,9 @@ TEST_F(HistoryTest, SaveHistoryOverwriteTest) {
             EXPECT_EQ(db->getColumn(4).getInt(), 60);
             EXPECT_EQ(db->getColumn(5).getInt(), 10);
         }
-        iter++;
+        ++iter;
     }
+    EXPECT_EQ(iter, 6);
 }
 
 TEST_F(HistoryTest, OverwriteEmptyHistorySaveTest) {

@@ -11,7 +11,7 @@ std::map<size_t, float> Lab::Analytics::mapRepEstimates(size_t reps,
     std::map<size_t, float> est;
     est[reps] = weight;
     if (reps != 1) est[1] = weight * (36.0 / (37.0 - reps));
-    for (size_t index = 1; index <= 12; index++) {
+    for (size_t index = 1; index <= 12; ++index) {
         if (index != reps) {
             switch (index) {
                 case 2:
@@ -58,13 +58,14 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
                                  const History &hist) {
     std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
 
+    const auto &excerciseType = exc.getType();
     if ((type == "reps" || type == "weight" || type == "time" ||
          type == "distance") &&
-        std::find(exc.getType().cbegin(), exc.getType().cend(), type) !=
-            exc.getType().cend()) {
+        std::find(excerciseType.cbegin(), excerciseType.cend(), type) !=
+            excerciseType.cend()) {
         size_t typeIndexInTuple =
-            std::find(exc.getType().cbegin(), exc.getType().cend(), type) -
-            exc.getType().cbegin() +
+            std::find(excerciseType.cbegin(), excerciseType.cend(), type) -
+            excerciseType.cbegin() +
             3;  // In history tuple types are index 3 and 4
 
         for (auto const &historyIter : hist.getHistory()) {
@@ -199,7 +200,9 @@ Lab::Analytics::mapWeightForRep(const Excercise &exc, const History &hist) {
                     map[std::get<4>(historyIter)] = std::map<
                         std::chrono::time_point<std::chrono::system_clock>,
                         size_t>(
-                        {{std::get<0>(historyIter), std::get<3>(historyIter)}});
+                        {{std::chrono::time_point_cast<std::chrono::days>(
+                              std::get<0>(historyIter)),
+                          std::get<3>(historyIter)}});
                 }
             }
         }
@@ -212,12 +215,13 @@ Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
                                const History &hist) {
     std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
 
+    const auto &excerciseType = exc.getType();
     if ((type == "reps" || type == "time" || type == "distance") &&
-        std::find(exc.getType().cbegin(), exc.getType().cend(), type) !=
-            exc.getType().cend()) {
+        std::find(excerciseType.cbegin(), excerciseType.cend(), type) !=
+            excerciseType.cend()) {
         size_t typeIndexInTuple =
-            std::find(exc.getType().cbegin(), exc.getType().cend(), type) -
-            exc.getType().cbegin() +
+            std::find(excerciseType.cbegin(), excerciseType.cend(), type) -
+            excerciseType.cbegin() +
             3;  // In history tuple types are index 3 and 4
 
         for (auto const &historyIter : hist.getHistory()) {
@@ -252,334 +256,6 @@ Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
                         index->second += (std::get<3>(historyIter) *
                                           std::get<4>(historyIter));
                     }
-                }
-            }
-        }
-    }
-    return map;
-}
-
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
-Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
-                                   std::string_view periodType,
-                                   const History &hist) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
-    //@param valueType 1 of ["workouts", "volume", "sets", "reps",
-    //"workout_duration"]
-    //@param periodType 1 of ["day", "week", "month", "year"]
-    if (periodType == "days") {
-        if ((valueType == "reps")) {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(std::get<2>(historyIter).getType().cbegin(),
-                              std::get<2>(historyIter).getType().cend(),
-                              valueType) !=
-                    std::get<2>(historyIter).getType().cend()) {
-                    size_t valueTypeIndexInTuple =
-                        std::find(std::get<2>(historyIter).getType().cbegin(),
-                                  std::get<2>(historyIter).getType().cend(),
-                                  valueType) -
-                        std::get<2>(historyIter).getType().cbegin() +
-                        3;  // In history tuple valueTypes are index 3 and 4
-                    auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = (valueTypeIndexInTuple == 3
-                                         ? std::get<3>(historyIter)
-                                         : std::get<4>(historyIter));
-                    } else {
-                        index->second += (valueTypeIndexInTuple == 3
-                                              ? std::get<3>(historyIter)
-                                              : std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "sets") {
-            for (auto const &historyIter : hist.getHistory()) {
-                auto date = std::chrono::time_point_cast<std::chrono::days>(
-                    std::get<0>(historyIter));
-                auto index = map.find(date);
-
-                if (index == map.end()) {
-                    map[date] = 1;
-                } else {
-                    index->second += 1;
-                }
-            }
-        } else if (valueType == "volume") {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter).getType() ==
-                    std::vector<std::string>({"weight", "reps"})) {
-                    auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            std::get<3>(historyIter) * std::get<4>(historyIter);
-                    } else {
-                        index->second += (std::get<3>(historyIter) *
-                                          std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "workouts") {
-            std::vector<std::chrono::time_point<std::chrono::system_clock>>
-                dayCounted;
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(dayCounted.cbegin(), dayCounted.cend(),
-                              std::get<0>(historyIter)) == dayCounted.cend()) {
-                    auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = 1;
-                    } else {
-                        index->second += 1;
-                    }
-                    dayCounted.push_back(std::get<0>(historyIter));
-                }
-            }
-        }
-    }
-    if (periodType == "weeks") {
-        if ((valueType == "reps")) {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(std::get<2>(historyIter).getType().cbegin(),
-                              std::get<2>(historyIter).getType().cend(),
-                              valueType) !=
-                    std::get<2>(historyIter).getType().cend()) {
-                    size_t valueTypeIndexInTuple =
-                        std::find(std::get<2>(historyIter).getType().cbegin(),
-                                  std::get<2>(historyIter).getType().cend(),
-                                  valueType) -
-                        std::get<2>(historyIter).getType().cbegin() +
-                        3;  // In history tuple valueTypes are index 3 and 4
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::weeks>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = (valueTypeIndexInTuple == 3
-                                         ? std::get<3>(historyIter)
-                                         : std::get<4>(historyIter));
-                    } else {
-                        index->second += (valueTypeIndexInTuple == 3
-                                              ? std::get<3>(historyIter)
-                                              : std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "sets") {
-            for (auto const &historyIter : hist.getHistory()) {
-                auto date = std::chrono::time_point_cast<std::chrono::weeks>(
-                    std::get<0>(historyIter));
-                auto index = map.find(date);
-
-                if (index == map.end()) {
-                    map[date] = 1;
-                } else {
-                    index->second += 1;
-                }
-            }
-        } else if (valueType == "volume") {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter).getType() ==
-                    std::vector<std::string>({"weight", "reps"})) {
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::weeks>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            std::get<3>(historyIter) * std::get<4>(historyIter);
-                    } else {
-                        index->second += (std::get<3>(historyIter) *
-                                          std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "workouts") {
-            std::vector<std::chrono::time_point<std::chrono::system_clock>>
-                dayCounted;
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(dayCounted.cbegin(), dayCounted.cend(),
-                              std::get<0>(historyIter)) == dayCounted.cend()) {
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::weeks>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = 1;
-                    } else {
-                        index->second += 1;
-                    }
-                    dayCounted.push_back(std::get<0>(historyIter));
-                }
-            }
-        }
-    }
-    if (periodType == "months") {
-        if ((valueType == "reps")) {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(std::get<2>(historyIter).getType().cbegin(),
-                              std::get<2>(historyIter).getType().cend(),
-                              valueType) !=
-                    std::get<2>(historyIter).getType().cend()) {
-                    size_t valueTypeIndexInTuple =
-                        std::find(std::get<2>(historyIter).getType().cbegin(),
-                                  std::get<2>(historyIter).getType().cend(),
-                                  valueType) -
-                        std::get<2>(historyIter).getType().cbegin() +
-                        3;  // In history tuple valueTypes are index 3 and 4
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::months>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = (valueTypeIndexInTuple == 3
-                                         ? std::get<3>(historyIter)
-                                         : std::get<4>(historyIter));
-                    } else {
-                        index->second += (valueTypeIndexInTuple == 3
-                                              ? std::get<3>(historyIter)
-                                              : std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "sets") {
-            for (auto const &historyIter : hist.getHistory()) {
-                auto date = std::chrono::time_point_cast<std::chrono::months>(
-                    std::get<0>(historyIter));
-                auto index = map.find(date);
-
-                if (index == map.end()) {
-                    map[date] = 1;
-                } else {
-                    index->second += 1;
-                }
-            }
-        } else if (valueType == "volume") {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter).getType() ==
-                    std::vector<std::string>({"weight", "reps"})) {
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::months>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            std::get<3>(historyIter) * std::get<4>(historyIter);
-                    } else {
-                        index->second += (std::get<3>(historyIter) *
-                                          std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "workouts") {
-            std::vector<std::chrono::time_point<std::chrono::system_clock>>
-                dayCounted;
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(dayCounted.cbegin(), dayCounted.cend(),
-                              std::get<0>(historyIter)) == dayCounted.cend()) {
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::months>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = 1;
-                    } else {
-                        index->second += 1;
-                    }
-                    dayCounted.push_back(std::get<0>(historyIter));
-                }
-            }
-        }
-    }
-    if (periodType == "years") {
-        if ((valueType == "reps")) {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(std::get<2>(historyIter).getType().cbegin(),
-                              std::get<2>(historyIter).getType().cend(),
-                              valueType) !=
-                    std::get<2>(historyIter).getType().cend()) {
-                    size_t valueTypeIndexInTuple =
-                        std::find(std::get<2>(historyIter).getType().cbegin(),
-                                  std::get<2>(historyIter).getType().cend(),
-                                  valueType) -
-                        std::get<2>(historyIter).getType().cbegin() +
-                        3;  // In history tuple valueTypes are index 3 and 4
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::years>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = (valueTypeIndexInTuple == 3
-                                         ? std::get<3>(historyIter)
-                                         : std::get<4>(historyIter));
-                    } else {
-                        index->second += (valueTypeIndexInTuple == 3
-                                              ? std::get<3>(historyIter)
-                                              : std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "sets") {
-            for (auto const &historyIter : hist.getHistory()) {
-                auto date = std::chrono::time_point_cast<std::chrono::years>(
-                    std::get<0>(historyIter));
-                auto index = map.find(date);
-
-                if (index == map.end()) {
-                    map[date] = 1;
-                } else {
-                    index->second += 1;
-                }
-            }
-        } else if (valueType == "volume") {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter).getType() ==
-                    std::vector<std::string>({"weight", "reps"})) {
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::years>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            std::get<3>(historyIter) * std::get<4>(historyIter);
-                    } else {
-                        index->second += (std::get<3>(historyIter) *
-                                          std::get<4>(historyIter));
-                    }
-                }
-            }
-        } else if (valueType == "workouts") {
-            std::vector<std::chrono::time_point<std::chrono::system_clock>>
-                dayCounted;
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::find(dayCounted.cbegin(), dayCounted.cend(),
-                              std::get<0>(historyIter)) == dayCounted.cend()) {
-                    auto date =
-                        std::chrono::time_point_cast<std::chrono::years>(
-                            std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] = 1;
-                    } else {
-                        index->second += 1;
-                    }
-                    dayCounted.push_back(std::get<0>(historyIter));
                 }
             }
         }

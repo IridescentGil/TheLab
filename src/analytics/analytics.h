@@ -53,8 +53,10 @@ mapTotalValues(std::string_view type, const Excercise &exc,
 @return A map of dates in relation to @param periodType and the values of @param
 Valuetype
 */
+template <typename Rep, typename Period>
 std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
-mapValuesPerPeriod(std::string_view valueType, std::string_view periodType,
+mapValuesPerPeriod(std::string_view valueType,
+                   std::chrono::duration<Rep, Period> periodType,
                    const History &hist);
 
 std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
@@ -74,3 +76,100 @@ constrainDate(
     const std::chrono::time_point<std::chrono::system_clock> &endDate);
 }  // namespace Analytics
 }  // namespace Lab
+
+template <typename Rep, typename Period>
+std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
+                                   std::chrono::duration<Rep, Period>,
+                                   const History &hist) {
+    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
+
+    if ((valueType == "reps")) {
+        for (auto const &historyIter : hist.getHistory()) {
+            if (std::find(std::get<2>(historyIter).getType().cbegin(),
+                          std::get<2>(historyIter).getType().cend(),
+                          valueType) !=
+                std::get<2>(historyIter).getType().cend()) {
+                size_t valueTypeIndexInTuple =
+                    std::find(std::get<2>(historyIter).getType().cbegin(),
+                              std::get<2>(historyIter).getType().cend(),
+                              valueType) -
+                    std::get<2>(historyIter).getType().cbegin() +
+                    3;  // In history tuple valueTypes are index 3 and 4
+                std::chrono::time_point<std::chrono::system_clock,
+                                        std::chrono::duration<Rep, Period>>
+                    date = std::chrono::time_point_cast<
+                        std::chrono::duration<Rep, Period>>(
+                        std::get<0>(historyIter));
+                auto index = map.find(date);
+
+                if (index == map.end()) {
+                    map[date] =
+                        (valueTypeIndexInTuple == 3 ? std::get<3>(historyIter)
+                                                    : std::get<4>(historyIter));
+                } else {
+                    index->second +=
+                        (valueTypeIndexInTuple == 3 ? std::get<3>(historyIter)
+                                                    : std::get<4>(historyIter));
+                }
+            }
+        }
+    } else if (valueType == "sets") {
+        for (auto const &historyIter : hist.getHistory()) {
+            std::chrono::time_point<std::chrono::system_clock,
+                                    std::chrono::duration<Rep, Period>>
+                date = std::chrono::time_point_cast<
+                    std::chrono::duration<Rep, Period>>(
+                    std::get<0>(historyIter));
+            auto index = map.find(date);
+
+            if (index == map.end()) {
+                map[date] = 1;
+            } else {
+                index->second += 1;
+            }
+        }
+    } else if (valueType == "volume") {
+        for (auto const &historyIter : hist.getHistory()) {
+            if (std::get<2>(historyIter).getType() ==
+                std::vector<std::string>({"weight", "reps"})) {
+                std::chrono::time_point<std::chrono::system_clock,
+                                        std::chrono::duration<Rep, Period>>
+                    date = std::chrono::time_point_cast<
+                        std::chrono::duration<Rep, Period>>(
+                        std::get<0>(historyIter));
+                auto index = map.find(date);
+
+                if (index == map.end()) {
+                    map[date] =
+                        std::get<3>(historyIter) * std::get<4>(historyIter);
+                } else {
+                    index->second +=
+                        (std::get<3>(historyIter) * std::get<4>(historyIter));
+                }
+            }
+        }
+    } else if (valueType == "workouts") {
+        std::vector<std::chrono::time_point<std::chrono::system_clock>>
+            dayCounted;
+        for (auto const &historyIter : hist.getHistory()) {
+            if (std::find(dayCounted.cbegin(), dayCounted.cend(),
+                          std::get<0>(historyIter)) == dayCounted.cend()) {
+                std::chrono::time_point<std::chrono::system_clock,
+                                        std::chrono::duration<Rep, Period>>
+                    date = std::chrono::time_point_cast<
+                        std::chrono::duration<Rep, Period>>(
+                        std::get<0>(historyIter));
+                auto index = map.find(date);
+
+                if (index == map.end()) {
+                    map[date] = 1;
+                } else {
+                    index->second += 1;
+                }
+                dayCounted.push_back(std::get<0>(historyIter));
+            }
+        }
+    }
+    return map;
+}

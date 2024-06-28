@@ -95,6 +95,49 @@ TEST(TypeCheckingGroup, WrongTVariableTest) {
     EXPECT_FALSE(test.isType(v4));
 }
 
+TEST(OperatorOverrideGroup, EqualityTest) {
+    Lab::Excercise ex1{"Bench Press",
+                       "Flat back bench press with a barbell",
+                       "Chest",
+                       {"Pectorals", "Triceps"},
+                       {"Distance"}};
+    Lab::Excercise ex2{"Bench Press",
+                       "Flat back bench press with a barbell",
+                       "Chest",
+                       {"Pectorals", "Triceps"},
+                       {"Distance"}};
+    Lab::Excercise ex3{"Row",
+                       "Rowg in a row machine",
+                       "Cardio",
+                       {"Glutes", "Quads", "Lower-back", "Upper-back"},
+                       {"Time"}};
+
+    EXPECT_TRUE(ex1 == ex2);
+    EXPECT_FALSE(ex1 == ex3);
+}
+
+TEST(OperatorOverrideGroup, ConstructorsTest) {
+    Lab::Excercise ex1{"Bench Press",
+                       "Flat back bench press with a barbell",
+                       "Chest",
+                       {"Pectorals", "Triceps"},
+                       {"Distance"}};
+    Lab::Excercise ex2 = {"Bench Press",
+                          "Flat back bench press with a barbell",
+                          "Chest",
+                          {"Pectorals", "Triceps"},
+                          {"Distance"}};
+    Lab::Excercise ex3 =
+        Lab::Excercise("Bench Press", "Flat back bench press with a barbell",
+                       "Chest", {"Pectorals", "Triceps"}, {"Distance"});
+    Lab::Excercise ex4("Bench Press", "Flat back bench press with a barbell",
+                       "Chest", {"Pectorals", "Triceps"}, {"Distance"});
+
+    EXPECT_TRUE(ex1 == ex2);
+    EXPECT_TRUE(ex1 == ex3);
+    EXPECT_TRUE(ex1 == ex4);
+}
+
 TEST_F(ExcerciseTest, GetValuesTest) {
     EXPECT_EQ(e1.getName(), "Deadlift");
     EXPECT_EQ(e1.getDescription(), "Lift Barbell off the floor");
@@ -102,11 +145,11 @@ TEST_F(ExcerciseTest, GetValuesTest) {
     std::vector<std::string> tVec = e1.getMusclesWorked();
     auto it = tVec.cbegin();
     EXPECT_EQ(*it, "Glutes");
-    it++;
+    ++it;
     EXPECT_EQ(*it, "Hamstring");
-    it++;
+    ++it;
     EXPECT_EQ(*it, "Lower-back");
-    it++;
+    ++it;
     EXPECT_EQ(it, tVec.cend());
     std::vector<std::string> tType{"weight", "reps"};
     EXPECT_EQ(e1.getType(), tType);
@@ -122,7 +165,7 @@ TEST_F(ExcerciseTest, DescriptionChangedTest) {
 TEST_F(ExcerciseTest, ArrayValuesTest) { ASSERT_NE(e5, nullptr); }
 
 TEST_F(ExcerciseTest, ArrayEmptyIndexValuesTest) {
-    for (int x = 0; x < 10; x++) {
+    for (int x = 0; x < 10; ++x) {
         ASSERT_EQ(e5[x].getName(), "");
         ASSERT_EQ(e5[x].getDescription(), "");
         ASSERT_EQ(e5[x].getMuscleGroup(), "");
