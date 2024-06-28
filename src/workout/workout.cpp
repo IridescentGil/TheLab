@@ -45,7 +45,7 @@ void Lab::Workout::changeExcercise(
     const int &type2Val) {
     while (start != end) {
         *start = Lab::ExcerciseData{newExcercise, type1Val, type2Val};
-        start++;
+        ++start;
     }
 }
 
@@ -56,12 +56,15 @@ void Lab::Workout::editName(const std::string &workoutName) {
 bool Lab::Workout::save() {
     size_t size = 0;
     db->prepare("SELECT exOrderNum FROM workouts WHERE workoutName = ?", name);
-    while (db->stepExec()) size++;
+    while (db->stepExec()) ++size;
 
-    if (workout.size() < size) db->exec("DELETE FROM workouts");
+    if (workout.size() < size) {
+        db->exec("DELETE FROM workouts");
+        size = 0;
+    }
 
     size_t index = 0;
-    for (auto iter = workout.cbegin(); iter != workout.cend(); iter++) {
+    for (auto iter = workout.cbegin(); iter != workout.cend(); ++iter) {
         const auto &[exc, type1, type2] = *iter;
         int place = iter - workout.cbegin();
 
@@ -79,7 +82,7 @@ bool Lab::Workout::save() {
                     place) == -1)
                 return false;
         }
-        index++;
+        ++index;
         if (!db->execQuery()) return false;
     }
     return true;

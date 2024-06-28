@@ -143,7 +143,7 @@ TEST_F(WorkoutTest, SetWoPlanTest) {
                 "the elbow to bring the bar towards your head",
                 "Arms", {"Tricep"}, {"weight", "reps"}),
             40, 8));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertExcerciseEqual, iter->exc,
         Lab::Excercise("Overhead Press",
@@ -151,14 +151,14 @@ TEST_F(WorkoutTest, SetWoPlanTest) {
                        {"Pectorals", "Tricep"}, {"weight", "reps"}));
     EXPECT_EQ(iter->type1, 100);
     EXPECT_EQ(iter->type2, 1);
-    iter++;
+    ++iter;
     const auto [excer, type1, type2] = *iter;
     EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer,
                         Lab::Excercise("Jump Rope", "Skip with skipping rope",
                                        "Cardio", {""}, {"reps"}));
     EXPECT_EQ(type1, 55);
     EXPECT_EQ(type2, 0);
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -166,7 +166,7 @@ TEST_F(WorkoutTest, SetWoPlanTest) {
                            "Bent over row, with chest supported by the bench",
                            "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             80, 12));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, plan1Check.cend());
 }
 
@@ -191,7 +191,7 @@ TEST_F(WorkoutTest, OverrideWoPlanTest) {
             Lab::Excercise("Running (Treadmill)", "Running on a treadmill",
                            "Cardio", {""}, {"time"}),
             3600, 0));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -200,7 +200,7 @@ TEST_F(WorkoutTest, OverrideWoPlanTest) {
                            "Chest", {"Pectorals", "Tricep"},
                            {"weight", "reps"}),
             120, 10));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, woPlan.cend());
 }
 
@@ -286,7 +286,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 12);
         }
-        i++;
+        ++i;
     }
 }
 
@@ -306,7 +306,7 @@ TEST_F(WorkoutTest, AppendExcerciseTest) {
             Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
                            "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -314,7 +314,7 @@ TEST_F(WorkoutTest, AppendExcerciseTest) {
                            "Standing bent forward, lift dumbbell outwards",
                            "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -323,7 +323,7 @@ TEST_F(WorkoutTest, AppendExcerciseTest) {
                            "pullup until your chin is over the bar",
                            "Back", {"Upper-back"}, {"reps"}),
             10, 0));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -331,7 +331,7 @@ TEST_F(WorkoutTest, AppendExcerciseTest) {
                            "Row at a chest supported row machine", "Back",
                            {"Upper-Back", "Lats"}, {"weight", "reps"}),
             50, 14));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, woPlan.cend());
 }
 
@@ -357,7 +357,7 @@ TEST_F(WorkoutTest, ChangeExcerciseTest) {
                            "Row at a chest supported row machine", "Back",
                            {"Upper-Back", "Lats"}, {"weight", "reps"}),
             50, 14));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -365,7 +365,7 @@ TEST_F(WorkoutTest, ChangeExcerciseTest) {
                            "Standing bent forward, lift dumbbell outwards",
                            "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -374,7 +374,7 @@ TEST_F(WorkoutTest, ChangeExcerciseTest) {
                            "pullup until your chin is over the bar",
                            "Back", {"Upper-back"}, {"reps"}),
             10, 0));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, woPlan.cend());
 }
 
@@ -387,7 +387,7 @@ TEST_F(WorkoutTest, ChangedMulipleExcerciseTest) {
             Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
                            "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -395,7 +395,7 @@ TEST_F(WorkoutTest, ChangedMulipleExcerciseTest) {
                            "Standing bent forward, lift dumbbell outwards",
                            "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -404,7 +404,7 @@ TEST_F(WorkoutTest, ChangedMulipleExcerciseTest) {
                            "pullup until your chin is over the bar",
                            "Back", {"Upper-back"}, {"reps"}),
             10, 0));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, woPlan.cend());
     e3.changeExcercise(
         woPlan.begin(), woPlan.begin() + 3,
@@ -433,7 +433,7 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
             Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
                            "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
             50, 5));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -441,7 +441,7 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
                            "Standing bent forward, lift dumbbell outwards",
                            "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -450,7 +450,7 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
                            "pullup until your chin is over the bar",
                            "Back", {"Upper-back"}, {"reps"}),
             10, 0));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, woPlan.end());
     iter = woPlan.begin();
     e3.remExcercise(iter);
@@ -462,7 +462,7 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
                            "Standing bent forward, lift dumbbell outwards",
                            "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
-    iter++;
+    ++iter;
     EXPECT_PRED_FORMAT2(
         AssertWorkoutEqual, *iter,
         Lab::ExcerciseData(
@@ -471,7 +471,7 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
                            "pullup until your chin is over the bar",
                            "Back", {"Upper-back"}, {"reps"}),
             10, 0));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, woPlan.end());
     e3.remExcercise(woPlan.end() - 1);
     iter = woPlan.begin();
@@ -483,7 +483,7 @@ TEST_F(WorkoutTest, RemoveExcerciseTest) {
                            "Standing bent forward, lift dumbbell outwards",
                            "Back", {"Upper-back"}, {"weight", "reps"}),
             10, 10));
-    iter++;
+    ++iter;
     EXPECT_EQ(iter, woPlan.end());
     e3.remExcercise(woPlan.begin());
     EXPECT_TRUE(woPlan.empty());
@@ -606,7 +606,7 @@ TEST_F(WorkoutTest, SaveWorkOutPlanTest) {
 
 TEST_F(WorkoutTest, WoPlanSetSaveTest) {
     e4.editName("Calf Crusher");
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; ++i)
         e4.addExcercise(
             Lab::Excercise("Calf Press",
                            "Lift yourself on your tiptoes with your calf",
@@ -621,7 +621,7 @@ TEST_F(WorkoutTest, WoPlanSetSaveTest) {
         EXPECT_EQ(db->getColumn(2).getString(), "Calf Press");
         EXPECT_EQ(db->getColumn(3).getInt(), 30);
         EXPECT_EQ(db->getColumn(4).getInt(), 10);
-        i++;
+        ++i;
     }
 }
 

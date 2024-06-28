@@ -1,19 +1,12 @@
 #include "testHelper.h"
 
-bool excerEqual(Lab::Excercise a, Lab::Excercise b) {
-    if (a.getName() != b.getName()) return false;
-    if (a.getDescription() != b.getDescription()) return false;
-    if (a.getMuscleGroup() != b.getMuscleGroup()) return false;
-    if (a.getMusclesWorked() != b.getMusclesWorked()) return false;
-    if (a.getType() != b.getType()) return false;
-    return true;
-};
+bool excerEqual(Lab::Excercise a, Lab::Excercise b) { return a == b; };
 
 bool workoutEqual(Lab::ExcerciseData a, Lab::ExcerciseData b) {
     const auto [aE, aT1, aT2] = a;
     const auto [bE, bT1, bT2] = b;
 
-    if (!excerEqual(aE, bE)) return false;
+    if (aE != bE) return false;
     if (aT1 != bT1) return false;
     if (aT2 != bT2) return false;
     return true;
@@ -36,7 +29,18 @@ testing::AssertionResult AssertWorkoutEqual(const char* m_expr,
     if (workoutEqual(m, n)) return testing::AssertionSuccess();
 
     return testing::AssertionFailure()
-           << m_expr << " and " << n_expr << " workout data are not equal";
+           << "Expected equality of ExcerciseData:\n"
+           << m_expr << "\n which is:\n ExcerciseData(Excercise("
+           << m.exc.getName() << ", " << m.exc.getDescription() << ", "
+           << m.exc.getMuscleGroup() << ", " << m.exc.getMusclesWorked().size()
+           << ", " << m.exc.getType().size() << "), " << m.type1 << ", "
+           << m.type2 << ")"
+           << "\nand\n"
+           << n_expr << " which is:\n ExcerciseData(Excercise("
+           << n.exc.getName() << ", " << n.exc.getDescription() << ", "
+           << n.exc.getMuscleGroup() << ", " << n.exc.getMusclesWorked().size()
+           << ", " << n.exc.getType().size() << "), " << n.type1 << ", "
+           << n.type2 << ")";
 }
 
 bool historyEqual(
@@ -48,7 +52,7 @@ bool historyEqual(
         b) {
     if (a.size() != b.size()) return false;
     for (auto iter = a.cbegin(), bter = b.cbegin(); iter != a.cend();
-         iter++, bter++) {
+         ++iter, ++bter) {
         auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
         auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
         if (dateA != dateB) return false;
@@ -76,53 +80,53 @@ int historydiff(
     }
     if (a.size() <= b.size()) {
         for (auto iter = a.cbegin(), bter = b.cbegin(); iter != a.cend();
-             iter++, bter++) {
+             ++iter, ++bter) {
             auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
             auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
             if (dateA != dateB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (workoutA != workoutB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (!excerEqual(excerciseA, excerciseB)) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type1A != type1B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type2A != type2B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
         }
     } else {
         for (auto iter = a.cbegin(), bter = b.cbegin(); bter != b.cend();
-             iter++, bter++) {
+             ++iter, ++bter) {
             auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
             auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
             if (dateA != dateB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (workoutA != workoutB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (!excerEqual(excerciseA, excerciseB)) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type1A != type1B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type2A != type2B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
         }
@@ -146,53 +150,53 @@ bool historyNEqual(
                             static_cast<int>(b.size()));
     if (a.size() <= b.size()) {
         for (auto iter = a.cbegin(), bter = b.cbegin(); iter != a.cend();
-             iter++, bter++) {
+             ++iter, ++bter) {
             auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
             auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
             if (dateA != dateB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (workoutA != workoutB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (!excerEqual(excerciseA, excerciseB)) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type1A != type1B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type2A != type2B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
         }
     } else {
         for (auto iter = a.cbegin(), bter = b.cbegin(); bter != b.cend();
-             iter++, bter++) {
+             ++iter, ++bter) {
             auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
             auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
             if (dateA != dateB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (workoutA != workoutB) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (!excerEqual(excerciseA, excerciseB)) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type1A != type1B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
             if (type2A != type2B) {
-                nDiff++;
+                ++nDiff;
                 continue;
             }
         }
