@@ -14,12 +14,13 @@ Lab::DBConn::DBConn(std::string_view name)
 void Lab::DBConn::createTables() {
     try {
         db.exec("PRAGMA foreign_keys = ON");
-        if (!db.tableExists("excercises"))
+        if (!db.tableExists("excercises")) {
             db.exec(
                 "CREATE TABLE excercises (name TEXT NOT NULL PRIMARY KEY, "
                 "description "
                 "TEXT, muscleGroup TEXT, musclesTargeted TEXT, type TEXT)");
-        if (!db.tableExists("workouts"))
+        }
+        if (!db.tableExists("workouts")) {
             db.exec(
                 "CREATE TABLE workouts ("
                 "workoutName TEXT NOT NULL, exOrderNum INTEGER NOT NULL, "
@@ -27,7 +28,8 @@ void Lab::DBConn::createTables() {
                 "type2 INTEGER, PRIMARY KEY (workoutName, exOrderNum), FOREIGN "
                 "KEY(excercise) REFERENCES "
                 "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
-        if (!db.tableExists("workoutPlans"))
+        }
+        if (!db.tableExists("workoutPlans")) {
             db.exec(
                 "CREATE TABLE workoutPlans (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
@@ -37,7 +39,8 @@ void Lab::DBConn::createTables() {
                 "REFERENCES "
                 "workouts(workoutName, exOrderNum) ON UPDATE CASCADE ON DELETE "
                 "CASCADE)");
-        if (!db.tableExists("history"))
+        }
+        if (!db.tableExists("history")) {
             db.exec(
                 "CREATE TABLE history (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
@@ -46,7 +49,8 @@ void Lab::DBConn::createTables() {
                 "type1 INTEGER NOT NULL, type2 INTEGER, FOREIGN KEY(excercise) "
                 "REFERENCES "
                 "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
-        if (!db.tableExists("bodyCondition"))
+        }
+        if (!db.tableExists("bodyCondition")) {
             db.exec(
                 "CREATE TABLE bodyCondition (date INTEGER NOT NULL PRIMARY "
                 "KEY, "
@@ -68,7 +72,8 @@ void Lab::DBConn::createTables() {
                 "NULL, "
                 "hamstringsCondition INTEGER NOT NULL, calfsCondition INTEGER "
                 "NOT NULL)");
-        if (!db.tableExists("bodyStats"))
+        }
+        if (!db.tableExists("bodyStats")) {
             db.exec(
                 "CREATE TABLE bodyStats (date INTEGER NOT NULL PRIMARY KEY, "
                 "weight "
@@ -85,17 +90,18 @@ void Lab::DBConn::createTables() {
                 "INTEGER, "
                 "thighRightMeasurement INTEGER, thighLeftMeasurement INTEGER, "
                 "calfRightMeasurement INTEGER, calfLeftMeasurement INTEGER)");
+        }
     } catch (std::exception &e) {
-        std::cerr << "SQLite error: " << e.what() << std::endl;
+        std::cerr << "SQLite error: " << e.what() << '\n';
     }
 }
 
-int Lab::DBConn::exec(const std::string queryStr) {
+int Lab::DBConn::exec(const std::string &queryStr) {
     try {
         int ret = db.exec(queryStr);
         return ret > 0 ? 1 : -1;
     } catch (std::exception &e) {
-        std::cerr << "SQLite error: " << e.what() << std::endl;
+        std::cerr << "SQLite error: " << e.what() << '\n';
         return -1;
     }
 }
@@ -105,27 +111,26 @@ int Lab::DBConn::execQuery() {
         int ret = query.exec();
         return (ret >= 0) ? 1 : -1;
     } catch (std::exception &e) {
-        std::cerr << "SQLite error: " << e.what() << std::endl;
+        std::cerr << "SQLite error: " << e.what() << '\n';
         return -1;
     }
 }
 
-int Lab::DBConn::execMulti(const std::string queryStr) {
+int Lab::DBConn::execMulti(const std::string &queryStr) {
     try {
         query = SQLite::Statement(db, queryStr);
         return 1;
     } catch (std::exception &e) {
-        std::cerr << "SQLite error: " << e.what() << std::endl;
+        std::cerr << "SQLite error: " << e.what() << '\n';
         return -1;
     }
 }
 
 bool Lab::DBConn::stepExec() {
     try {
-        if (query.executeStep()) return true;
-        return false;
+        return query.executeStep();
     } catch (std::exception &e) {
-        std::cerr << "SQLite error: " << e.what() << std::endl;
+        std::cerr << "SQLite error: " << e.what() << '\n';
         return false;
     }
 }

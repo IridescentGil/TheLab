@@ -1,0 +1,10 @@
+UseColor: true
+Checks:
+  - clang-diagnostic-*
+  - clang-analyzer-*
+  - cppcoreguidelines-*
+  - readability-*
+  - portability-*
+  - performance-*
+  - bugprone-*
+  - -bugprone-easily-swappable-parameters

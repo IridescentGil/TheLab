@@ -1,10 +1,11 @@
 #include "body.h"
 
 #include <chrono>
+#include <utility>
 
 #include "database.h"
 
-Lab::Body::Body(std::shared_ptr<Lab::DBConn> dbBase) : db(dbBase) {
+Lab::Body::Body(std::shared_ptr<Lab::DBConn> dbBase) : db(std::move(dbBase)) {
     db->execMulti("SELECT * FROM bodyStats ORDER BY date DESC LIMIT 1");
     if (db->stepExec()) {
         weight = db->getColumn(1);
@@ -92,9 +93,12 @@ int Lab::Body::save() {
                 measure.chest, measure.waist, measure.hips,
                 measure.upperArmRight, measure.upperArmLeft,
                 measure.forearmRight, measure.forearmLeft, measure.thighRight,
-                measure.thighLeft, measure.calfRight, measure.calfLeft) == -1)
+                measure.thighLeft, measure.calfRight, measure.calfLeft) == -1) {
             return -1;
-        if (db->execQuery() == -1) return -2;
+        }
+        if (db->execQuery() == -1) {
+            return -2;
+        }
         measEdit = false;
         bodyEdit = false;
     }
@@ -113,9 +117,12 @@ int Lab::Body::save() {
                         condition.pectoral, condition.abs, condition.lats,
                         condition.upperBack, condition.lowerBack,
                         condition.quads, condition.glutes, condition.hamstring,
-                        condition.calf) == -1)
+                        condition.calf) == -1) {
             return -3;
-        if (db->execQuery() == -1) return -4;
+        }
+        if (db->execQuery() == -1) {
+            return -4;
+        }
         condEdit = false;
     }
 

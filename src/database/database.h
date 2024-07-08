@@ -21,11 +21,11 @@ class DBConn {
     DBConn(std::string_view);
 
     ///@brief Execute the query string; will not retrieve results
-    int exec(const std::string queryStr);
+    int exec(const std::string &queryStr);
     ///@brief Execute prepared query that doesnt retrieve results
     int execQuery();
     ///@brief prepare query that doesnt need replacements
-    int execMulti(const std::string queryStr);
+    int execMulti(const std::string &queryStr);
 
     /**
      * @name prepare
@@ -39,7 +39,7 @@ class DBConn {
      * @param args[in]
      */
     template <typename... Args>
-    int prepare(const std::string queryStr, const Args &...args);
+    int prepare(const std::string &queryStr, const Args &...args);
     /**
      * @brief Prepare a SQL statement giving the index of the first variable to
      * replace
@@ -48,7 +48,7 @@ class DBConn {
      * @param args[in]
      */
     template <typename T, typename... Args>
-    int prepare(std::size_t index, const std::string queryStr, const T &fArg,
+    int prepare(std::size_t index, const std::string &queryStr, const T &fArg,
                 const Args &...args);
     ///@}
 
@@ -61,7 +61,7 @@ class DBConn {
      * starts at 0
      * @returns Column
      */
-    auto getColumn(const std::size_t &index) { return query.getColumn(index); }
+    auto getColumn(const int &index) { return query.getColumn(index); }
 
    private:
     SQLite::Database db;
@@ -70,32 +70,33 @@ class DBConn {
 };
 
 template <typename T, typename... Args>
-int DBConn::prepare(std::size_t index, const std::string queryStr,
+int DBConn::prepare(std::size_t index, const std::string &queryStr,
                     const T &fArg, const Args &...args) {
     try {
-        if (index == 1) query = SQLite::Statement(db, queryStr);
+        if (index == 1) {
+            query = SQLite::Statement(db, queryStr);
+        }
         query.bind(index, fArg);
         if constexpr (sizeof...(args) > 0) {
-            if (this->prepare(index + 1, queryStr, args...) == 1)
+            if (this->prepare(index + 1, queryStr, args...) == 1) {
                 return 1;
-            else {
-                return -1;
             }
+            return -1;
         }
     } catch (std::exception &e) {
-        std::cerr << "SQLite error: " << e.what() << std::endl;
+        std::cerr << "SQLite error: " << e.what() << '\n';
         return -1;
     }
     return 1;
 }
 
 template <typename... Args>
-int DBConn::prepare(const std::string queryStr, const Args &...args) {
+int DBConn::prepare(const std::string &queryStr, const Args &...args) {
     try {
         query = SQLite::Statement(db, queryStr);
         SQLite::bind(query, args...);
     } catch (std::exception &e) {
-        std::cerr << "SQLite error: " << e.what() << std::endl;
+        std::cerr << "SQLite error: " << e.what() << '\n';
         return -1;
     }
     return 1;

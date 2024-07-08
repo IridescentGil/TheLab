@@ -48,7 +48,7 @@ class History {
                Lab::Excercise, int, int>
     getItem(std::vector<
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>>::iterator it)
+                       std::string, Lab::Excercise, int, int>>::iterator iter)
         const;
 
     bool save();
@@ -59,13 +59,14 @@ class History {
                        std::string, Lab::Excercise, int, int>> &newHistory);
 
     void addItem(const std::chrono::time_point<std::chrono::system_clock> &date,
-                 const std::string &workoutName, const Lab::Excercise &ex,
-                 const int &type1Val, const int &type2Val);
+                 const std::string &workoutName,
+                 const Lab::Excercise &excercise, const int &type1Val,
+                 const int &type2Val);
 
     void remItem(
         std::vector<
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>>::iterator it);
+                       std::string, Lab::Excercise, int, int>>::iterator iter);
     void remItem(
         std::vector<
             std::tuple<std::chrono::time_point<std::chrono::system_clock>,

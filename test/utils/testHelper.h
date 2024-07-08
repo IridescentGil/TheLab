@@ -6,60 +6,62 @@
 #include "excercise.h"
 #include "workout.h"
 
-bool excerEqual(Lab::Excercise a, Lab::Excercise b);
-bool workoutEqual(Lab::ExcerciseData a, Lab::ExcerciseData b);
+bool excerEqual(const Lab::Excercise& first, const Lab::Excercise& second);
+bool workoutEqual(const Lab::ExcerciseData& first,
+                  const Lab::ExcerciseData& second);
 bool historyEqual(
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        a,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        b);
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& first,
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& second);
 bool historyNEqual(
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        a,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        b,
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& first,
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& second,
     int diff);
 
-testing::AssertionResult AssertExcerciseEqual(const char* m_expr,
-                                              const char* n_expr,
-                                              Lab::Excercise m,
-                                              Lab::Excercise n);
-testing::AssertionResult AssertWorkoutEqual(const char* m_expr,
-                                            const char* n_expr,
-                                            Lab::ExcerciseData m,
-                                            Lab::ExcerciseData n);
+testing::AssertionResult AssertExcerciseEqual(const char* firstExpr,
+                                              const char* secondExpr,
+                                              const Lab::Excercise& first,
+                                              const Lab::Excercise& second);
+testing::AssertionResult AssertWorkoutEqual(const char* firstExpr,
+                                            const char* secondExpr,
+                                            const Lab::ExcerciseData& first,
+                                            const Lab::ExcerciseData& second);
 
 testing::AssertionResult AssertHistoryEqual(
-    const char* m_expr, const char* n_expr,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        m,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        n);
+    const char* firstExpr, const char* secondExpr,
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& first,
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& second);
 
 testing::AssertionResult AssertHistoryNEqual(
-    const char* m_expr, const char* n_expr, const char* o_expr,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        m,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
-        n,
-    int o);
+    const char* firstExpr, const char* secondExpr, const char* o_expr,
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& first,
+    const std::vector<
+        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
+                   std::string, Lab::Excercise, int, int>>& second,
+    int third);
 
-bool mesEqual(Lab::Measurements a, Lab::Measurements b);
-bool musEqual(Lab::Muscles a, Lab::Muscles b);
+bool mesEqual(Lab::Measurements first, Lab::Measurements second);
+bool musEqual(Lab::Muscles first, Lab::Muscles second);
 
-testing::AssertionResult AssertConditionsEqual(const char* m_expr,
-                                               const char* n_expr,
-                                               Lab::Muscles m, Lab::Muscles n);
+testing::AssertionResult AssertConditionsEqual(const char* firstExpr,
+                                               const char* secondExpr,
+                                               Lab::Muscles first,
+                                               Lab::Muscles second);
 
-testing::AssertionResult AssertMeasureEqual(const char* m_expr,
-                                            const char* n_expr,
-                                            Lab::Measurements m,
-                                            Lab::Measurements n);
+testing::AssertionResult AssertMeasureEqual(const char* firstExpr,
+                                            const char* secondExpr,
+                                            Lab::Measurements first,
+                                            Lab::Measurements second);

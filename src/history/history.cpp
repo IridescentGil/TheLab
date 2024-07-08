@@ -5,10 +5,12 @@
 #include <sstream>
 #include <string>
 #include <tuple>
+#include <utility>
 
 #include "excercise.h"
 
-Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(newDB) {
+Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
+    : db(std::move(newDB)) {
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, std::string, int, int>>
         tempHist;
@@ -25,17 +27,20 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(newDB) {
 
     for (auto const &iter : tempHist) {
         auto const &[date, workoutName, excercise, type1, type2] = iter;
-        std::vector<std::string> mWorked, exType;
+        std::vector<std::string> mWorked;
+        std::vector<std::string> exType;
         db->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
         db->stepExec();
 
-        std::stringstream streamMusclesWorked(db->getColumn(3)),
-            streamExcerciseType(db->getColumn(4));
+        std::stringstream streamMusclesWorked(db->getColumn(3));
+        std::stringstream streamExcerciseType(db->getColumn(4));
         std::string tempString;
-        while (std::getline(streamMusclesWorked, tempString, ','))
+        while (std::getline(streamMusclesWorked, tempString, ',')) {
             mWorked.push_back(tempString);
-        while (std::getline(streamExcerciseType, tempString, ','))
+        }
+        while (std::getline(streamExcerciseType, tempString, ',')) {
             exType.push_back(tempString);
+        }
 
         history.push_back(
             std::make_tuple(date, workoutName,
@@ -49,7 +54,7 @@ Lab::History::History(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>
         newHistory)
-    : db(newDB), history(newHistory) {}
+    : db(std::move(newDB)), history(std::move(newHistory)) {}
 
 std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                        std::string, Lab::Excercise, int, int>> &
@@ -99,9 +104,9 @@ std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
            Lab::Excercise, int, int>
 Lab::History::getItem(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>::iterator it)
-    const {
-    return *it;
+                           std::string, Lab::Excercise, int, int>>::iterator
+        iter) const {
+    return *iter;
 }
 
 void Lab::History::setHistory(
@@ -113,17 +118,17 @@ void Lab::History::setHistory(
 
 void Lab::History::addItem(
     const std::chrono::time_point<std::chrono::system_clock> &date,
-    const std::string &workoutName, const Lab::Excercise &ex,
+    const std::string &workoutName, const Lab::Excercise &excercise,
     const int &type1Val, const int &type2Val) {
     history.push_back(
-        std::make_tuple(date, workoutName, ex, type1Val, type2Val));
+        std::make_tuple(date, workoutName, excercise, type1Val, type2Val));
 }
 
 void Lab::History::remItem(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
                            std::string, Lab::Excercise, int, int>>::iterator
-        it) {
-    history.erase(it);
+        iter) {
+    history.erase(iter);
 }
 
 void Lab::History::remItem(
@@ -137,13 +142,16 @@ void Lab::History::remItem(
 }
 
 bool Lab::History::save() {
-    std::sort(history.begin(), history.end(),
-              [](auto a, auto b) { return (std::get<0>(a) < std::get<0>(b)); });
+    std::sort(history.begin(), history.end(), [](auto first, auto second) {
+        return (std::get<0>(first) < std::get<0>(second));
+    });
 
     unsigned int size = 0;
     unsigned int index = 0;
     db->execMulti("SELECT ID FROM history");
-    while (db->stepExec()) ++size;
+    while (db->stepExec()) {
+        ++size;
+    }
 
     if (history.size() < size) {
         db->exec("DELETE FROM history");
@@ -156,16 +164,23 @@ bool Lab::History::save() {
             if (db->prepare("UPDATE history SET date = ?, workout = ?, "
                             "excercise = ?, type1 = ?, type2 = ? WHERE ID = ?",
                             date.time_since_epoch().count(), workoutName,
-                            excerciseName.getName(), type1, type2, index) == -1)
+                            excerciseName.getName(), type1, type2,
+                            index) == -1) {
                 return false;
-            if (db->execQuery() == -1) return false;
+            }
+            if (db->execQuery() == -1) {
+                return false;
+            }
         } else {
             if (db->prepare("INSERT INTO history (date, workout, excercise, "
                             "type1, type2) VALUES (?, ?, ?, ?, ?)",
                             date.time_since_epoch().count(), workoutName,
-                            excerciseName.getName(), type1, type2) == -1)
+                            excerciseName.getName(), type1, type2) == -1) {
                 return false;
-            if (db->execQuery() == -1) return false;
+            }
+            if (db->execQuery() == -1) {
+                return false;
+            }
         }
         ++index;
     }

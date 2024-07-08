@@ -23,6 +23,7 @@ class AnalyticsTest : public testing::Test {
         remove("empty.db");
     }
 
+   public:
     std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
     std::shared_ptr<Lab::DBConn> emptyDb =
         std::make_shared<Lab::DBConn>("empty.db");

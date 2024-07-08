@@ -2,6 +2,7 @@
 ///@file
 
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <vector>
 
@@ -9,10 +10,11 @@ namespace Lab {
 
 class Excercise {
    public:
-    Excercise() : name(""), description(""), muscleGroup(""){};
-    Excercise(std::string name, std::string desc, std::string mGroup,
-              std::vector<std::string> mWorked, std::vector<std::string> eType);
-    Excercise(Excercise &&other)
+    Excercise();
+    Excercise(std::string name, std::string desc, const std::string &mGroup,
+              const std::vector<std::string> &mWorked,
+              const std::vector<std::string> &eType);
+    Excercise(Excercise &&other) noexcept
         : name(std::move(other.name)),
           description(std::move(other.description)),
           muscleGroup(std::move(other.muscleGroup)),
@@ -24,7 +26,7 @@ class Excercise {
           muscleGroup(other.muscleGroup),
           musclesWorked(other.musclesWorked),
           type(other.type) {}
-    Excercise &operator=(Excercise &&other) {
+    Excercise &operator=(Excercise &&other) noexcept {
         if (&other != this) {
             name = std::move(other.name);
             description = std::move(other.description);
@@ -45,12 +47,16 @@ class Excercise {
         return *this;
     }
     ~Excercise() = default;
-    friend bool operator==(const Lab::Excercise &lhs,
-                           const Lab::Excercise &rhs) {
-        return (std::tie(lhs.name, lhs.description, lhs.muscleGroup,
-                         lhs.musclesWorked, lhs.type) ==
-                std::tie(rhs.name, rhs.description, rhs.muscleGroup,
-                         rhs.musclesWorked, rhs.type));
+
+    inline bool operator==(const Lab::Excercise &compare) const {
+        return (std::tie(this->name, this->description, this->muscleGroup,
+                         this->musclesWorked, this->type) ==
+                std::tie(compare.name, compare.description, compare.muscleGroup,
+                         compare.musclesWorked, compare.type));
+    }
+
+    inline bool operator!=(const Lab::Excercise &compare) const {
+        return !(*this == compare);
     }
 
     std::tuple<std::string, std::string, std::string, std::vector<std::string>,
@@ -79,14 +85,14 @@ class Excercise {
     std::vector<std::string> musclesWorked;
     std::vector<std::string> type;
 
-    const std::vector<std::string> mwCheck{
+    std::vector<std::string_view> mwCheck{
         "Neck",     "Trapezius", "Bicep",     "Tricep",     "Forearm",
         "Pectoral", "Abs",       "Lats",      "Upper-back", "Lower-back",
         "Quads",    "Glutes",    "Hamstring", "Calf"};
-    const std::vector<std::string> typeCheck{"weight", "reps", "time",
-                                             "distance"};
-    const std::vector<std::string> groupCheck{"Arms", "Chest", "Back",
-                                              "Core", "Legs",  "Cardio"};
+    std::vector<std::string_view> typeCheck{"weight", "reps", "time",
+                                            "distance"};
+    std::vector<std::string_view> groupCheck{"Arms", "Chest", "Back",
+                                             "Core", "Legs",  "Cardio"};
 };
 
 }  // namespace Lab

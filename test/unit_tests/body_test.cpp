@@ -10,24 +10,25 @@ class BodyTest : public testing::Test {
     void SetUp() override {}
     void TearDown() override { remove("thelab.db"); }
 
+   public:
     std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
-    Lab::Body b1{db};
+    Lab::Body body1{db};
 };
 
 TEST_F(BodyTest, EmptyDBTest) {
     Lab::Measurements tMes;
     Lab::Muscles tMus;
 
-    EXPECT_EQ(b1.getAge(), 0);
-    EXPECT_EQ(b1.getHeight(), 0);
-    EXPECT_EQ(b1.getWeight(), 0);
-    EXPECT_PRED_FORMAT2(AssertConditionsEqual, tMus, b1.getCondition());
-    EXPECT_PRED_FORMAT2(AssertMeasureEqual, tMes, b1.getMeasurements());
+    EXPECT_EQ(body1.getAge(), 0);
+    EXPECT_EQ(body1.getHeight(), 0);
+    EXPECT_EQ(body1.getWeight(), 0);
+    EXPECT_PRED_FORMAT2(AssertConditionsEqual, tMus, body1.getCondition());
+    EXPECT_PRED_FORMAT2(AssertMeasureEqual, tMes, body1.getMeasurements());
 }
 
 TEST_F(BodyTest, SetDBTest) {
-    Lab::Measurements tMes = b1.getMeasurements();
-    Lab::Muscles tMus = b1.getCondition();
+    Lab::Measurements tMes = body1.getMeasurements();
+    Lab::Muscles tMus = body1.getCondition();
 
     tMus.calf = 80;
     tMus.lowerBack = 20;
@@ -37,17 +38,17 @@ TEST_F(BodyTest, SetDBTest) {
     tMes.thighLeft = 30;
     tMes.thighRight = 30;
 
-    b1.setHeight(175);
-    b1.setWeight(80);
-    b1.setAge(18);
-    b1.setCondition(tMus);
-    b1.setMeasurement(tMes);
+    body1.setHeight(175);
+    body1.setWeight(80);
+    body1.setAge(18);
+    body1.setCondition(tMus);
+    body1.setMeasurement(tMes);
 
-    EXPECT_EQ(b1.save(), 1);
-    Lab::Body b2{db};
-    EXPECT_EQ(175, b2.getHeight());
-    EXPECT_EQ(80, b2.getWeight());
-    EXPECT_EQ(18, b2.getAge());
-    EXPECT_PRED_FORMAT2(AssertConditionsEqual, tMus, b2.getCondition());
-    EXPECT_PRED_FORMAT2(AssertMeasureEqual, tMes, b2.getMeasurements());
+    EXPECT_EQ(body1.save(), 1);
+    Lab::Body body2{db};
+    EXPECT_EQ(175, body2.getHeight());
+    EXPECT_EQ(80, body2.getWeight());
+    EXPECT_EQ(18, body2.getAge());
+    EXPECT_PRED_FORMAT2(AssertConditionsEqual, tMus, body2.getCondition());
+    EXPECT_PRED_FORMAT2(AssertMeasureEqual, tMes, body2.getMeasurements());
 }

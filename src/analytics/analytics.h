@@ -61,17 +61,17 @@ mapValuesPerPeriod(std::string_view valueType,
 
 std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
 constrainDate(
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> values,
+    const std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+        &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate);
 
 std::map<size_t,
          std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
 constrainDate(
-    std::map<
-        size_t,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
-        values,
+    const std::map<size_t,
+                   std::map<std::chrono::time_point<std::chrono::system_clock>,
+                            size_t>> &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate);
 }  // namespace Analytics
@@ -79,9 +79,9 @@ constrainDate(
 
 template <typename Rep, typename Period>
 std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
-Lab::Analytics::mapValuesPerPeriod(std::string_view valueType,
-                                   std::chrono::duration<Rep, Period>,
-                                   const History &hist) {
+Lab::Analytics::mapValuesPerPeriod(
+    std::string_view valueType, std::chrono::duration<Rep, Period> /*unused*/,
+    const History &hist) {
     std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
 
     if ((valueType == "reps")) {

@@ -6,22 +6,25 @@
 #include "database.h"
 
 namespace Lab {
+namespace {
+const unsigned short FULLY_HEALED = 100;
+};
 
 struct Muscles {
-    unsigned short neck = 100;
-    unsigned short trapezius = 100;
-    unsigned short bicep = 100;
-    unsigned short tricep = 100;
-    unsigned short forearm = 100;
-    unsigned short pectoral = 100;
-    unsigned short abs = 100;
-    unsigned short lats = 100;
-    unsigned short upperBack = 100;
-    unsigned short lowerBack = 100;
-    unsigned short quads = 100;
-    unsigned short glutes = 100;
-    unsigned short hamstring = 100;
-    unsigned short calf = 100;
+    unsigned short neck = FULLY_HEALED;
+    unsigned short trapezius = FULLY_HEALED;
+    unsigned short bicep = FULLY_HEALED;
+    unsigned short tricep = FULLY_HEALED;
+    unsigned short forearm = FULLY_HEALED;
+    unsigned short pectoral = FULLY_HEALED;
+    unsigned short abs = FULLY_HEALED;
+    unsigned short lats = FULLY_HEALED;
+    unsigned short upperBack = FULLY_HEALED;
+    unsigned short lowerBack = FULLY_HEALED;
+    unsigned short quads = FULLY_HEALED;
+    unsigned short glutes = FULLY_HEALED;
+    unsigned short hamstring = FULLY_HEALED;
+    unsigned short calf = FULLY_HEALED;
 };
 
 struct Measurements {

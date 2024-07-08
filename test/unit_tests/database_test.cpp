@@ -15,6 +15,7 @@ class DatabaseTest : public testing::Test {
         remove("test.db");
     }
 
+   public:
     Lab::DBConn db1;
     Lab::DBConn db2;
     Lab::DBConn db3{"test.db"};

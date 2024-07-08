@@ -33,16 +33,16 @@ class WorkoutTest : public testing::Test {
             Lab::Excercise("Calf Press",
                            "Lift yourself on your tiptoes with your calf",
                            "Legs", {"Calf"}, {"weight", "reps"})};
-        for (auto iter : testEx) {
-            std::string musclesWorked = "";
-            std::string type = "";
-            for (auto bter : iter.getMusclesWorked()) {
+        for (const auto& iter : testEx) {
+            std::string musclesWorked;
+            std::string type;
+            for (const auto& bter : iter.getMusclesWorked()) {
                 musclesWorked += bter;
                 if (*(iter.getMusclesWorked().end() - 1) != bter) {
                     musclesWorked += ", ";
                 }
             }
-            for (auto bter : iter.getType()) {
+            for (const auto& bter : iter.getType()) {
                 type += bter;
                 if (*(iter.getType().end() - 1) != bter) {
                     type += ", ";
@@ -58,6 +58,7 @@ class WorkoutTest : public testing::Test {
     }
     void TearDown() override { remove("thelab.db"); }
 
+   public:
     std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
     Lab::Workout e1{db};
     Lab::Workout e2{db, "Push Day 1"};

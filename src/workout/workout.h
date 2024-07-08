@@ -9,19 +9,17 @@
 
 namespace Lab {
 struct ExcerciseData {
-    ExcerciseData(Lab::Excercise newEx, int newT1, int newT2)
+    ExcerciseData(const Lab::Excercise &newEx, int newT1, int newT2)
         : exc(newEx), type1(newT1), type2(newT2) {}
-    ExcerciseData(ExcerciseData &&other)
-        : exc(std::move(other.exc)),
-          type1(std::move(other.type1)),
-          type2(std::move(other.type2)) {}
+    ExcerciseData(ExcerciseData &&other) noexcept
+        : exc(std::move(other.exc)), type1(other.type1), type2(other.type2) {}
     ExcerciseData(const ExcerciseData &other)
         : exc(other.exc), type1(other.type1), type2(other.type2) {}
-    ExcerciseData &operator=(ExcerciseData &&other) {
+    ExcerciseData &operator=(ExcerciseData &&other) noexcept {
         if (&other != this) {
             exc = std::move(other.exc);
-            type1 = std::move(other.type1);
-            type2 = std::move(other.type2);
+            type1 = other.type1;
+            type2 = other.type2;
         }
         return *this;
     }
@@ -57,11 +55,11 @@ class Workout {
     void addExcercise(const Lab::Excercise &newExcercise, const int &type1Val,
                       const int &type2Val);
 
-    void remExcercise(std::vector<Lab::ExcerciseData>::iterator it);
+    void remExcercise(std::vector<Lab::ExcerciseData>::iterator iter);
     void remExcercise(std::vector<Lab::ExcerciseData>::iterator start,
                       std::vector<Lab::ExcerciseData>::iterator end);
 
-    void changeExcercise(std::vector<Lab::ExcerciseData>::iterator it,
+    void changeExcercise(std::vector<Lab::ExcerciseData>::iterator iter,
                          const Lab::Excercise &newExcercise,
                          const int &type1Val, const int &type2Val);
     void changeExcercise(std::vector<Lab::ExcerciseData>::iterator start,

@@ -4,48 +4,102 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstddef>
 #include <type_traits>
+
+namespace {
+float formula(const float &weight, const float &reps) {
+    const float UPPER = 36.0;
+    const float LOWER = 37.0;
+
+    return weight * (UPPER / (LOWER - reps));
+}
+
+namespace formulaRepPercentages {
+const float TWO_REP_PERCENTAGE = 0.95;
+const float THREE_REP_PERCENTAGE = 0.90;
+const float FOUR_REP_PERCENTAGE = 0.88;
+const float FIVE_REP_PERCENTAGE = 0.86;
+const float SIX_REP_PERCENTAGE = 0.83;
+const float SEVEN_REP_PERCENTAGE = 0.80;
+const float EIGHT_REP_PERCENTAGE = 0.78;
+const float NINE_REP_PERCENTAGE = 0.76;
+const float TEN_REP_PERCENTAGE = 0.75;
+const float ELEVEN_REP_PERCENTAGE = 0.72;
+const float TWELVE_REP_PERCENTAGE = 0.70;
+};  // namespace formulaRepPercentages
+
+enum REP_RANGE {
+    ONE_REP = 1,
+    TWO_REPS,
+    THREE_REPS,
+    FOUR_REPS,
+    FIVE_REPS,
+    SIX_REPS,
+    SEVEN_REPS,
+    EIGHT_REPS,
+    NINE_REPS,
+    TEN_REPS,
+    ELEVEN_REPS,
+    TWELVE_REPS
+};
+}  // namespace
 
 std::map<size_t, float> Lab::Analytics::mapRepEstimates(size_t reps,
                                                         float weight) {
     std::map<size_t, float> est;
     est[reps] = weight;
-    if (reps != 1) est[1] = weight * (36.0 / (37.0 - reps));
-    for (size_t index = 1; index <= 12; ++index) {
+    if (reps != 1) {
+        est[ONE_REP] = formula(weight, static_cast<float>(reps));
+    }
+    for (size_t index = 1; index <= TWELVE_REPS; ++index) {
         if (index != reps) {
             switch (index) {
-                case 2:
-                    est[index] = est[1] * 0.95;
+                case TWO_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::TWO_REP_PERCENTAGE;
                     break;
-                case 3:
-                    est[index] = est[1] * 0.90;
+                case THREE_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::THREE_REP_PERCENTAGE;
                     break;
-                case 4:
-                    est[index] = est[1] * 0.88;
+                case FOUR_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::FOUR_REP_PERCENTAGE;
                     break;
-                case 5:
-                    est[index] = est[1] * 0.86;
+                case FIVE_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::FIVE_REP_PERCENTAGE;
                     break;
-                case 6:
-                    est[index] = est[1] * 0.83;
+                case SIX_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::SIX_REP_PERCENTAGE;
                     break;
-                case 7:
-                    est[index] = est[1] * 0.80;
+                case SEVEN_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::SEVEN_REP_PERCENTAGE;
                     break;
-                case 8:
-                    est[index] = est[1] * 0.78;
+                case EIGHT_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::EIGHT_REP_PERCENTAGE;
                     break;
-                case 9:
-                    est[index] = est[1] * 0.76;
+                case NINE_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::NINE_REP_PERCENTAGE;
                     break;
-                case 10:
-                    est[index] = est[1] * 0.75;
+                case TEN_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::TEN_REP_PERCENTAGE;
                     break;
-                case 11:
-                    est[index] = est[1] * 0.72;
+                case ELEVEN_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::ELEVEN_REP_PERCENTAGE;
                     break;
-                case 12:
-                    est[index] = est[1] * 0.70;
+                case TWELVE_REPS:
+                    est[index] = est[ONE_REP] *
+                                 ::formulaRepPercentages::TWELVE_REP_PERCENTAGE;
+                    break;
+                default:
                     break;
             }
         }
@@ -101,13 +155,14 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
 
                     if (index == map.end()) {
                         map[date] =
-                            std::get<3>(historyIter) * std::get<4>(historyIter);
+                            static_cast<long>(std::get<3>(historyIter)) *
+                            std::get<4>(historyIter);
                     } else {
                         index->second =
                             (index->second <
-                             static_cast<size_t>(std::get<3>(historyIter) *
-                                                 std::get<4>(historyIter)))
-                                ? (std::get<3>(historyIter) *
+                             (static_cast<size_t>(std::get<3>(historyIter) *
+                                                  std::get<4>(historyIter))))
+                                ? (static_cast<long>(std::get<3>(historyIter)) *
                                    std::get<4>(historyIter))
                                 : index->second;
                     }
@@ -139,7 +194,7 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
         }
     } else if (type == "speed") {
         if (exc.getType() == std::vector<std::string>({"distance", "time"})) {
-            float oneHourInSeconds = 3600;
+            const float ONE_HOUR_IN_SECONDS = 3600;
             for (auto const &historyIter : hist.getHistory()) {
                 if (std::get<2>(historyIter) == exc) {
                     auto date = std::chrono::time_point_cast<std::chrono::days>(
@@ -149,16 +204,18 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
                     if (index == map.end()) {
                         map[date] =
                             static_cast<float>(std::get<3>(historyIter)) /
-                            std::get<4>(historyIter) * oneHourInSeconds;
+                            std::get<4>(historyIter) * ONE_HOUR_IN_SECONDS;
                     } else {
                         index->second =
                             (index->second <
                              static_cast<size_t>(
                                  static_cast<float>(std::get<3>(historyIter)) /
-                                 std::get<4>(historyIter) * oneHourInSeconds))
+                                 std::get<4>(historyIter) *
+                                 ONE_HOUR_IN_SECONDS))
                                 ? (static_cast<float>(
                                        std::get<3>(historyIter)) /
-                                   std::get<4>(historyIter) * oneHourInSeconds)
+                                   std::get<4>(historyIter) *
+                                   ONE_HOUR_IN_SECONDS)
                                 : index->second;
                     }
                 }
@@ -251,10 +308,12 @@ Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
 
                     if (index == map.end()) {
                         map[date] =
-                            std::get<3>(historyIter) * std::get<4>(historyIter);
+                            static_cast<long>(std::get<3>(historyIter)) *
+                            std::get<4>(historyIter);
                     } else {
-                        index->second += (std::get<3>(historyIter) *
-                                          std::get<4>(historyIter));
+                        index->second +=
+                            (static_cast<long>(std::get<3>(historyIter)) *
+                             std::get<4>(historyIter));
                     }
                 }
             }
@@ -265,7 +324,8 @@ Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
 
 std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
 Lab::Analytics::constrainDate(
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> values,
+    const std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+        &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate) {
     std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
@@ -282,10 +342,9 @@ Lab::Analytics::constrainDate(
 std::map<size_t,
          std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
 Lab::Analytics::constrainDate(
-    std::map<
-        size_t,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
-        values,
+    const std::map<size_t,
+                   std::map<std::chrono::time_point<std::chrono::system_clock>,
+                            size_t>> &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate) {
     std::map<

@@ -36,15 +36,15 @@ class HistoryTest : public testing::Test {
                            "Lift yourself on your tiptoes with your calf",
                            "Legs", {"Calf"}, {"weight", "reps"})};
         for (auto const& iter : testEx) {
-            std::string musclesWorked = "";
-            std::string type = "";
-            for (auto bter : iter.getMusclesWorked()) {
+            std::string musclesWorked;
+            std::string type;
+            for (const auto& bter : iter.getMusclesWorked()) {
                 musclesWorked += bter;
                 if (*(iter.getMusclesWorked().end() - 1) != bter) {
                     musclesWorked += ", ";
                 }
             }
-            for (auto bter : iter.getType()) {
+            for (const auto& bter : iter.getType()) {
                 type += bter;
                 if (*(iter.getType().end() - 1) != bter) {
                     type += ", ";
@@ -60,6 +60,7 @@ class HistoryTest : public testing::Test {
     }
     void TearDown() override { remove("thelab.db"); }
 
+   public:
     std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
 
     constexpr static std::chrono::time_point<std::chrono::system_clock>
