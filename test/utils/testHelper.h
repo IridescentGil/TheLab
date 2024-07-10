@@ -12,17 +12,18 @@ bool workoutEqual(const Lab::ExcerciseData& first,
 bool historyEqual(
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& first,
+                   std::string, Lab::Excercise, double, unsigned long>>& first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& second);
+                   std::string, Lab::Excercise, double, unsigned long>>&
+        second);
 bool historyNEqual(
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& first,
+                   std::string, Lab::Excercise, double, unsigned long>>& first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& second,
+                   std::string, Lab::Excercise, double, unsigned long>>& second,
     int diff);
 
 testing::AssertionResult AssertExcerciseEqual(const char* firstExpr,
@@ -38,19 +39,20 @@ testing::AssertionResult AssertHistoryEqual(
     const char* firstExpr, const char* secondExpr,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& first,
+                   std::string, Lab::Excercise, double, unsigned long>>& first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& second);
+                   std::string, Lab::Excercise, double, unsigned long>>&
+        second);
 
 testing::AssertionResult AssertHistoryNEqual(
     const char* firstExpr, const char* secondExpr, const char* o_expr,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& first,
+                   std::string, Lab::Excercise, double, unsigned long>>& first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>>& second,
+                   std::string, Lab::Excercise, double, unsigned long>>& second,
     int third);
 
 bool mesEqual(Lab::Measurements first, Lab::Measurements second);

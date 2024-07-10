@@ -24,7 +24,7 @@ void Lab::DBConn::createTables() {
             db.exec(
                 "CREATE TABLE workouts ("
                 "workoutName TEXT NOT NULL, exOrderNum INTEGER NOT NULL, "
-                "excercise TEXT NOT NULL, type1 INTEGER NOT NULL, "
+                "excercise TEXT NOT NULL, type1 REAL NOT NULL, "
                 "type2 INTEGER, PRIMARY KEY (workoutName, exOrderNum), FOREIGN "
                 "KEY(excercise) REFERENCES "
                 "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
@@ -46,7 +46,7 @@ void Lab::DBConn::createTables() {
                 "AUTOINCREMENT, "
                 "date "
                 "INTEGER NOT NULL, workout TEXT, excercise TEXT NOT NULL, "
-                "type1 INTEGER NOT NULL, type2 INTEGER, FOREIGN KEY(excercise) "
+                "type1 REAL NOT NULL, type2 INTEGER, FOREIGN KEY(excercise) "
                 "REFERENCES "
                 "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
         }

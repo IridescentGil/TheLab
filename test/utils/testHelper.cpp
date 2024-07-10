@@ -61,10 +61,11 @@ testing::AssertionResult AssertWorkoutEqual(const char *firstExpr,
 bool historyEqual(
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &first,
+                   std::string, Lab::Excercise, double, unsigned long>> &first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &second) {
+                   std::string, Lab::Excercise, double, unsigned long>>
+        &second) {
     if (first.size() != second.size()) {
         return false;
     }
@@ -94,10 +95,11 @@ bool historyEqual(
 int historydiff(
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &first,
+                   std::string, Lab::Excercise, double, unsigned long>> &first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &second) {
+                   std::string, Lab::Excercise, double, unsigned long>>
+        &second) {
     int nDiff = 0;
     if (first.size() != second.size()) {
         nDiff =
@@ -166,10 +168,10 @@ int historydiff(
 bool historyNEqual(
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &first,
+                   std::string, Lab::Excercise, double, unsigned long>> &first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &second,
+                   std::string, Lab::Excercise, double, unsigned long>> &second,
     int diff) {
     int nDiff = 0;
     if (first.size() != second.size()) {
@@ -243,10 +245,11 @@ testing::AssertionResult AssertHistoryEqual(
     const char *firstExpr, const char *secondExpr,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &first,
+                   std::string, Lab::Excercise, double, unsigned long>> &first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &second) {
+                   std::string, Lab::Excercise, double, unsigned long>>
+        &second) {
     if (historyEqual(first, second)) {
         return testing::AssertionSuccess();
     }
@@ -259,10 +262,10 @@ testing::AssertionResult AssertHistoryNEqual(
     const char *firstExpr, const char *secondExpr, const char *o_expr,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &first,
+                   std::string, Lab::Excercise, double, unsigned long>> &first,
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &second,
+                   std::string, Lab::Excercise, double, unsigned long>> &second,
     int third) {
     if (historyNEqual(first, second, third)) {
         return testing::AssertionSuccess();

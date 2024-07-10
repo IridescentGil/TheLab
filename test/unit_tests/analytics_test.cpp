@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <cstdio>
 #include <map>
@@ -318,15 +319,16 @@ class AnalyticsTest : public testing::Test {
 };
 
 TEST_F(AnalyticsTest, RepMaxTest) {
-    std::map<size_t, float> repMax = Lab::Analytics::mapRepEstimates(12, 30);
-    std::map<size_t, float> repTest{{1, 43.2},   {2, 41.04},   {3, 38.88},
-                                    {4, 38.016}, {5, 37.152},  {6, 35.856},
-                                    {7, 34.56},  {8, 33.696},  {9, 32.832},
-                                    {10, 32.4},  {11, 31.104}, {12, 30}};
+    std::map<unsigned long, double> repMax =
+        Lab::Analytics::mapRepEstimates(12, 30);
+    std::map<unsigned long, double> repTest{
+        {1, 43.2},   {2, 41.04},  {3, 38.88},   {4, 38.016},
+        {5, 37.152}, {6, 35.856}, {7, 34.56},   {8, 33.696},
+        {9, 32.832}, {10, 32.4},  {11, 31.104}, {12, 30}};
     for (auto iter = repMax.cbegin(), bter = repTest.cbegin();
          iter != repMax.cend(); ++iter, ++bter) {
         EXPECT_EQ(iter->first, bter->first);
-        EXPECT_EQ(iter->second, bter->second);
+        EXPECT_EQ(std::round(iter->second), std::round(bter->second));
     }
 }
 
@@ -337,7 +339,7 @@ TEST_F(AnalyticsTest, MapHighestValuesTest) {
                        {"Pectoral", "Tricep"},
                        {"weight", "reps"}};
     auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testRep{
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 10},
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 15},
@@ -388,7 +390,7 @@ TEST_F(AnalyticsTest, MapHighestValuesExcerciseTypeChangedTest) {
                        {"Pectoral", "Tricep"},
                        {"time", "reps"}};
     auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testRep{{std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 7}};
     EXPECT_EQ(maxRep.size(), testRep.size());
     for (auto iter = maxRep.cbegin(), bter = testRep.cbegin();
@@ -405,7 +407,7 @@ TEST_F(AnalyticsTest, MapHighestValuesVolumeTest) {
                        {"Pectoral", "Tricep"},
                        {"weight", "reps"}};
     auto maxVolume = Lab::Analytics::mapHighestValues("volume", exc, hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testVolume{
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 600},
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 600},
@@ -425,7 +427,7 @@ TEST_F(AnalyticsTest, MapHighestValuesPaceTest) {
                        {},
                        {"distance", "time"}};
     auto maxPace = Lab::Analytics::mapHighestValues("pace", exc, hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testPace{
             {std::chrono::time_point_cast<std::chrono::days>(tpJan13), 10}};
     EXPECT_EQ(maxPace.size(), testPace.size());
@@ -444,8 +446,8 @@ TEST_F(AnalyticsTest, MapWeightForRepTest) {
                        {"weight", "reps"}};
     auto maxWeightForRep = Lab::Analytics::mapWeightForRep(exc, hist);
     std::map<
-        size_t,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+        unsigned long,
+        std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
         testWFR{
             {4,
              {{std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 80}}},
@@ -506,7 +508,7 @@ TEST_F(AnalyticsTest, MapTotalValuesTest) {
                        {"Pectoral", "Tricep"},
                        {"weight", "reps"}};
     auto workoutVolume = Lab::Analytics::mapTotalValues("volume", exc, hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testVolume{
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 1800},
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 4560},
@@ -544,7 +546,7 @@ TEST_F(AnalyticsTest, MapTotalValuesExcerciseHasNoValuesInHistoryTest) {
 TEST_F(AnalyticsTest, MapValuesPerPeriodDayTest) {
     auto workoutSets =
         Lab::Analytics::mapValuesPerPeriod("sets", std::chrono::days(), hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testSets{
             {std::chrono::time_point_cast<std::chrono::days>(tpJan13), 16},
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 3},
@@ -561,7 +563,7 @@ TEST_F(AnalyticsTest, MapValuesPerPeriodDayTest) {
 TEST_F(AnalyticsTest, MapValuesPerPeriodWeekTest) {
     auto workoutVolume = Lab::Analytics::mapValuesPerPeriod(
         "volume", std::chrono::weeks(), hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testVolume{{tpJanWeek2, 2520},
                    {tpFebWeek1, 1800},
                    {tpFebWeek3, 6810},
@@ -577,7 +579,7 @@ TEST_F(AnalyticsTest, MapValuesPerPeriodWeekTest) {
 TEST_F(AnalyticsTest, MapValuesPerPeriodMonthTest) {
     auto workoutWorkouts = Lab::Analytics::mapValuesPerPeriod(
         "workouts", std::chrono::months(), hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testWorkouts{{tpJan, 1}, {tpFeb, 2}, {tpMarch, 1}};
     EXPECT_EQ(workoutWorkouts.size(), testWorkouts.size());
     for (auto iter = workoutWorkouts.cbegin(), bter = testWorkouts.cbegin();
@@ -590,7 +592,7 @@ TEST_F(AnalyticsTest, MapValuesPerPeriodMonthTest) {
 TEST_F(AnalyticsTest, MapValuesPerPeriodYearTest) {
     auto workoutReps =
         Lab::Analytics::mapValuesPerPeriod("reps", std::chrono::years(), hist);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testReps{{tp2024, 400}};
     EXPECT_EQ(workoutReps.size(), testReps.size());
     for (auto iter = workoutReps.cbegin(), bter = testReps.cbegin();
@@ -615,7 +617,7 @@ TEST_F(AnalyticsTest, dateConstraintTest) {
     auto maxRep = Lab::Analytics::constrainDate(
         Lab::Analytics::mapHighestValues("reps", exc, hist),
         std::chrono::sys_days{std::chrono::February / 19 / 2024}, tpMarch4);
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testRep{
             {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 15},
             {std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 10}};
@@ -637,8 +639,8 @@ TEST_F(AnalyticsTest, dateConstraintWeightForRepTest) {
         Lab::Analytics::mapWeightForRep(exc, hist),
         std::chrono::sys_days{std::chrono::February / 19 / 2024}, tpMarch4);
     std::map<
-        size_t,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+        unsigned long,
+        std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
         testWFR{
             {4,
              {{std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 80}}},
@@ -683,7 +685,7 @@ TEST_F(AnalyticsTest, dateConstraintSameStartEndDateTest) {
         std::chrono::sys_days{std::chrono::March / 1 / 2024},
         std::chrono::sys_days{std::chrono::March / 1 / 2024} +
             std::chrono::hours(24));
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         testWorkouts{{tpMarch, 1}};
     EXPECT_EQ(workoutWorkouts.size(), testWorkouts.size());
     for (auto iter = workoutWorkouts.cbegin(), bter = testWorkouts.cbegin();

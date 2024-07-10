@@ -24,7 +24,8 @@ void Lab::Workout::setWorkout(
 }
 
 void Lab::Workout::addExcercise(const Lab::Excercise &newExcercise,
-                                const int &type1Val, const int &type2Val) {
+                                const double &type1Val,
+                                const unsigned long &type2Val) {
     workout.push_back(Lab::ExcerciseData{newExcercise, type1Val, type2Val});
 }
 
@@ -40,16 +41,16 @@ void Lab::Workout::remExcercise(std::vector<Lab::ExcerciseData>::iterator start,
 
 void Lab::Workout::changeExcercise(
     std::vector<Lab::ExcerciseData>::iterator iter,
-    const Lab::Excercise &newExcercise, const int &type1Val,
-    const int &type2Val) {
+    const Lab::Excercise &newExcercise, const double &type1Val,
+    const unsigned long &type2Val) {
     *iter = Lab::ExcerciseData{newExcercise, type1Val, type2Val};
 }
 
 void Lab::Workout::changeExcercise(
     std::vector<Lab::ExcerciseData>::iterator start,
     std::vector<Lab::ExcerciseData>::iterator end,
-    const Lab::Excercise &newExcercise, const int &type1Val,
-    const int &type2Val) {
+    const Lab::Excercise &newExcercise, const double &type1Val,
+    const unsigned long &type2Val) {
     while (start != end) {
         *start = Lab::ExcerciseData{newExcercise, type1Val, type2Val};
         ++start;
@@ -77,10 +78,15 @@ bool Lab::Workout::save() {
         const auto &[exc, type1, type2] = *iter;
         long place = iter - workout.cbegin();
 
+        /*
+         * NOTE: unsign long cast to long due SQLiteCPP not recongnizing
+         * uint64_t
+         */
         if (index >= size) {
             if (db->prepare("INSERT INTO workouts (workoutName, exOrderNum, "
                             "excercise, type1, type2) VALUES (?, ?, ?, ?, ?)",
-                            name, place, exc.getName(), type1, type2) == -1) {
+                            name, place, exc.getName(), type1,
+                            static_cast<long>(type2)) == -1) {
                 return false;
             }
         } else if (index < size) {
@@ -88,8 +94,8 @@ bool Lab::Workout::save() {
                     "UPDATE workouts SET workoutName = ?, exOrderNum = ?, "
                     "excercise = ?, type1 = ?, type2 = ? WHERE workoutName = ? "
                     "AND exOrderNum = ?",
-                    name, place, exc.getName(), type1, type2, name,
-                    place) == -1) {
+                    name, place, exc.getName(), type1, static_cast<long>(type2),
+                    name, place) == -1) {
                 return false;
             }
         }

@@ -564,7 +564,7 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
 TEST_F(HistoryTest, OverrideExistingHistoryTest) {
     auto hist1 = h1.getHistory();
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         newHist = {
             std::make_tuple(
                 tpMarch4, "Arm Workout",
@@ -614,7 +614,7 @@ TEST_F(HistoryTest, OverrideExistingHistoryTest) {
 TEST_F(HistoryTest, OverrideEmptyHistoryTest) {
     auto hist1 = h2.getHistory();
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         newHist = {
             std::make_tuple(tpJan13, "Marathon Practice",
                             Lab::Excercise("Running", "Long distance timed run",
@@ -655,7 +655,7 @@ TEST_F(HistoryTest, AddItemToEmptyHistoryTest) {
                               "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         newHist = {
             std::make_tuple(
                 tpMarch4, "Arm Workout",
@@ -725,7 +725,7 @@ TEST_F(HistoryTest, RemoveItemTest) {
     h3.remItem(hist1.begin());
     EXPECT_EQ(hist1.size(), 3);
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         newHist = {
             std::make_tuple(
                 tpFeb10, "Upper-Body Workout",
@@ -753,7 +753,7 @@ TEST_F(HistoryTest, RemoveMultipleItemsTest) {
     h3.remItem(hist1.begin(), hist1.begin() + 2);
     h3.remItem(hist1.begin() + 2, hist1.end());
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         newHist = {
             std::make_tuple(
                 tpFeb10, "Upper-Body Workout",

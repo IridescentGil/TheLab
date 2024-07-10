@@ -12,7 +12,8 @@
 ///@brief Lab classes, namespaces and functions
 namespace Lab {
 namespace Analytics {
-std::map<size_t, float> mapRepEstimates(size_t reps, float weight);
+std::map<unsigned long, double> mapRepEstimates(unsigned long reps,
+                                                double weight);
 
 /**
 @brief Map the highest value of a type on particular days
@@ -22,7 +23,7 @@ std::map<size_t, float> mapRepEstimates(size_t reps, float weight);
 @param hist History to search through
 @return A map containing the dates and values of @param type
  */
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 mapHighestValues(std::string_view type, const Excercise &exc,
                  const History &hist);
 
@@ -31,8 +32,8 @@ mapHighestValues(std::string_view type, const Excercise &exc,
  @return A map cointaining the amount of reps and a maps containing dates and
  weight used
  */
-std::map<size_t,
-         std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+std::map<unsigned long,
+         std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
 mapWeightForRep(const Excercise &exc, const History &hist);
 
 /**
@@ -42,7 +43,7 @@ mapWeightForRep(const Excercise &exc, const History &hist);
 @param hist History to search through
 @return A map containing the dates and values of @param type
 */
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 mapTotalValues(std::string_view type, const Excercise &exc,
                const History &hist);
 
@@ -54,35 +55,35 @@ mapTotalValues(std::string_view type, const Excercise &exc,
 Valuetype
 */
 template <typename Rep, typename Period>
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 mapValuesPerPeriod(std::string_view valueType,
                    std::chrono::duration<Rep, Period> periodType,
                    const History &hist);
 
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 constrainDate(
-    const std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    const std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate);
 
-std::map<size_t,
-         std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+std::map<unsigned long,
+         std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
 constrainDate(
-    const std::map<size_t,
+    const std::map<unsigned long,
                    std::map<std::chrono::time_point<std::chrono::system_clock>,
-                            size_t>> &values,
+                            double>> &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate);
 }  // namespace Analytics
 }  // namespace Lab
 
 template <typename Rep, typename Period>
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 Lab::Analytics::mapValuesPerPeriod(
     std::string_view valueType, std::chrono::duration<Rep, Period> /*unused*/,
     const History &hist) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double> map;
 
     if ((valueType == "reps")) {
         for (auto const &historyIter : hist.getHistory()) {
@@ -105,12 +106,14 @@ Lab::Analytics::mapValuesPerPeriod(
 
                 if (index == map.end()) {
                     map[date] =
-                        (valueTypeIndexInTuple == 3 ? std::get<3>(historyIter)
-                                                    : std::get<4>(historyIter));
+                        (valueTypeIndexInTuple == 3
+                             ? std::get<3>(historyIter)
+                             : static_cast<double>(std::get<4>(historyIter)));
                 } else {
                     index->second +=
-                        (valueTypeIndexInTuple == 3 ? std::get<3>(historyIter)
-                                                    : std::get<4>(historyIter));
+                        (valueTypeIndexInTuple == 3
+                             ? std::get<3>(historyIter)
+                             : static_cast<double>(std::get<4>(historyIter)));
                 }
             }
         }
@@ -141,11 +144,12 @@ Lab::Analytics::mapValuesPerPeriod(
                 auto index = map.find(date);
 
                 if (index == map.end()) {
-                    map[date] =
-                        std::get<3>(historyIter) * std::get<4>(historyIter);
+                    map[date] = std::get<3>(historyIter) *
+                                static_cast<double>(std::get<4>(historyIter));
                 } else {
                     index->second +=
-                        (std::get<3>(historyIter) * std::get<4>(historyIter));
+                        (std::get<3>(historyIter) *
+                         static_cast<double>(std::get<4>(historyIter)));
                 }
             }
         }

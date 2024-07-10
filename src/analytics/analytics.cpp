@@ -8,25 +8,25 @@
 #include <type_traits>
 
 namespace {
-float formula(const float &weight, const float &reps) {
-    const float UPPER = 36.0;
-    const float LOWER = 37.0;
+double formula(const double &weight, const double &reps) {
+    const double UPPER = 36.0;
+    const double LOWER = 37.0;
 
     return weight * (UPPER / (LOWER - reps));
 }
 
 namespace formulaRepPercentages {
-const float TWO_REP_PERCENTAGE = 0.95;
-const float THREE_REP_PERCENTAGE = 0.90;
-const float FOUR_REP_PERCENTAGE = 0.88;
-const float FIVE_REP_PERCENTAGE = 0.86;
-const float SIX_REP_PERCENTAGE = 0.83;
-const float SEVEN_REP_PERCENTAGE = 0.80;
-const float EIGHT_REP_PERCENTAGE = 0.78;
-const float NINE_REP_PERCENTAGE = 0.76;
-const float TEN_REP_PERCENTAGE = 0.75;
-const float ELEVEN_REP_PERCENTAGE = 0.72;
-const float TWELVE_REP_PERCENTAGE = 0.70;
+const double TWO_REP_PERCENTAGE = 0.95;
+const double THREE_REP_PERCENTAGE = 0.90;
+const double FOUR_REP_PERCENTAGE = 0.88;
+const double FIVE_REP_PERCENTAGE = 0.86;
+const double SIX_REP_PERCENTAGE = 0.83;
+const double SEVEN_REP_PERCENTAGE = 0.80;
+const double EIGHT_REP_PERCENTAGE = 0.78;
+const double NINE_REP_PERCENTAGE = 0.76;
+const double TEN_REP_PERCENTAGE = 0.75;
+const double ELEVEN_REP_PERCENTAGE = 0.72;
+const double TWELVE_REP_PERCENTAGE = 0.70;
 };  // namespace formulaRepPercentages
 
 enum REP_RANGE {
@@ -45,12 +45,12 @@ enum REP_RANGE {
 };
 }  // namespace
 
-std::map<size_t, float> Lab::Analytics::mapRepEstimates(size_t reps,
-                                                        float weight) {
-    std::map<size_t, float> est;
+std::map<unsigned long, double> Lab::Analytics::mapRepEstimates(
+    unsigned long reps, double weight) {
+    std::map<size_t, double> est;
     est[reps] = weight;
     if (reps != 1) {
-        est[ONE_REP] = formula(weight, static_cast<float>(reps));
+        est[ONE_REP] = formula(weight, static_cast<double>(reps));
     }
     for (size_t index = 1; index <= TWELVE_REPS; ++index) {
         if (index != reps) {
@@ -107,10 +107,10 @@ std::map<size_t, float> Lab::Analytics::mapRepEstimates(size_t reps,
     return est;
 }
 
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
                                  const History &hist) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double> map;
 
     const auto &excerciseType = exc.getType();
     if ((type == "reps" || type == "weight" || type == "time" ||
@@ -130,17 +130,20 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
 
                 if (index == map.end()) {
                     map[date] =
-                        (typeIndexInTuple == 3 ? std::get<3>(historyIter)
-                                               : std::get<4>(historyIter));
+                        (typeIndexInTuple == 3
+                             ? std::get<3>(historyIter)
+                             : static_cast<double>(std::get<4>(historyIter)));
                 } else {
-                    index->second =
-                        (index->second <
-                         static_cast<size_t>((typeIndexInTuple == 3
-                                                  ? std::get<3>(historyIter)
-                                                  : std::get<4>(historyIter))))
-                            ? (typeIndexInTuple == 3 ? std::get<3>(historyIter)
-                                                     : std::get<4>(historyIter))
-                            : index->second;
+                    index->second = (index->second <
+                                     ((typeIndexInTuple == 3
+                                           ? std::get<3>(historyIter)
+                                           : static_cast<double>(
+                                                 std::get<4>(historyIter)))))
+                                        ? (typeIndexInTuple == 3
+                                               ? std::get<3>(historyIter)
+                                               : static_cast<double>(
+                                                     std::get<4>(historyIter)))
+                                        : index->second;
                     ;
                 }
             }
@@ -155,15 +158,16 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
 
                     if (index == map.end()) {
                         map[date] =
-                            static_cast<long>(std::get<3>(historyIter)) *
-                            std::get<4>(historyIter);
+                            (std::get<3>(historyIter) *
+                             static_cast<double>(std::get<4>(historyIter)));
                     } else {
                         index->second =
                             (index->second <
-                             (static_cast<size_t>(std::get<3>(historyIter) *
-                                                  std::get<4>(historyIter))))
-                                ? (static_cast<long>(std::get<3>(historyIter)) *
-                                   std::get<4>(historyIter))
+                             (std::get<3>(historyIter) *
+                              static_cast<double>(std::get<4>(historyIter))))
+                                ? (std::get<3>(historyIter) *
+                                   static_cast<double>(
+                                       std::get<4>(historyIter)))
                                 : index->second;
                     }
                 }
@@ -179,13 +183,15 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
 
                     if (index == map.end()) {
                         map[date] =
-                            std::get<4>(historyIter) / std::get<3>(historyIter);
+                            static_cast<double>(std::get<4>(historyIter)) /
+                            std::get<3>(historyIter);
                     } else {
                         index->second =
                             (index->second <
-                             static_cast<size_t>(std::get<4>(historyIter) /
-                                                 std::get<3>(historyIter)))
-                                ? (std::get<4>(historyIter) /
+                             static_cast<double>(std::get<4>(historyIter)) /
+                                 std::get<3>(historyIter))
+                                ? (static_cast<double>(
+                                       std::get<4>(historyIter)) /
                                    std::get<3>(historyIter))
                                 : index->second;
                     }
@@ -204,17 +210,17 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
                     if (index == map.end()) {
                         map[date] =
                             static_cast<float>(std::get<3>(historyIter)) /
-                            std::get<4>(historyIter) * ONE_HOUR_IN_SECONDS;
+                            static_cast<double>(std::get<4>(historyIter)) *
+                            ONE_HOUR_IN_SECONDS;
                     } else {
                         index->second =
                             (index->second <
-                             static_cast<size_t>(
-                                 static_cast<float>(std::get<3>(historyIter)) /
-                                 std::get<4>(historyIter) *
-                                 ONE_HOUR_IN_SECONDS))
-                                ? (static_cast<float>(
-                                       std::get<3>(historyIter)) /
-                                   std::get<4>(historyIter) *
+                             std::get<3>(historyIter) /
+                                 static_cast<double>(std::get<4>(historyIter)) *
+                                 ONE_HOUR_IN_SECONDS)
+                                ? (std::get<3>(historyIter) /
+                                   static_cast<double>(
+                                       std::get<4>(historyIter)) *
                                    ONE_HOUR_IN_SECONDS)
                                 : index->second;
                     }
@@ -226,12 +232,12 @@ Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
     return map;
 }
 
-std::map<size_t,
-         std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+std::map<unsigned long,
+         std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
 Lab::Analytics::mapWeightForRep(const Excercise &exc, const History &hist) {
     std::map<
-        size_t,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+        unsigned long,
+        std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
         map;
 
     if (exc.getType() == std::vector<std::string>({"weight", "reps"})) {
@@ -248,15 +254,14 @@ Lab::Analytics::mapWeightForRep(const Excercise &exc, const History &hist) {
                         repIndex->second[date] = std::get<3>(historyIter);
                     } else {
                         dateIndex->second =
-                            (dateIndex->second <
-                             static_cast<size_t>(std::get<3>(historyIter)))
+                            (dateIndex->second < std::get<3>(historyIter))
                                 ? std::get<3>(historyIter)
                                 : dateIndex->second;
                     }
                 } else {
                     map[std::get<4>(historyIter)] = std::map<
                         std::chrono::time_point<std::chrono::system_clock>,
-                        size_t>(
+                        double>(
                         {{std::chrono::time_point_cast<std::chrono::days>(
                               std::get<0>(historyIter)),
                           std::get<3>(historyIter)}});
@@ -267,10 +272,10 @@ Lab::Analytics::mapWeightForRep(const Excercise &exc, const History &hist) {
     return map;
 }
 
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
                                const History &hist) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double> map;
 
     const auto &excerciseType = exc.getType();
     if ((type == "reps" || type == "time" || type == "distance") &&
@@ -289,12 +294,14 @@ Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
 
                 if (index == map.end()) {
                     map[date] =
-                        (typeIndexInTuple == 3 ? std::get<3>(historyIter)
-                                               : std::get<4>(historyIter));
+                        (typeIndexInTuple == 3
+                             ? std::get<3>(historyIter)
+                             : static_cast<double>(std::get<4>(historyIter)));
                 } else {
                     index->second +=
-                        (typeIndexInTuple == 3 ? std::get<3>(historyIter)
-                                               : std::get<4>(historyIter));
+                        (typeIndexInTuple == 3
+                             ? std::get<3>(historyIter)
+                             : static_cast<double>(std::get<4>(historyIter)));
                 }
             }
         }
@@ -308,12 +315,12 @@ Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
 
                     if (index == map.end()) {
                         map[date] =
-                            static_cast<long>(std::get<3>(historyIter)) *
-                            std::get<4>(historyIter);
+                            std::get<3>(historyIter) *
+                            static_cast<double>(std::get<4>(historyIter));
                     } else {
                         index->second +=
-                            (static_cast<long>(std::get<3>(historyIter)) *
-                             std::get<4>(historyIter));
+                            (std::get<3>(historyIter) *
+                             static_cast<double>(std::get<4>(historyIter)));
                     }
                 }
             }
@@ -322,13 +329,13 @@ Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
     return map;
 }
 
-std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+std::map<std::chrono::time_point<std::chrono::system_clock>, double>
 Lab::Analytics::constrainDate(
-    const std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+    const std::map<std::chrono::time_point<std::chrono::system_clock>, double>
         &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, size_t> map;
+    std::map<std::chrono::time_point<std::chrono::system_clock>, double> map;
 
     for (const auto &iter : values) {
         if (iter.first >= startDate && iter.first < endDate) {
@@ -339,21 +346,21 @@ Lab::Analytics::constrainDate(
     return map;
 }
 
-std::map<size_t,
-         std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+std::map<unsigned long,
+         std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
 Lab::Analytics::constrainDate(
-    const std::map<size_t,
+    const std::map<unsigned long,
                    std::map<std::chrono::time_point<std::chrono::system_clock>,
-                            size_t>> &values,
+                            double>> &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate) {
     std::map<
-        size_t,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>>
+        unsigned long,
+        std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
         map;
 
     for (const auto &iter : values) {
-        std::map<std::chrono::time_point<std::chrono::system_clock>, size_t>
+        std::map<std::chrono::time_point<std::chrono::system_clock>, double>
             innerMap;
         for (const auto &innerIter : iter.second) {
             if (innerIter.first >= startDate && innerIter.first < endDate) {

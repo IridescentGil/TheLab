@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdint>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -12,7 +13,7 @@
 Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
     : db(std::move(newDB)) {
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, std::string, int, int>>
+                           std::string, std::string, double, unsigned long>>
         tempHist;
 
     db->execMulti("SELECT * FROM history");
@@ -21,8 +22,8 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
             std::chrono::system_clock::time_point{
                 std::chrono::system_clock::duration{
                     db->getColumn(1).getInt64()}},
-            db->getColumn(2), db->getColumn(3), db->getColumn(4),
-            db->getColumn(5)));
+            db->getColumn(2), db->getColumn(3), db->getColumn(4).getDouble(),
+            db->getColumn(5).getInt64()));
     }
 
     for (auto const &iter : tempHist) {
@@ -52,29 +53,30 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
 Lab::History::History(
     std::shared_ptr<Lab::DBConn> newDB,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         newHistory)
     : db(std::move(newDB)), history(std::move(newHistory)) {}
 
 std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>> &
+                       std::string, Lab::Excercise, double, unsigned long>> &
 Lab::History::getHistory() {
     return history;
 }
 
-const std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                             std::string, Lab::Excercise, int, int>> &
+const std::vector<
+    std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
+               Lab::Excercise, double, unsigned long>> &
 Lab::History::getHistory() const {
     return history;
 }
 
 std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>>
+                       std::string, Lab::Excercise, double, unsigned long>>
 Lab::History::getSliceHistory(
     const std::chrono::time_point<std::chrono::system_clock> &start,
     const std::chrono::time_point<std::chrono::system_clock> &end) const {
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         slice;
     for (auto const &iter : history) {
         if (std::get<0>(iter) >= start && std::get<0>(iter) < end) {
@@ -85,59 +87,60 @@ Lab::History::getSliceHistory(
 }
 
 std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, int, int>>
+                       std::string, Lab::Excercise, double, unsigned long>>
 Lab::History::getItem(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>::iterator
-        start,
+                           std::string, Lab::Excercise, double,
+                           unsigned long>>::iterator start,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>::iterator
-        end) const {
+                           std::string, Lab::Excercise, double,
+                           unsigned long>>::iterator end) const {
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>
+                           std::string, Lab::Excercise, double, unsigned long>>
         slice;
     slice.assign(start, end);
     return slice;
 }
 
 std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
-           Lab::Excercise, int, int>
+           Lab::Excercise, double, unsigned long>
 Lab::History::getItem(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>::iterator
-        iter) const {
+                           std::string, Lab::Excercise, double,
+                           unsigned long>>::iterator iter) const {
     return *iter;
 }
 
 void Lab::History::setHistory(
     const std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, int, int>> &newHistory) {
+                   std::string, Lab::Excercise, double, unsigned long>>
+        &newHistory) {
     history = newHistory;
 }
 
 void Lab::History::addItem(
     const std::chrono::time_point<std::chrono::system_clock> &date,
     const std::string &workoutName, const Lab::Excercise &excercise,
-    const int &type1Val, const int &type2Val) {
+    const double &type1Val, const unsigned long &type2Val) {
     history.push_back(
         std::make_tuple(date, workoutName, excercise, type1Val, type2Val));
 }
 
 void Lab::History::remItem(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>::iterator
-        iter) {
+                           std::string, Lab::Excercise, double,
+                           unsigned long>>::iterator iter) {
     history.erase(iter);
 }
 
 void Lab::History::remItem(
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>::iterator
-        start,
+                           std::string, Lab::Excercise, double,
+                           unsigned long>>::iterator start,
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, int, int>>::iterator
-        end) {
+                           std::string, Lab::Excercise, double,
+                           unsigned long>>::iterator end) {
     history.erase(start, end);
 }
 
@@ -146,8 +149,8 @@ bool Lab::History::save() {
         return (std::get<0>(first) < std::get<0>(second));
     });
 
-    unsigned int size = 0;
-    unsigned int index = 0;
+    std::uint64_t size = 0;
+    std::uint64_t index = 0;
     db->execMulti("SELECT ID FROM history");
     while (db->stepExec()) {
         ++size;
@@ -158,14 +161,18 @@ bool Lab::History::save() {
         size = 0;
     }
 
+    /*
+     * NOTE: unsign long cast to long due SQLiteCPP not recongnizing uint64_t
+     */
     for (auto const &iter : history) {
         const auto &[date, workoutName, excerciseName, type1, type2] = iter;
         if (index < size) {
             if (db->prepare("UPDATE history SET date = ?, workout = ?, "
                             "excercise = ?, type1 = ?, type2 = ? WHERE ID = ?",
                             date.time_since_epoch().count(), workoutName,
-                            excerciseName.getName(), type1, type2,
-                            index) == -1) {
+                            excerciseName.getName(), type1,
+                            static_cast<long>(type2),
+                            static_cast<long>(index)) == -1) {
                 return false;
             }
             if (db->execQuery() == -1) {
@@ -175,7 +182,8 @@ bool Lab::History::save() {
             if (db->prepare("INSERT INTO history (date, workout, excercise, "
                             "type1, type2) VALUES (?, ?, ?, ?, ?)",
                             date.time_since_epoch().count(), workoutName,
-                            excerciseName.getName(), type1, type2) == -1) {
+                            excerciseName.getName(), type1,
+                            static_cast<long>(type2)) == -1) {
                 return false;
             }
             if (db->execQuery() == -1) {

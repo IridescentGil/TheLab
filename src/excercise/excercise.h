@@ -89,6 +89,10 @@ class Excercise {
         "Neck",     "Trapezius", "Bicep",     "Tricep",     "Forearm",
         "Pectoral", "Abs",       "Lats",      "Upper-back", "Lower-back",
         "Quads",    "Glutes",    "Hamstring", "Calf"};
+    /*
+     Weight (kg), Reps, time (seconds),
+     distance (meters).
+     */
     std::vector<std::string_view> typeCheck{"weight", "reps", "time",
                                             "distance"};
     std::vector<std::string_view> groupCheck{"Arms", "Chest", "Back",

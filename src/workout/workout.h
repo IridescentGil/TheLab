@@ -9,7 +9,8 @@
 
 namespace Lab {
 struct ExcerciseData {
-    ExcerciseData(const Lab::Excercise &newEx, int newT1, int newT2)
+    ExcerciseData(const Lab::Excercise &newEx, double newT1,
+                  unsigned long newT2)
         : exc(newEx), type1(newT1), type2(newT2) {}
     ExcerciseData(ExcerciseData &&other) noexcept
         : exc(std::move(other.exc)), type1(other.type1), type2(other.type2) {}
@@ -34,8 +35,8 @@ struct ExcerciseData {
     ~ExcerciseData() = default;
 
     Lab::Excercise exc;
-    int type1;
-    int type2;
+    double type1;
+    unsigned long type2;
 };
 
 class Workout {
@@ -52,8 +53,8 @@ class Workout {
 
     void setWorkout(const std::vector<Lab::ExcerciseData> &newWorkout);
 
-    void addExcercise(const Lab::Excercise &newExcercise, const int &type1Val,
-                      const int &type2Val);
+    void addExcercise(const Lab::Excercise &newExcercise,
+                      const double &type1Val, const unsigned long &type2Val);
 
     void remExcercise(std::vector<Lab::ExcerciseData>::iterator iter);
     void remExcercise(std::vector<Lab::ExcerciseData>::iterator start,
@@ -61,11 +62,11 @@ class Workout {
 
     void changeExcercise(std::vector<Lab::ExcerciseData>::iterator iter,
                          const Lab::Excercise &newExcercise,
-                         const int &type1Val, const int &type2Val);
+                         const double &type1Val, const unsigned long &type2Val);
     void changeExcercise(std::vector<Lab::ExcerciseData>::iterator start,
                          std::vector<Lab::ExcerciseData>::iterator end,
                          const Lab::Excercise &newExcercise,
-                         const int &type1Val, const int &type2Val);
+                         const double &type1Val, const unsigned long &type2Val);
 
     void editName(const std::string &workoutName);
 
