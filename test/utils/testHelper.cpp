@@ -1,5 +1,7 @@
 #include "testHelper.h"
 
+#include "history.h"
+
 bool excerEqual(const Lab::Excercise &first, const Lab::Excercise &second) {
     return first == second;
 };
@@ -58,14 +60,8 @@ testing::AssertionResult AssertWorkoutEqual(const char *firstExpr,
            << second.type2 << ")";
 }
 
-bool historyEqual(
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &first,
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>>
-        &second) {
+bool historyEqual(const Lab::historyVector &first,
+                  const Lab::historyVector &second) {
     if (first.size() != second.size()) {
         return false;
     }
@@ -92,164 +88,64 @@ bool historyEqual(
     return true;
 }
 
-int historydiff(
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &first,
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>>
-        &second) {
-    int nDiff = 0;
+int historyDiff(const Lab::historyVector &first,
+                const Lab::historyVector &second) {
+    int difference = 0;
+    Lab::historyVector::const_iterator smallVector;
+    Lab::historyVector::const_iterator largeVector;
+    Lab::historyVector::const_iterator smallVectorEnd;
+
     if (first.size() != second.size()) {
-        nDiff =
-            (static_cast<int>(first.size()) - static_cast<int>(second.size()) >
-             0)
-                ? static_cast<int>(first.size() - second.size())
-                : -1 * (static_cast<int>(first.size()) -
-                        static_cast<int>(second.size()));
-    }
-    if (first.size() <= second.size()) {
-        for (auto iter = first.cbegin(), bter = second.cbegin();
-             iter != first.cend(); ++iter, ++bter) {
-            auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
-            auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
-            if (dateA != dateB) {
-                ++nDiff;
-                continue;
-            }
-            if (workoutA != workoutB) {
-                ++nDiff;
-                continue;
-            }
-            if (!excerEqual(excerciseA, excerciseB)) {
-                ++nDiff;
-                continue;
-            }
-            if (type1A != type1B) {
-                ++nDiff;
-                continue;
-            }
-            if (type2A != type2B) {
-                ++nDiff;
-                continue;
-            }
-        }
-    } else {
-        for (auto iter = first.cbegin(), bter = second.cbegin();
-             bter != second.cend(); ++iter, ++bter) {
-            auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
-            auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
-            if (dateA != dateB) {
-                ++nDiff;
-                continue;
-            }
-            if (workoutA != workoutB) {
-                ++nDiff;
-                continue;
-            }
-            if (!excerEqual(excerciseA, excerciseB)) {
-                ++nDiff;
-                continue;
-            }
-            if (type1A != type1B) {
-                ++nDiff;
-                continue;
-            }
-            if (type2A != type2B) {
-                ++nDiff;
-                continue;
-            }
+        if (static_cast<int>(first.size()) - static_cast<int>(second.size()) >
+            0) {
+            difference = static_cast<int>(first.size() - second.size());
+            smallVector = second.cbegin();
+            largeVector = first.cbegin();
+            smallVectorEnd = second.cend();
+        } else {
+            difference = -1 * (static_cast<int>(first.size()) -
+                               static_cast<int>(second.size()));
+            smallVector = first.cbegin();
+            largeVector = second.cbegin();
+            smallVectorEnd = first.cend();
         }
     }
-    return nDiff;
+    for (; smallVector != smallVectorEnd; ++smallVector, ++largeVector) {
+        auto [dateA, workoutA, excerciseA, type1A, type2A] = *smallVector;
+        auto [dateB, workoutB, excerciseB, type1B, type2B] = *largeVector;
+        if (dateA != dateB) {
+            ++difference;
+            continue;
+        }
+        if (workoutA != workoutB) {
+            ++difference;
+            continue;
+        }
+        if (!excerEqual(excerciseA, excerciseB)) {
+            ++difference;
+            continue;
+        }
+        if (type1A != type1B) {
+            ++difference;
+            continue;
+        }
+        if (type2A != type2B) {
+            ++difference;
+            continue;
+        }
+    }
+    return difference;
 }
 
-bool historyNEqual(
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &first,
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &second,
-    int diff) {
-    int nDiff = 0;
-    if (first.size() != second.size()) {
-        nDiff =
-            (static_cast<int>(first.size()) - static_cast<int>(second.size()) >
-             0)
-                ? static_cast<int>(first.size() - second.size())
-                : -1 * (static_cast<int>(first.size()) -
-                        static_cast<int>(second.size()));
-    }
-    if (first.size() <= second.size()) {
-        for (auto iter = first.cbegin(), bter = second.cbegin();
-             iter != first.cend(); ++iter, ++bter) {
-            auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
-            auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
-            if (dateA != dateB) {
-                ++nDiff;
-                continue;
-            }
-            if (workoutA != workoutB) {
-                ++nDiff;
-                continue;
-            }
-            if (!excerEqual(excerciseA, excerciseB)) {
-                ++nDiff;
-                continue;
-            }
-            if (type1A != type1B) {
-                ++nDiff;
-                continue;
-            }
-            if (type2A != type2B) {
-                ++nDiff;
-                continue;
-            }
-        }
-    } else {
-        for (auto iter = first.cbegin(), bter = second.cbegin();
-             bter != second.cend(); ++iter, ++bter) {
-            auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
-            auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
-            if (dateA != dateB) {
-                ++nDiff;
-                continue;
-            }
-            if (workoutA != workoutB) {
-                ++nDiff;
-                continue;
-            }
-            if (!excerEqual(excerciseA, excerciseB)) {
-                ++nDiff;
-                continue;
-            }
-            if (type1A != type1B) {
-                ++nDiff;
-                continue;
-            }
-            if (type2A != type2B) {
-                ++nDiff;
-                continue;
-            }
-        }
-    }
-    if (nDiff != diff) {
-        return false;
-    }
-    return true;
+bool historyNEqual(const Lab::historyVector &first,
+                   const Lab::historyVector &second, int diff) {
+    return historyDiff(first, second) == diff;
 }
 
-testing::AssertionResult AssertHistoryEqual(
-    const char *firstExpr, const char *secondExpr,
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &first,
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>>
-        &second) {
+testing::AssertionResult AssertHistoryEqual(const char *firstExpr,
+                                            const char *secondExpr,
+                                            const Lab::historyVector &first,
+                                            const Lab::historyVector &second) {
     if (historyEqual(first, second)) {
         return testing::AssertionSuccess();
     }
@@ -258,15 +154,12 @@ testing::AssertionResult AssertHistoryEqual(
            << firstExpr << " and " << secondExpr << " Histories not equal";
 }
 
-testing::AssertionResult AssertHistoryNEqual(
-    const char *firstExpr, const char *secondExpr, const char *o_expr,
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &first,
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &second,
-    int third) {
+testing::AssertionResult AssertHistoryNEqual(const char *firstExpr,
+                                             const char *secondExpr,
+                                             const char *o_expr,
+                                             const Lab::historyVector &first,
+                                             const Lab::historyVector &second,
+                                             int third) {
     if (historyNEqual(first, second, third)) {
         return testing::AssertionSuccess();
     }
@@ -274,7 +167,7 @@ testing::AssertionResult AssertHistoryNEqual(
     return testing::AssertionFailure()
            << firstExpr << " and " << secondExpr
            << " Histories difference not the expected: " << o_expr
-           << "\n Instead difference is: " << historydiff(first, second);
+           << "\n Instead difference is: " << historyDiff(first, second);
 }
 
 bool mesEqual(Lab::Measurements first, Lab::Measurements second) {

@@ -50,34 +50,18 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
                             type1, type2));
     }
 }
-Lab::History::History(
-    std::shared_ptr<Lab::DBConn> newDB,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        newHistory)
+Lab::History::History(std::shared_ptr<Lab::DBConn> newDB,
+                      historyVector newHistory)
     : db(std::move(newDB)), history(std::move(newHistory)) {}
 
-std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, double, unsigned long>> &
-Lab::History::getHistory() {
-    return history;
-}
+Lab::historyVector &Lab::History::getHistory() { return history; }
 
-const std::vector<
-    std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
-               Lab::Excercise, double, unsigned long>> &
-Lab::History::getHistory() const {
-    return history;
-}
+const Lab::historyVector &Lab::History::getHistory() const { return history; }
 
-std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, double, unsigned long>>
-Lab::History::getSliceHistory(
+Lab::historyVector Lab::History::getSliceHistory(
     const std::chrono::time_point<std::chrono::system_clock> &start,
     const std::chrono::time_point<std::chrono::system_clock> &end) const {
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        slice;
+    historyVector slice;
     for (auto const &iter : history) {
         if (std::get<0>(iter) >= start && std::get<0>(iter) < end) {
             slice.push_back(iter);
@@ -86,36 +70,18 @@ Lab::History::getSliceHistory(
     return slice;
 }
 
-std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, double, unsigned long>>
-Lab::History::getItem(
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double,
-                           unsigned long>>::iterator start,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double,
-                           unsigned long>>::iterator end) const {
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        slice;
+Lab::historyVector Lab::History::getItem(historyVector::iterator start,
+                                         historyVector::iterator end) const {
+    historyVector slice;
     slice.assign(start, end);
     return slice;
 }
 
-std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
-           Lab::Excercise, double, unsigned long>
-Lab::History::getItem(
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double,
-                           unsigned long>>::iterator iter) const {
+Lab::historyTuple Lab::History::getItem(historyVector::iterator iter) const {
     return *iter;
 }
 
-void Lab::History::setHistory(
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>>
-        &newHistory) {
+void Lab::History::setHistory(const historyVector &newHistory) {
     history = newHistory;
 }
 
@@ -127,20 +93,12 @@ void Lab::History::addItem(
         std::make_tuple(date, workoutName, excercise, type1Val, type2Val));
 }
 
-void Lab::History::remItem(
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double,
-                           unsigned long>>::iterator iter) {
+void Lab::History::remItem(historyVector::iterator iter) {
     history.erase(iter);
 }
 
-void Lab::History::remItem(
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double,
-                           unsigned long>>::iterator start,
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double,
-                           unsigned long>>::iterator end) {
+void Lab::History::remItem(historyVector::iterator start,
+                           historyVector::iterator end) {
     history.erase(start, end);
 }
 

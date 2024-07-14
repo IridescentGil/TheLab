@@ -563,46 +563,41 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
 
 TEST_F(HistoryTest, OverrideExistingHistoryTest) {
     auto hist1 = h1.getHistory();
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        newHist = {
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
-                               "Arms", {"Biceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
-                               "Arms", {"Biceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
-                               "Arms", {"Biceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Tricep Extensions",
-                               "Tricep extensions on machine pullies", "Arms",
-                               {"Triceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Tricep Extensions",
-                               "Tricep extensions on machine pullies", "Arms",
-                               {"Triceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Tricep Extensions",
-                               "Tricep extensions on machine pullies", "Arms",
-                               {"Triceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(tpJan13, "Marathon Practice",
-                            Lab::Excercise("Running", "Long distance timed run",
-                                           "Cardio", {}, {"distance", "time"}),
-                            10, 100)};
+    Lab::historyVector newHist = {
+        std::make_tuple(
+            tpMarch4, "Arm Workout",
+            Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                           "Arms", {"Biceps"}, {"weight", "reps"}),
+            50, 15),
+        std::make_tuple(
+            tpMarch4, "Arm Workout",
+            Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                           "Arms", {"Biceps"}, {"weight", "reps"}),
+            50, 15),
+        std::make_tuple(
+            tpMarch4, "Arm Workout",
+            Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                           "Arms", {"Biceps"}, {"weight", "reps"}),
+            50, 15),
+        std::make_tuple(tpMarch4, "Arm Workout",
+                        Lab::Excercise("Tricep Extensions",
+                                       "Tricep extensions on machine pullies",
+                                       "Arms", {"Triceps"}, {"weight", "reps"}),
+                        50, 15),
+        std::make_tuple(tpMarch4, "Arm Workout",
+                        Lab::Excercise("Tricep Extensions",
+                                       "Tricep extensions on machine pullies",
+                                       "Arms", {"Triceps"}, {"weight", "reps"}),
+                        50, 15),
+        std::make_tuple(tpMarch4, "Arm Workout",
+                        Lab::Excercise("Tricep Extensions",
+                                       "Tricep extensions on machine pullies",
+                                       "Arms", {"Triceps"}, {"weight", "reps"}),
+                        50, 15),
+        std::make_tuple(tpJan13, "Marathon Practice",
+                        Lab::Excercise("Running", "Long distance timed run",
+                                       "Cardio", {}, {"distance", "time"}),
+                        10, 100)};
     h1.setHistory(newHist);
     auto hist2 = h1.getHistory();
     EXPECT_EQ(hist1.size(), 6);
@@ -613,25 +608,23 @@ TEST_F(HistoryTest, OverrideExistingHistoryTest) {
 
 TEST_F(HistoryTest, OverrideEmptyHistoryTest) {
     auto hist1 = h2.getHistory();
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        newHist = {
-            std::make_tuple(tpJan13, "Marathon Practice",
-                            Lab::Excercise("Running", "Long distance timed run",
-                                           "Cardio", {}, {"distance", "time"}),
-                            10, 100),
-            std::make_tuple(tpFeb10, "Marathon Practice",
-                            Lab::Excercise("Running", "Long distance timed run",
-                                           "Cardio", {}, {"distance", "time"}),
-                            10, 100),
-            std::make_tuple(tpFeb20, "Marathon Practice",
-                            Lab::Excercise("Running", "Long distance timed run",
-                                           "Cardio", {}, {"distance", "time"}),
-                            10, 100),
-            std::make_tuple(tpMarch4, "Marathon Practice",
-                            Lab::Excercise("Running", "Long distance timed run",
-                                           "Cardio", {}, {"distance", "time"}),
-                            10, 100)};
+    Lab::historyVector newHist = {
+        std::make_tuple(tpJan13, "Marathon Practice",
+                        Lab::Excercise("Running", "Long distance timed run",
+                                       "Cardio", {}, {"distance", "time"}),
+                        10, 100),
+        std::make_tuple(tpFeb10, "Marathon Practice",
+                        Lab::Excercise("Running", "Long distance timed run",
+                                       "Cardio", {}, {"distance", "time"}),
+                        10, 100),
+        std::make_tuple(tpFeb20, "Marathon Practice",
+                        Lab::Excercise("Running", "Long distance timed run",
+                                       "Cardio", {}, {"distance", "time"}),
+                        10, 100),
+        std::make_tuple(tpMarch4, "Marathon Practice",
+                        Lab::Excercise("Running", "Long distance timed run",
+                                       "Cardio", {}, {"distance", "time"}),
+                        10, 100)};
     h2.setHistory(newHist);
     auto hist2 = h2.getHistory();
     EXPECT_TRUE(hist1.empty());
@@ -654,24 +647,22 @@ TEST_F(HistoryTest, AddItemToEmptyHistoryTest) {
                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
                               "Arms", {"Biceps"}, {"weight", "reps"}),
                50, 15);
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        newHist = {
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
-                               "Arms", {"Biceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
-                               "Arms", {"Biceps"}, {"weight", "reps"}),
-                50, 15),
-            std::make_tuple(
-                tpMarch4, "Arm Workout",
-                Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
-                               "Arms", {"Biceps"}, {"weight", "reps"}),
-                50, 15)};
+    Lab::historyVector newHist = {
+        std::make_tuple(
+            tpMarch4, "Arm Workout",
+            Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                           "Arms", {"Biceps"}, {"weight", "reps"}),
+            50, 15),
+        std::make_tuple(
+            tpMarch4, "Arm Workout",
+            Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                           "Arms", {"Biceps"}, {"weight", "reps"}),
+            50, 15),
+        std::make_tuple(
+            tpMarch4, "Arm Workout",
+            Lab::Excercise("Dumbell Curls", "Alternate curling dumbells",
+                           "Arms", {"Biceps"}, {"weight", "reps"}),
+            50, 15)};
     auto hist2 = h2.getHistory();
     EXPECT_TRUE(hist1.empty());
     EXPECT_EQ(hist2.size(), 3);
@@ -724,27 +715,23 @@ TEST_F(HistoryTest, RemoveItemTest) {
     EXPECT_EQ(hist1.size(), 4);
     h3.remItem(hist1.begin());
     EXPECT_EQ(hist1.size(), 3);
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        newHist = {
-            std::make_tuple(
-                tpFeb10, "Upper-Body Workout",
-                Lab::Excercise("Barbell Overhead Press",
-                               "Standing bent over row with Barbell", "Chest",
-                               {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                60, 10),
-            std::make_tuple(
-                tpFeb20, "Full-Body Workout",
-                Lab::Excercise("Barbell Row",
-                               "Standing bent over row with Barbell", "Back",
-                               {"Upper-back", "Lats"}, {"weight", "reps"}),
-                75, 10),
-            std::make_tuple(
-                tpFeb20, "Full-Body Workout",
-                Lab::Excercise("Barbell Row",
-                               "Standing bent over row with Barbell", "Back",
-                               {"Upper-back", "Lats"}, {"weight", "reps"}),
-                75, 10)};
+    Lab::historyVector newHist = {
+        std::make_tuple(
+            tpFeb10, "Upper-Body Workout",
+            Lab::Excercise("Barbell Overhead Press",
+                           "Standing bent over row with Barbell", "Chest",
+                           {"Pectoral", "Tricep"}, {"weight", "reps"}),
+            60, 10),
+        std::make_tuple(
+            tpFeb20, "Full-Body Workout",
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            75, 10),
+        std::make_tuple(
+            tpFeb20, "Full-Body Workout",
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            75, 10)};
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist1, newHist);
 }
 
@@ -752,21 +739,18 @@ TEST_F(HistoryTest, RemoveMultipleItemsTest) {
     auto& hist1 = h3.getHistory();
     h3.remItem(hist1.begin(), hist1.begin() + 2);
     h3.remItem(hist1.begin() + 2, hist1.end());
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        newHist = {
-            std::make_tuple(
-                tpFeb10, "Upper-Body Workout",
-                Lab::Excercise("Barbell Overhead Press",
-                               "Standing bent over row with Barbell", "Chest",
-                               {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                60, 10),
-            std::make_tuple(
-                tpFeb20, "Full-Body Workout",
-                Lab::Excercise("Barbell Row",
-                               "Standing bent over row with Barbell", "Back",
-                               {"Upper-back", "Lats"}, {"weight", "reps"}),
-                75, 10)};
+    Lab::historyVector newHist = {
+        std::make_tuple(
+            tpFeb10, "Upper-Body Workout",
+            Lab::Excercise("Barbell Overhead Press",
+                           "Standing bent over row with Barbell", "Chest",
+                           {"Pectoral", "Tricep"}, {"weight", "reps"}),
+            60, 10),
+        std::make_tuple(
+            tpFeb20, "Full-Body Workout",
+            Lab::Excercise("Barbell Row", "Standing bent over row with Barbell",
+                           "Back", {"Upper-back", "Lats"}, {"weight", "reps"}),
+            75, 10)};
     EXPECT_EQ(hist1.size(), 2);
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, hist1, newHist);
 }

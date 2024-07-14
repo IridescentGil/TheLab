@@ -1,13 +1,14 @@
 #include "analytics.h"
 
-#include <bits/chrono.h>
-
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
-#include <type_traits>
+
+#include "history.h"
 
 namespace {
+using dateTimePoint = std::chrono::time_point<std::chrono::system_clock>;
+
 double formula(const double &weight, const double &reps) {
     const double UPPER = 36.0;
     const double LOWER = 37.0;
@@ -43,6 +44,241 @@ enum REP_RANGE {
     ELEVEN_REPS,
     TWELVE_REPS
 };
+
+template <typename Rep, typename Period>
+void addHistoryValueToDateTotal(const double &valueToAdd,
+                                std::chrono::duration<Rep, Period> /* unused */,
+                                const Lab::historyTuple &historyItem,
+                                Lab::Analytics::analyticsMap &map) {
+    std::chrono::time_point<std::chrono::system_clock,
+                            std::chrono::duration<Rep, Period>>
+        date = std::chrono::time_point_cast<std::chrono::duration<Rep, Period>>(
+            std::get<dateTimePoint>(historyItem));
+    auto index = map.find(date);
+
+    if (index == map.end()) {
+        map[date] = valueToAdd;
+    } else {
+        index->second += valueToAdd;
+    }
+}
+
+double getCorrectValueFromTupleIndex(
+    const Lab::historyTuple &historyItem,
+    const std::vector<std::string> &excerciseType, std::string_view &type) {
+    size_t typeIndexInTuple =
+        std::find(excerciseType.cbegin(), excerciseType.cend(), type) -
+        excerciseType.cbegin();
+
+    if (typeIndexInTuple == 0) {
+        return std::get<3>(historyItem);
+    }
+    if (typeIndexInTuple == 1) {
+        return static_cast<double>(std::get<4>(historyItem));
+    }
+
+    return 0;
+}
+
+void populateMapWithHighestTypeValues(
+    const Lab::historyVector &history, Lab::Analytics::analyticsMap &map,
+    const Lab::Excercise &excercise,
+    const std::vector<std::string> &excerciseType, std::string_view &type) {
+    double typeValue = 0;
+
+    for (auto const &historyIter : history) {
+        if (std::get<Lab::Excercise>(historyIter) == excercise) {
+            typeValue =
+                getCorrectValueFromTupleIndex(historyIter, excerciseType, type);
+            auto date = std::chrono::time_point_cast<std::chrono::days>(
+                std::get<dateTimePoint>(historyIter));
+            auto index = map.find(date);
+
+            if (index == map.end()) {
+                map[date] = typeValue;
+            } else if (index->second < typeValue) {
+                index->second = typeValue;
+            };
+        }
+    }
+}
+
+void populateMapWithHighestVolumeValues(const Lab::historyVector &history,
+                                        Lab::Analytics::analyticsMap &map,
+                                        const Lab::Excercise &excercise) {
+    double workoutVolume = 0;
+
+    for (auto const &historyIter : history) {
+        if (std::get<Lab::Excercise>(historyIter) == excercise) {
+            auto date = std::chrono::time_point_cast<std::chrono::days>(
+                std::get<dateTimePoint>(historyIter));
+            auto index = map.find(date);
+            workoutVolume = std::get<3>(historyIter) *
+                            static_cast<double>(std::get<4>(historyIter));
+
+            if (index == map.end()) {
+                map[date] = workoutVolume;
+            } else if (index->second < workoutVolume) {
+                index->second = workoutVolume;
+            }
+        }
+    }
+}
+
+void populateMapWithHighestPaceValues(const Lab::historyVector &history,
+                                      Lab::Analytics::analyticsMap &map,
+                                      const Lab::Excercise &excercise) {
+    double workoutPace = 0;
+
+    for (auto const &historyIter : history) {
+        if (std::get<Lab::Excercise>(historyIter) == excercise) {
+            auto date = std::chrono::time_point_cast<std::chrono::days>(
+                std::get<dateTimePoint>(historyIter));
+            auto index = map.find(date);
+            workoutPace = static_cast<double>(std::get<4>(historyIter)) /
+                          std::get<3>(historyIter);
+
+            if (index == map.end()) {
+                map[date] = workoutPace;
+            } else if (index->second < workoutPace) {
+                index->second = workoutPace;
+            }
+        }
+    }
+}
+
+void populateMapWithHighestSpeedValues(const Lab::historyVector &history,
+                                       Lab::Analytics::analyticsMap &map,
+                                       const Lab::Excercise &excercise) {
+    const double ONE_HOUR_IN_SECONDS = 3600;
+    double workoutSpeed = 0;
+
+    for (auto const &historyIter : history) {
+        if (std::get<Lab::Excercise>(historyIter) == excercise) {
+            auto date = std::chrono::time_point_cast<std::chrono::days>(
+                std::get<dateTimePoint>(historyIter));
+            auto index = map.find(date);
+            workoutSpeed = std::get<3>(historyIter) /
+                           static_cast<double>(std::get<4>(historyIter)) *
+                           ONE_HOUR_IN_SECONDS;
+
+            if (index == map.end()) {
+                map[date] = workoutSpeed;
+            } else if (index->second < workoutSpeed) {
+                index->second = workoutSpeed;
+            }
+        }
+    }
+}
+
+void populateMapWithTotalTypeValues(
+    const Lab::historyVector &history, Lab::Analytics::analyticsMap &map,
+    const Lab::Excercise &excercise,
+    const std::vector<std::string> &excerciseType, std::string_view &type) {
+    for (auto const &historyIter : history) {
+        if (std::get<Lab::Excercise>(historyIter) == excercise) {
+            addHistoryValueToDateTotal(
+                getCorrectValueFromTupleIndex(historyIter, excerciseType, type),
+                std::chrono::days(), historyIter, map);
+        }
+    }
+}
+
+void populateMapWithTotalVolumeValues(const Lab::historyVector &history,
+                                      Lab::Analytics::analyticsMap &map,
+                                      const Lab::Excercise &excercise) {
+    for (auto const &historyIter : history) {
+        if (std::get<Lab::Excercise>(historyIter) == excercise) {
+            addHistoryValueToDateTotal(
+                std::get<3>(historyIter) *
+                    static_cast<double>(std::get<4>(historyIter)),
+                std::chrono::days(), historyIter, map);
+        }
+    }
+}
+
+template <typename Rep, typename Period>
+void populateMapWithRepValuesForPeriod(
+    const Lab::historyVector &history, std::string_view valueType,
+    std::chrono::duration<Rep, Period> /*unused*/,
+    Lab::Analytics::analyticsMap &map) {
+    for (auto const &historyIter : history) {
+        const auto &excerciseType =
+            std::get<Lab::Excercise>(historyIter).getType();
+        if (std::find(excerciseType.cbegin(), excerciseType.cend(),
+                      valueType) != excerciseType.cend()) {
+            addHistoryValueToDateTotal(
+                getCorrectValueFromTupleIndex(historyIter, excerciseType,
+                                              valueType),
+                std::chrono::duration<Rep, Period>(), historyIter, map);
+        }
+    }
+}
+
+template <typename Rep, typename Period>
+void populateMapWithSetValuesForPeriod(
+    const Lab::historyVector &history,
+    std::chrono::duration<Rep, Period> /*unused*/,
+    Lab::Analytics::analyticsMap &map) {
+    for (auto const &historyIter : history) {
+        addHistoryValueToDateTotal(1, std::chrono::duration<Rep, Period>(),
+                                   historyIter, map);
+    }
+}
+
+template <typename Rep, typename Period>
+void populateMapWithVolumeValuesForPeriod(
+    const Lab::historyVector &history,
+    std::chrono::duration<Rep, Period> /*unused*/,
+    Lab::Analytics::analyticsMap &map) {
+    for (auto const &historyIter : history) {
+        const auto &excerciseType =
+            std::get<Lab::Excercise>(historyIter).getType();
+        if (excerciseType == std::vector<std::string>({"weight", "reps"})) {
+            addHistoryValueToDateTotal(
+                std::get<3>(historyIter) *
+                    static_cast<double>(std::get<4>(historyIter)),
+                std::chrono::duration<Rep, Period>(), historyIter, map);
+        }
+    }
+}
+
+template <typename Rep, typename Period>
+void populateMapWithWorkoutValuesForPeriod(
+    const Lab::historyVector &history,
+    std::chrono::duration<Rep, Period> /*unused*/,
+    Lab::Analytics::analyticsMap &map) {
+    std::vector<std::chrono::time_point<std::chrono::system_clock>> dayCounted;
+    for (auto const &historyIter : history) {
+        if (std::find(dayCounted.cbegin(), dayCounted.cend(),
+                      std::get<dateTimePoint>(historyIter)) ==
+            dayCounted.cend()) {
+            addHistoryValueToDateTotal(1, std::chrono::duration<Rep, Period>(),
+                                       historyIter, map);
+            dayCounted.push_back(std::get<dateTimePoint>(historyIter));
+        }
+    }
+}
+
+template <typename Rep, typename Period>
+void chooseValueType(const Lab::History &hist, std::string_view valueType,
+                     std::chrono::duration<Rep, Period> /*unused*/,
+                     Lab::Analytics::analyticsMap &map) {
+    if (valueType == "reps") {
+        populateMapWithRepValuesForPeriod(hist.getHistory(), valueType,
+                                          std::chrono::duration<Rep, Period>(),
+                                          map);
+    } else if (valueType == "sets") {
+        populateMapWithSetValuesForPeriod(
+            hist.getHistory(), std::chrono::duration<Rep, Period>(), map);
+    } else if (valueType == "volume") {
+        populateMapWithVolumeValuesForPeriod(
+            hist.getHistory(), std::chrono::duration<Rep, Period>(), map);
+    } else if (valueType == "workouts") {
+        populateMapWithWorkoutValuesForPeriod(
+            hist.getHistory(), std::chrono::duration<Rep, Period>(), map);
+    }
+}
 }  // namespace
 
 std::map<unsigned long, double> Lab::Analytics::mapRepEstimates(
@@ -107,163 +343,69 @@ std::map<unsigned long, double> Lab::Analytics::mapRepEstimates(
     return est;
 }
 
-std::map<std::chrono::time_point<std::chrono::system_clock>, double>
-Lab::Analytics::mapHighestValues(std::string_view type, const Excercise &exc,
-                                 const History &hist) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, double> map;
+Lab::Analytics::analyticsMap Lab::Analytics::mapHighestValues(
+    std::string_view type, const Excercise &excercise, const History &hist) {
+    Lab::Analytics::analyticsMap map;
 
-    const auto &excerciseType = exc.getType();
+    const auto &excerciseType = excercise.getType();
     if ((type == "reps" || type == "weight" || type == "time" ||
          type == "distance") &&
         std::find(excerciseType.cbegin(), excerciseType.cend(), type) !=
             excerciseType.cend()) {
-        size_t typeIndexInTuple =
-            std::find(excerciseType.cbegin(), excerciseType.cend(), type) -
-            excerciseType.cbegin() +
-            3;  // In history tuple types are index 3 and 4
-
-        for (auto const &historyIter : hist.getHistory()) {
-            if (std::get<2>(historyIter) == exc) {
-                auto date = std::chrono::time_point_cast<std::chrono::days>(
-                    std::get<0>(historyIter));
-                auto index = map.find(date);
-
-                if (index == map.end()) {
-                    map[date] =
-                        (typeIndexInTuple == 3
-                             ? std::get<3>(historyIter)
-                             : static_cast<double>(std::get<4>(historyIter)));
-                } else {
-                    index->second = (index->second <
-                                     ((typeIndexInTuple == 3
-                                           ? std::get<3>(historyIter)
-                                           : static_cast<double>(
-                                                 std::get<4>(historyIter)))))
-                                        ? (typeIndexInTuple == 3
-                                               ? std::get<3>(historyIter)
-                                               : static_cast<double>(
-                                                     std::get<4>(historyIter)))
-                                        : index->second;
-                    ;
-                }
-            }
-        }
+        populateMapWithHighestTypeValues(hist.getHistory(), map, excercise,
+                                         excerciseType, type);
     } else if (type == "volume") {
-        if (exc.getType() == std::vector<std::string>({"weight", "reps"})) {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter) == exc) {
-                    auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            (std::get<3>(historyIter) *
-                             static_cast<double>(std::get<4>(historyIter)));
-                    } else {
-                        index->second =
-                            (index->second <
-                             (std::get<3>(historyIter) *
-                              static_cast<double>(std::get<4>(historyIter))))
-                                ? (std::get<3>(historyIter) *
-                                   static_cast<double>(
-                                       std::get<4>(historyIter)))
-                                : index->second;
-                    }
-                }
-            }
+        if (excercise.getType() ==
+            std::vector<std::string>({"weight", "reps"})) {
+            populateMapWithHighestVolumeValues(hist.getHistory(), map,
+                                               excercise);
         }
     } else if (type == "pace") {
-        if (exc.getType() == std::vector<std::string>({"distance", "time"})) {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter) == exc) {
-                    auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            static_cast<double>(std::get<4>(historyIter)) /
-                            std::get<3>(historyIter);
-                    } else {
-                        index->second =
-                            (index->second <
-                             static_cast<double>(std::get<4>(historyIter)) /
-                                 std::get<3>(historyIter))
-                                ? (static_cast<double>(
-                                       std::get<4>(historyIter)) /
-                                   std::get<3>(historyIter))
-                                : index->second;
-                    }
-                }
-            }
+        if (excercise.getType() ==
+            std::vector<std::string>({"distance", "time"})) {
+            populateMapWithHighestPaceValues(hist.getHistory(), map, excercise);
         }
     } else if (type == "speed") {
-        if (exc.getType() == std::vector<std::string>({"distance", "time"})) {
-            const float ONE_HOUR_IN_SECONDS = 3600;
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter) == exc) {
-                    auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            static_cast<float>(std::get<3>(historyIter)) /
-                            static_cast<double>(std::get<4>(historyIter)) *
-                            ONE_HOUR_IN_SECONDS;
-                    } else {
-                        index->second =
-                            (index->second <
-                             std::get<3>(historyIter) /
-                                 static_cast<double>(std::get<4>(historyIter)) *
-                                 ONE_HOUR_IN_SECONDS)
-                                ? (std::get<3>(historyIter) /
-                                   static_cast<double>(
-                                       std::get<4>(historyIter)) *
-                                   ONE_HOUR_IN_SECONDS)
-                                : index->second;
-                    }
-                }
-            }
+        if (excercise.getType() ==
+            std::vector<std::string>({"distance", "time"})) {
+            populateMapWithHighestSpeedValues(hist.getHistory(), map,
+                                              excercise);
         }
     }
 
     return map;
 }
 
-std::map<unsigned long,
-         std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
-Lab::Analytics::mapWeightForRep(const Excercise &exc, const History &hist) {
-    std::map<
-        unsigned long,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
-        map;
+Lab::Analytics::analyticsRepForWeightMap Lab::Analytics::mapWeightForRep(
+    const Excercise &excercise, const History &hist) {
+    Lab::Analytics::analyticsRepForWeightMap map;
 
-    if (exc.getType() == std::vector<std::string>({"weight", "reps"})) {
+    if (excercise.getType() == std::vector<std::string>({"weight", "reps"})) {
         for (auto const &historyIter : hist.getHistory()) {
-            if (std::get<2>(historyIter) == exc) {
-                auto repIndex = map.find(std::get<4>(historyIter));
+            if (std::get<Lab::Excercise>(historyIter) == excercise) {
+                auto outerMapRepIndexForInnerMap =
+                    map.find(std::get<4>(historyIter));
 
-                if (repIndex != map.end()) {
+                if (outerMapRepIndexForInnerMap != map.end()) {
                     auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto dateIndex = repIndex->second.find(date);
+                        std::get<dateTimePoint>(historyIter));
+                    auto InnerMapDateIndex =
+                        outerMapRepIndexForInnerMap->second.find(date);
 
-                    if (dateIndex == repIndex->second.end()) {
-                        repIndex->second[date] = std::get<3>(historyIter);
-                    } else {
-                        dateIndex->second =
-                            (dateIndex->second < std::get<3>(historyIter))
-                                ? std::get<3>(historyIter)
-                                : dateIndex->second;
+                    if (InnerMapDateIndex ==
+                        outerMapRepIndexForInnerMap->second.end()) {
+                        outerMapRepIndexForInnerMap->second[date] =
+                            std::get<3>(historyIter);
+                    } else if (InnerMapDateIndex->second <
+                               std::get<3>(historyIter)) {
+                        InnerMapDateIndex->second = std::get<3>(historyIter);
                     }
                 } else {
                     map[std::get<4>(historyIter)] = std::map<
                         std::chrono::time_point<std::chrono::system_clock>,
                         double>(
                         {{std::chrono::time_point_cast<std::chrono::days>(
-                              std::get<0>(historyIter)),
+                              std::get<dateTimePoint>(historyIter)),
                           std::get<3>(historyIter)}});
                 }
             }
@@ -272,70 +414,48 @@ Lab::Analytics::mapWeightForRep(const Excercise &exc, const History &hist) {
     return map;
 }
 
-std::map<std::chrono::time_point<std::chrono::system_clock>, double>
-Lab::Analytics::mapTotalValues(std::string_view type, const Excercise &exc,
-                               const History &hist) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, double> map;
+Lab::Analytics::analyticsMap Lab::Analytics::mapTotalValues(
+    std::string_view type, const Excercise &excercise, const History &hist) {
+    Lab::Analytics::analyticsMap map;
 
-    const auto &excerciseType = exc.getType();
+    const auto &excerciseType = excercise.getType();
     if ((type == "reps" || type == "time" || type == "distance") &&
         std::find(excerciseType.cbegin(), excerciseType.cend(), type) !=
             excerciseType.cend()) {
-        size_t typeIndexInTuple =
-            std::find(excerciseType.cbegin(), excerciseType.cend(), type) -
-            excerciseType.cbegin() +
-            3;  // In history tuple types are index 3 and 4
-
-        for (auto const &historyIter : hist.getHistory()) {
-            if (std::get<2>(historyIter) == exc) {
-                auto date = std::chrono::time_point_cast<std::chrono::days>(
-                    std::get<0>(historyIter));
-                auto index = map.find(date);
-
-                if (index == map.end()) {
-                    map[date] =
-                        (typeIndexInTuple == 3
-                             ? std::get<3>(historyIter)
-                             : static_cast<double>(std::get<4>(historyIter)));
-                } else {
-                    index->second +=
-                        (typeIndexInTuple == 3
-                             ? std::get<3>(historyIter)
-                             : static_cast<double>(std::get<4>(historyIter)));
-                }
-            }
-        }
+        populateMapWithTotalTypeValues(hist.getHistory(), map, excercise,
+                                       excerciseType, type);
     } else if (type == "volume") {
-        if (exc.getType() == std::vector<std::string>({"weight", "reps"})) {
-            for (auto const &historyIter : hist.getHistory()) {
-                if (std::get<2>(historyIter) == exc) {
-                    auto date = std::chrono::time_point_cast<std::chrono::days>(
-                        std::get<0>(historyIter));
-                    auto index = map.find(date);
-
-                    if (index == map.end()) {
-                        map[date] =
-                            std::get<3>(historyIter) *
-                            static_cast<double>(std::get<4>(historyIter));
-                    } else {
-                        index->second +=
-                            (std::get<3>(historyIter) *
-                             static_cast<double>(std::get<4>(historyIter)));
-                    }
-                }
-            }
+        if (excercise.getType() ==
+            std::vector<std::string>({"weight", "reps"})) {
+            populateMapWithTotalVolumeValues(hist.getHistory(), map, excercise);
         }
     }
     return map;
 }
 
-std::map<std::chrono::time_point<std::chrono::system_clock>, double>
-Lab::Analytics::constrainDate(
-    const std::map<std::chrono::time_point<std::chrono::system_clock>, double>
-        &values,
+Lab::Analytics::analyticsMap Lab::Analytics::mapValuesPerPeriod(
+    std::string_view valueType, std::string_view periodType,
+    const History &hist) {
+    Lab::Analytics::analyticsMap map;
+
+    if (periodType == "day") {
+        chooseValueType(hist, valueType, std::chrono::days(), map);
+    } else if (periodType == "week") {
+        chooseValueType(hist, valueType, std::chrono::weeks(), map);
+    } else if (periodType == "month") {
+        chooseValueType(hist, valueType, std::chrono::months(), map);
+    } else if (periodType == "year") {
+        chooseValueType(hist, valueType, std::chrono::years(), map);
+    }
+
+    return map;
+}
+
+Lab::Analytics::analyticsMap Lab::Analytics::constrainDate(
+    const Lab::Analytics::analyticsMap &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate) {
-    std::map<std::chrono::time_point<std::chrono::system_clock>, double> map;
+    Lab::Analytics::analyticsMap map;
 
     for (const auto &iter : values) {
         if (iter.first >= startDate && iter.first < endDate) {
@@ -346,22 +466,14 @@ Lab::Analytics::constrainDate(
     return map;
 }
 
-std::map<unsigned long,
-         std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
-Lab::Analytics::constrainDate(
-    const std::map<unsigned long,
-                   std::map<std::chrono::time_point<std::chrono::system_clock>,
-                            double>> &values,
+Lab::Analytics::analyticsRepForWeightMap Lab::Analytics::constrainDate(
+    const Lab::Analytics::analyticsRepForWeightMap &values,
     const std::chrono::time_point<std::chrono::system_clock> &startDate,
     const std::chrono::time_point<std::chrono::system_clock> &endDate) {
-    std::map<
-        unsigned long,
-        std::map<std::chrono::time_point<std::chrono::system_clock>, double>>
-        map;
+    Lab::Analytics::analyticsRepForWeightMap map;
 
     for (const auto &iter : values) {
-        std::map<std::chrono::time_point<std::chrono::system_clock>, double>
-            innerMap;
+        Lab::Analytics::analyticsMap innerMap;
         for (const auto &innerIter : iter.second) {
             if (innerIter.first >= startDate && innerIter.first < endDate) {
                 innerMap[innerIter.first] = innerIter.second;

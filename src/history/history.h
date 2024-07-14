@@ -11,74 +11,42 @@
 
 namespace Lab {
 
+using historyTuple =
+    std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
+               Lab::Excercise, double, unsigned long>;
+using historyVector = std::vector<historyTuple>;
+
 class History {
    public:
     History(std::shared_ptr<Lab::DBConn> newDB);
-    History(std::shared_ptr<Lab::DBConn> newDB,
-            std::vector<
-                std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-                newHistory);
+    History(std::shared_ptr<Lab::DBConn> newDB, historyVector newHistory);
 
-    std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &
-    getHistory();
-    const std::vector<
-        std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                   std::string, Lab::Excercise, double, unsigned long>> &
-    getHistory() const;
+    historyVector &getHistory();
+    const historyVector &getHistory() const;
 
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-    getSliceHistory(
+    historyVector getSliceHistory(
         const std::chrono::time_point<std::chrono::system_clock> &start,
         const std::chrono::time_point<std::chrono::system_clock> &end) const;
 
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-    getItem(std::vector<std::tuple<
-                std::chrono::time_point<std::chrono::system_clock>, std::string,
-                Lab::Excercise, double, unsigned long>>::iterator start,
-            std::vector<std::tuple<
-                std::chrono::time_point<std::chrono::system_clock>, std::string,
-                Lab::Excercise, double, unsigned long>>::iterator end) const;
-    std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string,
-               Lab::Excercise, double, unsigned long>
-    getItem(std::vector<std::tuple<
-                std::chrono::time_point<std::chrono::system_clock>, std::string,
-                Lab::Excercise, double, unsigned long>>::iterator iter) const;
+    historyVector getItem(historyVector::iterator start,
+                          historyVector::iterator end) const;
+    historyTuple getItem(historyVector::iterator iter) const;
 
     bool save();
 
-    void setHistory(
-        const std::vector<
-            std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                       std::string, Lab::Excercise, double, unsigned long>>
-            &newHistory);
+    void setHistory(const historyVector &newHistory);
 
     void addItem(const std::chrono::time_point<std::chrono::system_clock> &date,
                  const std::string &workoutName,
                  const Lab::Excercise &excercise, const double &type1Val,
                  const unsigned long &type2Val);
 
-    void remItem(
-        std::vector<std::tuple<
-            std::chrono::time_point<std::chrono::system_clock>, std::string,
-            Lab::Excercise, double, unsigned long>>::iterator iter);
-    void remItem(
-        std::vector<std::tuple<
-            std::chrono::time_point<std::chrono::system_clock>, std::string,
-            Lab::Excercise, double, unsigned long>>::iterator start,
-        std::vector<std::tuple<
-            std::chrono::time_point<std::chrono::system_clock>, std::string,
-            Lab::Excercise, double, unsigned long>>::iterator end);
+    void remItem(historyVector::iterator iter);
+    void remItem(historyVector::iterator start, historyVector::iterator end);
 
    private:
     std::shared_ptr<Lab::DBConn> db;
-    std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
-                           std::string, Lab::Excercise, double, unsigned long>>
-        history;
+    historyVector history;
 };
 
 }  // namespace Lab
