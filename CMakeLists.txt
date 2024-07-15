@@ -24,6 +24,14 @@ install(
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(BUILD_TESTING)
-  enable_testing()
+  find_program(MEMORYCHECK_COMMAND valgrind)
+
+  set(VALGRIND_COMMAND_OPTIONS
+      "-q --tool=memcheck --trace-children=yes --num-callers=51 --trace-children=yes --leak-check=full --track-origins=yes --gen-suppressions=all"
+  )
+  set(MEMORYCHECK_COMMAND_OPTIONS
+      "-q --tool=memcheck --trace-children=yes --num-callers=51 --trace-children=yes --leak-check=full --track-origins=yes --gen-suppressions=all"
+  )
+  include(CTest)
   add_subdirectory(test)
 endif()
