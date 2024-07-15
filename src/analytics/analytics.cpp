@@ -9,14 +9,14 @@
 namespace {
 using dateTimePoint = std::chrono::time_point<std::chrono::system_clock>;
 
-double formula(const double &weight, const double &reps) {
+double bryzckiFormula(const double &weight, const double &reps) {
     const double UPPER = 36.0;
     const double LOWER = 37.0;
 
     return weight * (UPPER / (LOWER - reps));
 }
 
-namespace formulaRepPercentages {
+namespace bryzckiFormulaRepPercentages {
 const double TWO_REP_PERCENTAGE = 0.95;
 const double THREE_REP_PERCENTAGE = 0.90;
 const double FOUR_REP_PERCENTAGE = 0.88;
@@ -28,7 +28,7 @@ const double NINE_REP_PERCENTAGE = 0.76;
 const double TEN_REP_PERCENTAGE = 0.75;
 const double ELEVEN_REP_PERCENTAGE = 0.72;
 const double TWELVE_REP_PERCENTAGE = 0.70;
-};  // namespace formulaRepPercentages
+};  // namespace bryzckiFormulaRepPercentages
 
 enum REP_RANGE {
     ONE_REP = 1,
@@ -46,7 +46,7 @@ enum REP_RANGE {
 };
 
 template <typename Rep, typename Period>
-void addHistoryValueToDateTotal(const double &valueToAdd,
+void addValueToDateTotal(const double &value,
                                 std::chrono::duration<Rep, Period> /* unused */,
                                 const Lab::historyTuple &historyItem,
                                 Lab::Analytics::analyticsMap &map) {
@@ -57,23 +57,28 @@ void addHistoryValueToDateTotal(const double &valueToAdd,
     auto index = map.find(date);
 
     if (index == map.end()) {
-        map[date] = valueToAdd;
+        map[date] = value;
     } else {
-        index->second += valueToAdd;
+        index->second += value;
     }
 }
 
-double getCorrectValueFromTupleIndex(
-    const Lab::historyTuple &historyItem,
-    const std::vector<std::string> &excerciseType, std::string_view &type) {
-    size_t typeIndexInTuple =
+/*
+ * This function finds and returns the appropriate value for the functions that
+ * get a single type value such as reps, weight, distance, time, that can be in
+ * the third or fourth index of the tuple, depending on the excercise.
+ */
+double getCorrectValueFromTuple(const Lab::historyTuple &historyItem,
+                                const std::vector<std::string> &excerciseType,
+                                std::string_view &type) {
+    long indexOffset =
         std::find(excerciseType.cbegin(), excerciseType.cend(), type) -
         excerciseType.cbegin();
 
-    if (typeIndexInTuple == 0) {
+    if (indexOffset == 0) {
         return std::get<3>(historyItem);
     }
-    if (typeIndexInTuple == 1) {
+    if (indexOffset == 1) {
         return static_cast<double>(std::get<4>(historyItem));
     }
 
@@ -89,7 +94,7 @@ void populateMapWithHighestTypeValues(
     for (auto const &historyIter : history) {
         if (std::get<Lab::Excercise>(historyIter) == excercise) {
             typeValue =
-                getCorrectValueFromTupleIndex(historyIter, excerciseType, type);
+                getCorrectValueFromTuple(historyIter, excerciseType, type);
             auto date = std::chrono::time_point_cast<std::chrono::days>(
                 std::get<dateTimePoint>(historyIter));
             auto index = map.find(date);
@@ -135,6 +140,7 @@ void populateMapWithHighestPaceValues(const Lab::historyVector &history,
             auto date = std::chrono::time_point_cast<std::chrono::days>(
                 std::get<dateTimePoint>(historyIter));
             auto index = map.find(date);
+            // Pace calulate by time / distance
             workoutPace = static_cast<double>(std::get<4>(historyIter)) /
                           std::get<3>(historyIter);
 
@@ -158,6 +164,7 @@ void populateMapWithHighestSpeedValues(const Lab::historyVector &history,
             auto date = std::chrono::time_point_cast<std::chrono::days>(
                 std::get<dateTimePoint>(historyIter));
             auto index = map.find(date);
+            // Speed calulated by (distance / time) * 3600(ONE_HOUR_IN_SECONDS)
             workoutSpeed = std::get<3>(historyIter) /
                            static_cast<double>(std::get<4>(historyIter)) *
                            ONE_HOUR_IN_SECONDS;
@@ -177,8 +184,8 @@ void populateMapWithTotalTypeValues(
     const std::vector<std::string> &excerciseType, std::string_view &type) {
     for (auto const &historyIter : history) {
         if (std::get<Lab::Excercise>(historyIter) == excercise) {
-            addHistoryValueToDateTotal(
-                getCorrectValueFromTupleIndex(historyIter, excerciseType, type),
+            addValueToDateTotal(
+                getCorrectValueFromTuple(historyIter, excerciseType, type),
                 std::chrono::days(), historyIter, map);
         }
     }
@@ -189,7 +196,7 @@ void populateMapWithTotalVolumeValues(const Lab::historyVector &history,
                                       const Lab::Excercise &excercise) {
     for (auto const &historyIter : history) {
         if (std::get<Lab::Excercise>(historyIter) == excercise) {
-            addHistoryValueToDateTotal(
+            addValueToDateTotal(
                 std::get<3>(historyIter) *
                     static_cast<double>(std::get<4>(historyIter)),
                 std::chrono::days(), historyIter, map);
@@ -207,9 +214,8 @@ void populateMapWithRepValuesForPeriod(
             std::get<Lab::Excercise>(historyIter).getType();
         if (std::find(excerciseType.cbegin(), excerciseType.cend(),
                       valueType) != excerciseType.cend()) {
-            addHistoryValueToDateTotal(
-                getCorrectValueFromTupleIndex(historyIter, excerciseType,
-                                              valueType),
+            addValueToDateTotal(
+                getCorrectValueFromTuple(historyIter, excerciseType, valueType),
                 std::chrono::duration<Rep, Period>(), historyIter, map);
         }
     }
@@ -221,7 +227,7 @@ void populateMapWithSetValuesForPeriod(
     std::chrono::duration<Rep, Period> /*unused*/,
     Lab::Analytics::analyticsMap &map) {
     for (auto const &historyIter : history) {
-        addHistoryValueToDateTotal(1, std::chrono::duration<Rep, Period>(),
+        addValueToDateTotal(1, std::chrono::duration<Rep, Period>(),
                                    historyIter, map);
     }
 }
@@ -235,7 +241,7 @@ void populateMapWithVolumeValuesForPeriod(
         const auto &excerciseType =
             std::get<Lab::Excercise>(historyIter).getType();
         if (excerciseType == std::vector<std::string>({"weight", "reps"})) {
-            addHistoryValueToDateTotal(
+            addValueToDateTotal(
                 std::get<3>(historyIter) *
                     static_cast<double>(std::get<4>(historyIter)),
                 std::chrono::duration<Rep, Period>(), historyIter, map);
@@ -253,7 +259,7 @@ void populateMapWithWorkoutValuesForPeriod(
         if (std::find(dayCounted.cbegin(), dayCounted.cend(),
                       std::get<dateTimePoint>(historyIter)) ==
             dayCounted.cend()) {
-            addHistoryValueToDateTotal(1, std::chrono::duration<Rep, Period>(),
+            addValueToDateTotal(1, std::chrono::duration<Rep, Period>(),
                                        historyIter, map);
             dayCounted.push_back(std::get<dateTimePoint>(historyIter));
         }
@@ -286,54 +292,65 @@ std::map<unsigned long, double> Lab::Analytics::mapRepEstimates(
     std::map<size_t, double> est;
     est[reps] = weight;
     if (reps != 1) {
-        est[ONE_REP] = formula(weight, static_cast<double>(reps));
+        est[ONE_REP] = bryzckiFormula(weight, static_cast<double>(reps));
     }
     for (size_t index = 1; index <= TWELVE_REPS; ++index) {
         if (index != reps) {
             switch (index) {
                 case TWO_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::TWO_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::TWO_REP_PERCENTAGE;
                     break;
                 case THREE_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::THREE_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::THREE_REP_PERCENTAGE;
                     break;
                 case FOUR_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::FOUR_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::FOUR_REP_PERCENTAGE;
                     break;
                 case FIVE_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::FIVE_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::FIVE_REP_PERCENTAGE;
                     break;
                 case SIX_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::SIX_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::SIX_REP_PERCENTAGE;
                     break;
                 case SEVEN_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::SEVEN_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::SEVEN_REP_PERCENTAGE;
                     break;
                 case EIGHT_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::EIGHT_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::EIGHT_REP_PERCENTAGE;
                     break;
                 case NINE_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::NINE_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::NINE_REP_PERCENTAGE;
                     break;
                 case TEN_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::TEN_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::TEN_REP_PERCENTAGE;
                     break;
                 case ELEVEN_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::ELEVEN_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::ELEVEN_REP_PERCENTAGE;
                     break;
                 case TWELVE_REPS:
-                    est[index] = est[ONE_REP] *
-                                 ::formulaRepPercentages::TWELVE_REP_PERCENTAGE;
+                    est[index] =
+                        est[ONE_REP] *
+                        ::bryzckiFormulaRepPercentages::TWELVE_REP_PERCENTAGE;
                     break;
                 default:
                     break;

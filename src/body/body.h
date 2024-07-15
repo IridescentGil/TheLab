@@ -6,25 +6,25 @@
 #include "database.h"
 
 namespace Lab {
-namespace {
-const unsigned short FULLY_HEALED = 100;
-};
+namespace Constants {
+static const unsigned short FULLY_HEALED = 100;
+}
 
 struct Muscles {
-    unsigned short neck = FULLY_HEALED;
-    unsigned short trapezius = FULLY_HEALED;
-    unsigned short bicep = FULLY_HEALED;
-    unsigned short tricep = FULLY_HEALED;
-    unsigned short forearm = FULLY_HEALED;
-    unsigned short pectoral = FULLY_HEALED;
-    unsigned short abs = FULLY_HEALED;
-    unsigned short lats = FULLY_HEALED;
-    unsigned short upperBack = FULLY_HEALED;
-    unsigned short lowerBack = FULLY_HEALED;
-    unsigned short quads = FULLY_HEALED;
-    unsigned short glutes = FULLY_HEALED;
-    unsigned short hamstring = FULLY_HEALED;
-    unsigned short calf = FULLY_HEALED;
+    unsigned short neck = Constants::FULLY_HEALED;
+    unsigned short trapezius = Constants::FULLY_HEALED;
+    unsigned short bicep = Constants::FULLY_HEALED;
+    unsigned short tricep = Constants::FULLY_HEALED;
+    unsigned short forearm = Constants::FULLY_HEALED;
+    unsigned short pectoral = Constants::FULLY_HEALED;
+    unsigned short abs = Constants::FULLY_HEALED;
+    unsigned short lats = Constants::FULLY_HEALED;
+    unsigned short upperBack = Constants::FULLY_HEALED;
+    unsigned short lowerBack = Constants::FULLY_HEALED;
+    unsigned short quads = Constants::FULLY_HEALED;
+    unsigned short glutes = Constants::FULLY_HEALED;
+    unsigned short hamstring = Constants::FULLY_HEALED;
+    unsigned short calf = Constants::FULLY_HEALED;
 };
 
 struct Measurements {
@@ -58,7 +58,7 @@ class Body {
     unsigned short getWeight() const { return weight; };
     unsigned short getAge() const { return age; };
     Muscles getCondition() const { return condition; };
-    Measurements getMeasurements() const { return measure; };
+    Measurements getMeasurements() const { return measurement; };
 
     void setHeight(const unsigned short &newHeight);
     void setWeight(const unsigned short &newWeight);
@@ -72,9 +72,9 @@ class Body {
     unsigned short weight;
     unsigned short age;
     Muscles condition;
-    Measurements measure;
-    bool bodyEdit = false;
-    bool condEdit = false;
-    bool measEdit = false;
+    Measurements measurement;
+    bool bodyValuesEdited = false;
+    bool conditionValuesEdited = false;
+    bool measurementValuesEdited = false;
 };
 }  // namespace Lab

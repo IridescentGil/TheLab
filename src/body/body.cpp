@@ -5,25 +5,62 @@
 
 #include "database.h"
 
+namespace {
+enum MEASUREMENT_DATABASE_DB_INDEXES {
+    WEIGHT_DB_INDEX = 1,
+    HEIGHT_DB_INDEX,
+    AGE_DB_INDEX,
+    NECK_DB_INDEX,
+    SHOULDER_DB_INDEX,
+    CHEST_DB_INDEX,
+    WAIST_DB_INDEX,
+    HIPS_DB_INDEX,
+    UPPER_RIGHT_ARM_DB_INDEX,
+    UPPER_LEFT_ARM_DB_INDEX,
+    RIGHT_FOREARM_DB_INDEX,
+    LEFT_FOREARM_DB_INDEX,
+    RIGHT_THIGH_DB_INDEX,
+    LEFT_THIGH_DB_INDEX,
+    RIGHT_CALF_DB_INDEX,
+    LEFT_CALF_DB_INDEX
+};
+enum CONDITION_DATABASE_DB_INDEXES {
+    NECK_CONDITION_DB_INDEX = 1,
+    TRAPEZIUS_CONDITION_DB_INDEX,
+    BICEP_CONDITION_DB_INDEX,
+    TRICEP_CONDITION_DB_INDEX,
+    FOREARM_CONDITION_DB_INDEX,
+    PECTORAL_CONDITION_DB_INDEX,
+    ABS_CONDITION_DB_INDEX,
+    LATS_CONDITION_DB_INDEX,
+    UPPER_BACK_CONDITION_DB_INDEX,
+    LOWER_BACK_CONDITION_DB_INDEX,
+    QUADS_CONDITION_DB_INDEX,
+    GLUTES_CONDITION_DB_INDEX,
+    HAMSTRING_CONDITION_DB_INDEX,
+    CALF_CONDITION_DB_INDEX
+};
+}  // namespace
+
 Lab::Body::Body(std::shared_ptr<Lab::DBConn> dbBase) : db(std::move(dbBase)) {
     db->execMulti("SELECT * FROM bodyStats ORDER BY date DESC LIMIT 1");
     if (db->stepExec()) {
-        weight = db->getColumn(1);
-        height = db->getColumn(2);
-        age = db->getColumn(3);
-        measure.neck = db->getColumn(4);
-        measure.shoulders = db->getColumn(5);
-        measure.chest = db->getColumn(6);
-        measure.waist = db->getColumn(7);
-        measure.hips = db->getColumn(8);
-        measure.upperArmRight = db->getColumn(9);
-        measure.upperArmLeft = db->getColumn(10);
-        measure.forearmRight = db->getColumn(11);
-        measure.forearmLeft = db->getColumn(12);
-        measure.thighRight = db->getColumn(13);
-        measure.thighLeft = db->getColumn(14);
-        measure.calfRight = db->getColumn(15);
-        measure.calfLeft = db->getColumn(16);
+        weight = db->getColumn(WEIGHT_DB_INDEX);
+        height = db->getColumn(HEIGHT_DB_INDEX);
+        age = db->getColumn(AGE_DB_INDEX);
+        measurement.neck = db->getColumn(NECK_DB_INDEX);
+        measurement.shoulders = db->getColumn(SHOULDER_DB_INDEX);
+        measurement.chest = db->getColumn(CHEST_DB_INDEX);
+        measurement.waist = db->getColumn(WAIST_DB_INDEX);
+        measurement.hips = db->getColumn(HIPS_DB_INDEX);
+        measurement.upperArmRight = db->getColumn(UPPER_RIGHT_ARM_DB_INDEX);
+        measurement.upperArmLeft = db->getColumn(UPPER_LEFT_ARM_DB_INDEX);
+        measurement.forearmRight = db->getColumn(RIGHT_FOREARM_DB_INDEX);
+        measurement.forearmLeft = db->getColumn(LEFT_FOREARM_DB_INDEX);
+        measurement.thighRight = db->getColumn(RIGHT_THIGH_DB_INDEX);
+        measurement.thighLeft = db->getColumn(LEFT_THIGH_DB_INDEX);
+        measurement.calfRight = db->getColumn(RIGHT_CALF_DB_INDEX);
+        measurement.calfLeft = db->getColumn(LEFT_CALF_DB_INDEX);
     } else {
         age = 0;
         height = 0;
@@ -31,53 +68,53 @@ Lab::Body::Body(std::shared_ptr<Lab::DBConn> dbBase) : db(std::move(dbBase)) {
     }
     db->execMulti("SELECT * FROM bodyCondition ORDER BY date DESC LIMIT 1");
     if (db->stepExec()) {
-        condition.neck = db->getColumn(1);
-        condition.trapezius = db->getColumn(2);
-        condition.bicep = db->getColumn(3);
-        condition.tricep = db->getColumn(4);
-        condition.forearm = db->getColumn(5);
-        condition.pectoral = db->getColumn(6);
-        condition.abs = db->getColumn(7);
-        condition.lats = db->getColumn(8);
-        condition.upperBack = db->getColumn(9);
-        condition.lowerBack = db->getColumn(10);
-        condition.quads = db->getColumn(11);
-        condition.glutes = db->getColumn(12);
-        condition.hamstring = db->getColumn(13);
-        condition.calf = db->getColumn(14);
+        condition.neck = db->getColumn(NECK_CONDITION_DB_INDEX);
+        condition.trapezius = db->getColumn(TRAPEZIUS_CONDITION_DB_INDEX);
+        condition.bicep = db->getColumn(BICEP_CONDITION_DB_INDEX);
+        condition.tricep = db->getColumn(TRICEP_CONDITION_DB_INDEX);
+        condition.forearm = db->getColumn(FOREARM_CONDITION_DB_INDEX);
+        condition.pectoral = db->getColumn(PECTORAL_CONDITION_DB_INDEX);
+        condition.abs = db->getColumn(ABS_CONDITION_DB_INDEX);
+        condition.lats = db->getColumn(LATS_CONDITION_DB_INDEX);
+        condition.upperBack = db->getColumn(UPPER_BACK_CONDITION_DB_INDEX);
+        condition.lowerBack = db->getColumn(LOWER_BACK_CONDITION_DB_INDEX);
+        condition.quads = db->getColumn(QUADS_CONDITION_DB_INDEX);
+        condition.glutes = db->getColumn(GLUTES_CONDITION_DB_INDEX);
+        condition.hamstring = db->getColumn(HAMSTRING_CONDITION_DB_INDEX);
+        condition.calf = db->getColumn(CALF_CONDITION_DB_INDEX);
     }
 }
 
 void Lab::Body::setMeasurement(const Measurements &newMeasurements) {
-    measure = newMeasurements;
-    measEdit = true;
+    measurement = newMeasurements;
+    measurementValuesEdited = true;
 }
 
 void Lab::Body::setCondition(const Muscles &newMuscles) {
     condition = newMuscles;
-    condEdit = true;
+    conditionValuesEdited = true;
 }
 
 void Lab::Body::setAge(const unsigned short &newAge) {
     age = newAge;
-    bodyEdit = true;
+    bodyValuesEdited = true;
 }
 
 void Lab::Body::setWeight(const unsigned short &newWeight) {
     weight = newWeight;
-    bodyEdit = true;
+    bodyValuesEdited = true;
 }
 
 void Lab::Body::setHeight(const unsigned short &newHeight) {
     height = newHeight;
-    bodyEdit = true;
+    bodyValuesEdited = true;
 }
 
 int Lab::Body::save() {
     auto epoch = std::chrono::duration_cast<std::chrono::milliseconds>(
                      std::chrono::system_clock::now().time_since_epoch())
                      .count();
-    if (bodyEdit || measEdit) {
+    if (bodyValuesEdited || measurementValuesEdited) {
         if (db->prepare(
                 "INSERT INTO bodyStats (date, weight, height, age, "
                 "neckMeasurement, "
@@ -89,20 +126,22 @@ int Lab::Body::save() {
                 "calfRightMeasurement, "
                 "calfLeftMeasurement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                 "?, ?, ?, ?, ?, ?)",
-                epoch, weight, height, age, measure.neck, measure.shoulders,
-                measure.chest, measure.waist, measure.hips,
-                measure.upperArmRight, measure.upperArmLeft,
-                measure.forearmRight, measure.forearmLeft, measure.thighRight,
-                measure.thighLeft, measure.calfRight, measure.calfLeft) == -1) {
+                epoch, weight, height, age, measurement.neck,
+                measurement.shoulders, measurement.chest, measurement.waist,
+                measurement.hips, measurement.upperArmRight,
+                measurement.upperArmLeft, measurement.forearmRight,
+                measurement.forearmLeft, measurement.thighRight,
+                measurement.thighLeft, measurement.calfRight,
+                measurement.calfLeft) == -1) {
             return -1;
         }
         if (db->execQuery() == -1) {
             return -2;
         }
-        measEdit = false;
-        bodyEdit = false;
+        measurementValuesEdited = false;
+        bodyValuesEdited = false;
     }
-    if (condEdit) {
+    if (conditionValuesEdited) {
         if (db->prepare("INSERT INTO bodyCondition (date, neckCondition, "
                         "trapeziusCondition, "
                         "bicepsCondition, tricepsCondition, forearmsCondition, "
@@ -123,7 +162,7 @@ int Lab::Body::save() {
         if (db->execQuery() == -1) {
             return -4;
         }
-        condEdit = false;
+        conditionValuesEdited = false;
     }
 
     return 1;

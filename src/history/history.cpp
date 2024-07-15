@@ -10,6 +10,24 @@
 
 #include "excercise.h"
 
+namespace {
+enum HISTORY_DATABASE_INDEXES {
+    DATE_DB_INDEX = 1,
+    WORKOUT_NAME_DB_INDEX,
+    HISTORY_EXCERCISE_NAME_DB_INDEX,
+    TYPE_1_DB_INDEX,
+    TYPE_2_DB_INDEX
+};
+
+enum EXCERCISE_DATABASE_INDEXES {
+    EXCERCISE_NAME_DB_INDEX = 0,
+    EXCERCISE_DESCRIPTION_DB_INDEX,
+    MUSCLE_GROUP_DB_INDEX,
+    MUSCLES_WORKED_DB_INDEX,
+    EXCERCISE_TYPE_DB_INDEX
+};
+}  // namespace
+
 Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
     : db(std::move(newDB)) {
     std::vector<std::tuple<std::chrono::time_point<std::chrono::system_clock>,
@@ -21,9 +39,11 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
         tempHist.push_back(std::make_tuple(
             std::chrono::system_clock::time_point{
                 std::chrono::system_clock::duration{
-                    db->getColumn(1).getInt64()}},
-            db->getColumn(2), db->getColumn(3), db->getColumn(4).getDouble(),
-            db->getColumn(5).getInt64()));
+                    db->getColumn(DATE_DB_INDEX).getInt64()}},
+            db->getColumn(WORKOUT_NAME_DB_INDEX),
+            db->getColumn(HISTORY_EXCERCISE_NAME_DB_INDEX),
+            db->getColumn(TYPE_1_DB_INDEX).getDouble(),
+            db->getColumn(TYPE_2_DB_INDEX).getInt64()));
     }
 
     for (auto const &iter : tempHist) {
@@ -33,8 +53,10 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
         db->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
         db->stepExec();
 
-        std::stringstream streamMusclesWorked(db->getColumn(3));
-        std::stringstream streamExcerciseType(db->getColumn(4));
+        std::stringstream streamMusclesWorked(
+            db->getColumn(MUSCLES_WORKED_DB_INDEX));
+        std::stringstream streamExcerciseType(
+            db->getColumn(EXCERCISE_TYPE_DB_INDEX));
         std::string tempString;
         while (std::getline(streamMusclesWorked, tempString, ',')) {
             mWorked.push_back(tempString);
@@ -43,11 +65,13 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB)
             exType.push_back(tempString);
         }
 
-        history.push_back(
-            std::make_tuple(date, workoutName,
-                            Lab::Excercise(db->getColumn(0), db->getColumn(1),
-                                           db->getColumn(2), mWorked, exType),
-                            type1, type2));
+        history.push_back(std::make_tuple(
+            date, workoutName,
+            Lab::Excercise(db->getColumn(EXCERCISE_NAME_DB_INDEX),
+                           db->getColumn(EXCERCISE_DESCRIPTION_DB_INDEX),
+                           db->getColumn(MUSCLE_GROUP_DB_INDEX), mWorked,
+                           exType),
+            type1, type2));
     }
 }
 Lab::History::History(std::shared_ptr<Lab::DBConn> newDB,
