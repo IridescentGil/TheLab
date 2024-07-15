@@ -11,8 +11,7 @@ namespace Lab {
 class Excercise {
    public:
     Excercise();
-    Excercise(std::string name, std::string desc, const std::string &mGroup,
-              const std::vector<std::string> &mWorked,
+    Excercise(std::string name, std::string desc, const std::string &mGroup, const std::vector<std::string> &mWorked,
               const std::vector<std::string> &eType);
     Excercise(Excercise &&other) noexcept
         : name(std::move(other.name)),
@@ -49,19 +48,14 @@ class Excercise {
     ~Excercise() = default;
 
     inline bool operator==(const Lab::Excercise &compare) const {
-        return (std::tie(this->name, this->description, this->muscleGroup,
-                         this->musclesWorked, this->type) ==
-                std::tie(compare.name, compare.description, compare.muscleGroup,
-                         compare.musclesWorked, compare.type));
+        return (std::tie(this->name, this->description, this->muscleGroup, this->musclesWorked, this->type) ==
+                std::tie(compare.name, compare.description, compare.muscleGroup, compare.musclesWorked, compare.type));
     }
 
-    inline bool operator!=(const Lab::Excercise &compare) const {
-        return !(*this == compare);
-    }
+    inline bool operator!=(const Lab::Excercise &compare) const { return !(*this == compare); }
 
-    std::tuple<std::string, std::string, std::string, std::vector<std::string>,
-               std::vector<std::string>>
-    getDetails() const;
+    std::tuple<std::string, std::string, std::string, std::vector<std::string>, std::vector<std::string>> getDetails()
+        const;
     std::string getName() const { return name; };
     std::string getDescription() const { return description; };
     std::string getMuscleGroup() const { return muscleGroup; };
@@ -85,18 +79,14 @@ class Excercise {
     std::vector<std::string> musclesWorked;
     std::vector<std::string> type;
 
-    std::vector<std::string_view> mwCheck{
-        "Neck",     "Trapezius", "Bicep",     "Tricep",     "Forearm",
-        "Pectoral", "Abs",       "Lats",      "Upper-back", "Lower-back",
-        "Quads",    "Glutes",    "Hamstring", "Calf"};
+    std::vector<std::string_view> mwCheck{"Neck", "Trapezius",  "Bicep",      "Tricep", "Forearm", "Pectoral",  "Abs",
+                                          "Lats", "Upper-back", "Lower-back", "Quads",  "Glutes",  "Hamstring", "Calf"};
     /*
      Weight (kg), Reps, time (seconds),
      distance (meters).
      */
-    std::vector<std::string_view> typeCheck{"weight", "reps", "time",
-                                            "distance"};
-    std::vector<std::string_view> groupCheck{"Arms", "Chest", "Back",
-                                             "Core", "Legs",  "Cardio"};
+    std::vector<std::string_view> typeCheck{"weight", "reps", "time", "distance"};
+    std::vector<std::string_view> groupCheck{"Arms", "Chest", "Back", "Core", "Legs", "Cardio"};
 };
 
 }  // namespace Lab

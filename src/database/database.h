@@ -48,8 +48,7 @@ class DBConn {
      * @param args[in]
      */
     template <typename T, typename... Args>
-    int prepare(std::size_t index, const std::string &queryStr, const T &fArg,
-                const Args &...args);
+    int prepare(std::size_t index, const std::string &queryStr, const T &fArg, const Args &...args);
     ///@}
 
     ///@brief Retrieve the results of a prepared query
@@ -70,8 +69,7 @@ class DBConn {
 };
 
 template <typename T, typename... Args>
-int DBConn::prepare(std::size_t index, const std::string &queryStr,
-                    const T &fArg, const Args &...args) {
+int DBConn::prepare(std::size_t index, const std::string &queryStr, const T &fArg, const Args &...args) {
     try {
         if (index == 1) {
             query = SQLite::Statement(db, queryStr);

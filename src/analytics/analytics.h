@@ -11,12 +11,10 @@
 ///@brief Lab classes, namespaces and functions
 namespace Lab {
 namespace Analytics {
-using analyticsMap =
-    std::map<std::chrono::time_point<std::chrono::system_clock>, double>;
+using analyticsMap = std::map<std::chrono::time_point<std::chrono::system_clock>, double>;
 using analyticsRepForWeightMap = std::map<unsigned long, analyticsMap>;
 
-std::map<unsigned long, double> mapRepEstimates(unsigned long reps,
-                                                double weight);
+std::map<unsigned long, double> mapRepEstimates(unsigned long reps, double weight);
 
 /**
 @brief Map the highest value of a type on particular days
@@ -26,16 +24,14 @@ std::map<unsigned long, double> mapRepEstimates(unsigned long reps,
 @param hist History to search through
 @return A map containing the dates and values of @param type
  */
-analyticsMap mapHighestValues(std::string_view type, const Excercise &exc,
-                              const History &hist);
+analyticsMap mapHighestValues(std::string_view type, const Excercise &exc, const History &hist);
 
 /**
  @brief Map the most weight used on certain days per certain amount of reps
  @return A map cointaining the amount of reps and a maps containing dates and
  weight used
  */
-analyticsRepForWeightMap mapWeightForRep(const Excercise &exc,
-                                         const History &hist);
+analyticsRepForWeightMap mapWeightForRep(const Excercise &exc, const History &hist);
 
 /**
 @brief Map the total values of a type on particular days in a date
@@ -44,8 +40,7 @@ analyticsRepForWeightMap mapWeightForRep(const Excercise &exc,
 @param hist History to search through
 @return A map containing the dates and values of @param type
 */
-analyticsMap mapTotalValues(std::string_view type, const Excercise &exc,
-                            const History &hist);
+analyticsMap mapTotalValues(std::string_view type, const Excercise &exc, const History &hist);
 
 /**
 @brief Map the total values of a type during a period
@@ -54,18 +49,14 @@ analyticsMap mapTotalValues(std::string_view type, const Excercise &exc,
 @return A map of dates in relation to @param periodType and the values of @param
 Valuetype
 */
-analyticsMap mapValuesPerPeriod(std::string_view valueType,
-                                std::string_view periodType,
-                                const History &hist);
+analyticsMap mapValuesPerPeriod(std::string_view valueType, std::string_view periodType, const History &hist);
 
-analyticsMap constrainDate(
-    const analyticsMap &values,
-    const std::chrono::time_point<std::chrono::system_clock> &startDate,
-    const std::chrono::time_point<std::chrono::system_clock> &endDate);
+analyticsMap constrainDate(const analyticsMap &values,
+                           const std::chrono::time_point<std::chrono::system_clock> &startDate,
+                           const std::chrono::time_point<std::chrono::system_clock> &endDate);
 
-analyticsRepForWeightMap constrainDate(
-    const analyticsRepForWeightMap &values,
-    const std::chrono::time_point<std::chrono::system_clock> &startDate,
-    const std::chrono::time_point<std::chrono::system_clock> &endDate);
+analyticsRepForWeightMap constrainDate(const analyticsRepForWeightMap &values,
+                                       const std::chrono::time_point<std::chrono::system_clock> &startDate,
+                                       const std::chrono::time_point<std::chrono::system_clock> &endDate);
 }  // namespace Analytics
 }  // namespace Lab

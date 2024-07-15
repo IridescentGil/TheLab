@@ -1,13 +1,8 @@
 #include "database.h"
 
-Lab::DBConn::DBConn()
-    : db("thelab.db", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE),
-      query(db, "") {
-    createTables();
-}
+Lab::DBConn::DBConn() : db("thelab.db", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE), query(db, "") { createTables(); }
 
-Lab::DBConn::DBConn(std::string_view name)
-    : db(name, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE), query(db, "") {
+Lab::DBConn::DBConn(std::string_view name) : db(name, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE), query(db, "") {
     createTables();
 }
 

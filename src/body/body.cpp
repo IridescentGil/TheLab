@@ -111,28 +111,24 @@ void Lab::Body::setHeight(const unsigned short &newHeight) {
 }
 
 int Lab::Body::save() {
-    auto epoch = std::chrono::duration_cast<std::chrono::milliseconds>(
-                     std::chrono::system_clock::now().time_since_epoch())
-                     .count();
+    auto epoch =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
+            .count();
     if (bodyValuesEdited || measurementValuesEdited) {
-        if (db->prepare(
-                "INSERT INTO bodyStats (date, weight, height, age, "
-                "neckMeasurement, "
-                "shouldersMeasurement, chestMeasurement, waistMeasurement, "
-                "hipsMeasurement, upperArmRightMeasurement, "
-                "upperArmLeftMeasurement, "
-                "forearmRightMeasurement, forearmLeftMeasurement, "
-                "thighRightMeasurement, thighLeftMeasurement, "
-                "calfRightMeasurement, "
-                "calfLeftMeasurement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                "?, ?, ?, ?, ?, ?)",
-                epoch, weight, height, age, measurement.neck,
-                measurement.shoulders, measurement.chest, measurement.waist,
-                measurement.hips, measurement.upperArmRight,
-                measurement.upperArmLeft, measurement.forearmRight,
-                measurement.forearmLeft, measurement.thighRight,
-                measurement.thighLeft, measurement.calfRight,
-                measurement.calfLeft) == -1) {
+        if (db->prepare("INSERT INTO bodyStats (date, weight, height, age, "
+                        "neckMeasurement, "
+                        "shouldersMeasurement, chestMeasurement, waistMeasurement, "
+                        "hipsMeasurement, upperArmRightMeasurement, "
+                        "upperArmLeftMeasurement, "
+                        "forearmRightMeasurement, forearmLeftMeasurement, "
+                        "thighRightMeasurement, thighLeftMeasurement, "
+                        "calfRightMeasurement, "
+                        "calfLeftMeasurement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                        "?, ?, ?, ?, ?, ?)",
+                        epoch, weight, height, age, measurement.neck, measurement.shoulders, measurement.chest,
+                        measurement.waist, measurement.hips, measurement.upperArmRight, measurement.upperArmLeft,
+                        measurement.forearmRight, measurement.forearmLeft, measurement.thighRight,
+                        measurement.thighLeft, measurement.calfRight, measurement.calfLeft) == -1) {
             return -1;
         }
         if (db->execQuery() == -1) {
@@ -151,11 +147,9 @@ int Lab::Body::save() {
                         "quadsCondition, glutesCondition, hamstringsCondition, "
                         "calfsCondition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                         "?, ?, ?, ?, ?)",
-                        epoch, condition.neck, condition.trapezius,
-                        condition.bicep, condition.tricep, condition.forearm,
-                        condition.pectoral, condition.abs, condition.lats,
-                        condition.upperBack, condition.lowerBack,
-                        condition.quads, condition.glutes, condition.hamstring,
+                        epoch, condition.neck, condition.trapezius, condition.bicep, condition.tricep,
+                        condition.forearm, condition.pectoral, condition.abs, condition.lats, condition.upperBack,
+                        condition.lowerBack, condition.quads, condition.glutes, condition.hamstring,
                         condition.calf) == -1) {
             return -3;
         }
