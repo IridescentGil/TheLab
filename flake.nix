@@ -1,64 +1,70 @@
 {
-    description = "The Lab workout tracking program made with QT";
+  description = "The Lab workout tracking program made with QT";
 
-    inputs = {
-        nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-        flake-utils.url = "github:numtide/flake-utils";
-    };
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+  };
 
-    outputs = {self, nixpkgs, flake-utils, ...}:
-    flake-utils.lib.eachSystem [
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachSystem
+      [
         "aarch64-linux"
         "aarch64-darwin"
         "x86_64-darwin"
         "x86_64-linux"
         "x86_64-windows"
         "i686-windows"
-    ] (system:
-    {
-        devShells.default = let
-            pkgs = import nixpkgs {
-                inherit system;
-            };
-        in
-        pkgs.mkShell.override {stdenv = pkgs.clangStdenv;} {
+      ]
+      (system: {
+        devShells.default =
+          let
+            pkgs = import nixpkgs { inherit system; };
+          in
+          pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
             packages = with pkgs; [
-                qt6.full
-                qtcreator
-                cmake
-                gnumake
-                gtest
-                clang-tools
-                sqlite
-                sqlitecpp
+              kdePackages.full
+              qtcreator
+              cmake
+              gnumake
+              gtest
+              clang-tools
+              sqlite
+              sqlitecpp
 
-                doxygen
-                graphviz
+              doxygen
+              graphviz
 
-                lcov
+              lcov
+              llvmPackages.bintools-unwrapped
             ];
-        };
-        devShells.gcc = let
-            pkgs = import nixpkgs {
-                inherit system;
-            };
-        in
-        pkgs.mkShell.override {stdenv = pkgs.gccStdenv;} {
+          };
+        devShells.gcc =
+          let
+            pkgs = import nixpkgs { inherit system; };
+          in
+          pkgs.mkShell.override { stdenv = pkgs.gccStdenv; } {
             packages = with pkgs; [
-                qt6.full
-                qtcreator
-                cmake
-                gnumake
-                gtest
-                clang-tools
-                sqlite
-                sqlitecpp
+              kdePackages.full
+              qtcreator
+              cmake
+              gnumake
+              gtest
+              clang-tools
+              sqlite
+              sqlitecpp
 
-                doxygen
-                graphviz
+              doxygen
+              graphviz
 
-                lcov
+              lcov
             ];
-        };
-    });
+          };
+      });
 }
