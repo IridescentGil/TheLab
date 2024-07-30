@@ -42,10 +42,18 @@ if(MSVC)
 else()
   target_compile_options(
     TheLabUnitTest
-    PRIVATE -Wall -Wextra -Wpedantic "$<$<CONFIG:DEBUG>:-O0;-g3;>"
-            "$<$<CONFIG:RELEASE>:-O2;>"
-            "$<$<BOOL:${ENABLE_COVERAGE}>:--coverage;>")
-  target_link_options(TheLabUnitTest PRIVATE
-                      "$<$<BOOL:${ENABLE_COVERAGE}>:--coverage;>")
+    PRIVATE
+      -Wall
+      -Wextra
+      -Wpedantic
+      "$<$<CONFIG:DEBUG>:-Og;-g3;-fsanitize=address,leak,undefined;-fno-sanitize-recover=all;-fno-optimize-sibling-calls;-fno-omit-frame-pointer;>"
+      "$<$<CONFIG:RELEASE>:-O2;>"
+      "$<$<BOOL:${ENABLE_COVERAGE}>:--coverage;>")
+  target_link_options(
+    TheLabUnitTest
+    PRIVATE
+    "$<$<BOOL:${ENABLE_COVERAGE}>:--coverage;>"
+    "$<$<CONFIG:DEBUG>:-Og;-g3;-fsanitize=address,leak,undefined;-fno-sanitize-recover=all;-fno-optimize-sibling-calls;-fno-omit-frame-pointer;>"
+  )
 endif()
 gtest_discover_tests(TheLabUnitTest)
