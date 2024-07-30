@@ -33,13 +33,13 @@ class WorkoutTest : public testing::Test {
             for (const auto& bter : iter.getMusclesWorked()) {
                 musclesWorked += bter;
                 if (*(iter.getMusclesWorked().end() - 1) != bter) {
-                    musclesWorked += ", ";
+                    musclesWorked += ",";
                 }
             }
             for (const auto& bter : iter.getType()) {
                 type += bter;
                 if (*(iter.getType().end() - 1) != bter) {
-                    type += ", ";
+                    type += ",";
                 }
             }
             db->prepare(

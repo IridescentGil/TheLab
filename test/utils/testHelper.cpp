@@ -25,8 +25,29 @@ testing::AssertionResult AssertExcerciseEqual(const char *firstExpr, const char 
     if (excerEqual(first, second)) {
         return testing::AssertionSuccess();
     }
+    auto vectostr = [](const std::vector<std::string> &stringArray) {
+        std::string flatString;
+        for (const auto &index : stringArray) {
+            flatString += index;
+            if (*(stringArray.end() - 1) != index) {
+                flatString += ", ";
+            }
+        }
+        return flatString;
+    };
 
-    return testing::AssertionFailure() << firstExpr << " and " << secondExpr << " Excersises not equal";
+    return testing::AssertionFailure() << "Excercises:\n"
+                                       << firstExpr << ":\nName: " << first.getName()
+                                       << "\nDescription: " << first.getDescription()
+                                       << "\nMuscle Group: " << first.getMuscleGroup()
+                                       << "\nMuscles Worked: " << vectostr(first.getMusclesWorked())
+                                       << "\nTypes: " << vectostr(first.getType()) << "\n"
+                                       << " and " << secondExpr << ":\nName: " << second.getName()
+                                       << "\nDescription: " << second.getDescription()
+                                       << "\nMuscle Group: " << second.getMuscleGroup()
+                                       << "\nMuscles Worked: " << vectostr(second.getMusclesWorked())
+                                       << "\nTypes: " << vectostr(second.getType()) << "\n"
+                                       << " not equal";
 }
 
 testing::AssertionResult AssertWorkoutEqual(const char *firstExpr, const char *secondExpr,

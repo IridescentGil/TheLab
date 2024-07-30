@@ -35,13 +35,13 @@ class HistoryTest : public testing::Test {
             for (const auto& bter : iter.getMusclesWorked()) {
                 musclesWorked += bter;
                 if (*(iter.getMusclesWorked().end() - 1) != bter) {
-                    musclesWorked += ", ";
+                    musclesWorked += ",";
                 }
             }
             for (const auto& bter : iter.getType()) {
                 type += bter;
                 if (*(iter.getType().end() - 1) != bter) {
-                    type += ", ";
+                    type += ",";
                 }
             }
             db->prepare(
@@ -195,6 +195,30 @@ class HistoryTest : public testing::Test {
                                         {"Abs"}, {"time", "reps"}),
                          60, 10)}};
 };
+
+TEST_F(HistoryTest, ConstructorTest) {
+    auto epoch = tpJan13.time_since_epoch().count();
+    Lab::Excercise plank("Plank", "In pushup position, lift yourself on your elbows and toes", "Core", {"Abs"},
+                         {"time", "reps"});
+    const short PLANK_LENGTH = 30;
+    db->prepare(
+        "INSERT INTO history (date, workout, excercise, type1, type2) VALUES (?,?,?,?,?), (?,?,?,?,?), (?,?,?,?,?)",
+        epoch, "Leg-Day", "Plank", PLANK_LENGTH, 0, epoch, "Leg-Day", "Plank", PLANK_LENGTH, 0, epoch, "Leg-Day",
+        "Plank", PLANK_LENGTH, 0);
+    db->execQuery();
+    Lab::History existing(db);
+
+    const auto& history = existing.getHistory();
+    EXPECT_EQ(history.size(), 3);
+    for (const auto& index : history) {
+        const auto& [date, workout, excercise, type1, type2] = index;
+        EXPECT_EQ(tpJan13, date);
+        EXPECT_EQ("Leg-Day", workout);
+        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, plank, excercise);
+        EXPECT_EQ(PLANK_LENGTH, type1);
+        EXPECT_EQ(0, type2);
+    }
+}
 
 TEST_F(HistoryTest, GetEmptyHistoryTest) {
     auto hist = h2.getHistory();
