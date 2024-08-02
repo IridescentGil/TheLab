@@ -1,10 +1,13 @@
 #pragma once
 ///@file
 
+#include <memory>
 #include <string>
 #include <string_view>
 #include <tuple>
 #include <vector>
+
+#include "database.h"
 
 namespace Lab {
 
@@ -51,8 +54,11 @@ class Excercise {
         return (std::tie(this->name, this->description, this->muscleGroup, this->musclesWorked, this->type) ==
                 std::tie(compare.name, compare.description, compare.muscleGroup, compare.musclesWorked, compare.type));
     }
-
     inline bool operator!=(const Lab::Excercise &compare) const { return !(*this == compare); }
+    inline bool operator<(const Lab::Excercise &compare) const {
+        return (std::tie(this->name, this->description, this->muscleGroup, this->musclesWorked, this->type) <
+                std::tie(compare.name, compare.description, compare.muscleGroup, compare.musclesWorked, compare.type));
+    }
 
     std::tuple<std::string, std::string, std::string, std::vector<std::string>, std::vector<std::string>> getDetails()
         const;
@@ -67,6 +73,9 @@ class Excercise {
     int setMuscleGroup(const std::string &newMG);
     int setMusclesWorked(const std::vector<std::string> &newMW);
     int setType(const std::vector<std::string> &newType);
+
+    bool load(const std::shared_ptr<Lab::DBConn> &database, const std::string &excercise);
+    bool save(const std::shared_ptr<Lab::DBConn> &database) const;
 
     bool isMuscleGroup(const std::string &mGroup);
     bool isMuscle(const std::vector<std::string> &mWorked);

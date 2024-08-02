@@ -20,12 +20,21 @@ class DBConn {
     DBConn();
     DBConn(std::string_view);
 
-    ///@brief Execute the query string; will not retrieve results
+    /**
+     * @brief Execute the query string; will not retrieve results
+     */
     int exec(const std::string &queryStr);
-    ///@brief Execute prepared query that doesnt retrieve results
-    int execQuery();
-    ///@brief prepare query that doesnt need replacements
-    int execMulti(const std::string &queryStr);
+    /**
+     * @brief Execute prepared query that doesnt retrieve results
+     */
+    int exec_prepared();
+    /**
+     * @brief prepare query that doesn't need replacements
+     *
+     * @param queryStr
+     * @return excexution status
+     */
+    int exec_and_retrieve(const std::string &queryStr);
 
     /**
      * @name prepare
@@ -51,16 +60,19 @@ class DBConn {
     int prepare(std::size_t index, const std::string &queryStr, const T &fArg, const Args &...args);
     ///@}
 
-    ///@brief Retrieve the results of a prepared query
-    ///@return True if any data is retrieved
-    bool stepExec();
+    /**
+     * @brief Retrieve the results of a prepared query
+     * @return True if any data is retrieved
+     */
+    bool retrieve_next_row();
 
     /**
      * @brief Retrieve the column that corresponds to the index
      * starts at 0
-     * @returns Column
+     *
+     * @return Column
      */
-    auto getColumn(const int &index) { return query.getColumn(index); }
+    auto get_column(const int &index) { return query.getColumn(index); }
 
    private:
     SQLite::Database db;

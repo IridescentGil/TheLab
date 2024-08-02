@@ -2,6 +2,11 @@
 
 #include <gtest/gtest.h>
 
+#include <memory>
+
+#include "database.h"
+#include "testHelper.h"
+
 class ExcerciseTest : public testing::Test {
    protected:
     void SetUp() override {
@@ -137,4 +142,48 @@ TEST_F(ExcerciseTest, VectorPushBackTest) {
     e6.push_back({"Pushups", "Push up from the ground", "Chest", {"Pectoral", "Tricep"}, {"Reps"}});
     EXPECT_NE(e6.begin(), e6.end());
     EXPECT_EQ((e6.begin())->getName(), "Pushups");
+}
+
+TEST_F(ExcerciseTest, ExcersiseSaveTest) {
+    std::shared_ptr<Lab::DBConn> test = std::make_shared<Lab::DBConn>();
+
+    e1.save(test);
+    e2.save(test);
+
+    test->exec_and_retrieve("SELECT * FROM excercises");
+    test->retrieve_next_row();
+
+    EXPECT_EQ(test->get_column(0).getString(), static_cast<std::string>("Deadlift"));
+    EXPECT_EQ(test->get_column(1).getString(), static_cast<std::string>("Lift Barbell off the floor"));
+    EXPECT_EQ(test->get_column(2).getString(), static_cast<std::string>("Legs"));
+    EXPECT_EQ(test->get_column(3).getString(), static_cast<std::string>("Glutes,Hamstring,Lower-back"));
+    EXPECT_EQ(test->get_column(4).getString(), static_cast<std::string>("weight,reps"));
+
+    test->retrieve_next_row();
+
+    EXPECT_EQ(test->get_column(0).getString(), static_cast<std::string>("Bulgarian Split Squat"));
+    EXPECT_EQ(
+        test->get_column(1).getString(),
+        static_cast<std::string>(
+            "With the bar resting high on the shoulders squat until your thigh are perpendicular with the floor"));
+    EXPECT_EQ(test->get_column(2).getString(), static_cast<std::string>("Legs"));
+    EXPECT_EQ(test->get_column(3).getString(), static_cast<std::string>("Glutes,Quads"));
+    EXPECT_EQ(test->get_column(4).getString(), static_cast<std::string>("weight,reps"));
+
+    EXPECT_FALSE(test->retrieve_next_row());
+    std::remove("thelab.db");
+}
+
+TEST_F(ExcerciseTest, ExcerciseLoadFromDatabaseTest) {
+    std::shared_ptr<Lab::DBConn> test = std::make_shared<Lab::DBConn>();
+
+    e1.save(test);
+    e2.save(test);
+
+    Lab::Excercise newExcercise;
+    newExcercise.load(test, "Deadlift");
+
+    EXPECT_PRED_FORMAT2(AssertExcerciseEqual, e1, newExcercise);
+
+    std::remove("thelab.db");
 }

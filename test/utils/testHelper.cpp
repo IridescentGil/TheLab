@@ -1,5 +1,7 @@
 #include "testHelper.h"
 
+#include <string>
+
 #include "history.h"
 
 bool excerEqual(const Lab::Excercise &first, const Lab::Excercise &second) { return first == second; };
@@ -114,6 +116,10 @@ int historyDiff(const Lab::historyVector &first, const Lab::historyVector &secon
             largeVector = second.cbegin();
             smallVectorEnd = first.cend();
         }
+    } else {
+        smallVector = first.cbegin();
+        smallVectorEnd = first.cend();
+        largeVector = second.cbegin();
     }
     for (; smallVector != smallVectorEnd; ++smallVector, ++largeVector) {
         auto [dateA, workoutA, excerciseA, type1A, type2A] = *smallVector;
@@ -146,13 +152,47 @@ bool historyNEqual(const Lab::historyVector &first, const Lab::historyVector &se
     return historyDiff(first, second) == diff;
 }
 
+std::string historyShowDifferences(const Lab::historyVector &first, const Lab::historyVector &second) {
+    if (first.size() != second.size()) {
+        return "History's are not the same size";
+    }
+    std::string errorMessage;
+    int index = 0;
+    for (auto iter = first.cbegin(), bter = second.cbegin(); iter != first.cend(); ++iter, ++bter) {
+        auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
+        auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
+        errorMessage += "[" + std::to_string(index) + "]:{\n";
+        index++;
+        if (dateA != dateB) {
+            errorMessage += "Dates are not equal " + std::to_string(dateA.time_since_epoch().count()) + " and " +
+                            std::to_string(dateB.time_since_epoch().count()) + "\n";
+        }
+        if (workoutA != workoutB) {
+            errorMessage += "Workouts are not equal " + workoutA + " and " + workoutB + "\n";
+        }
+        if (!excerEqual(excerciseA, excerciseB)) {
+            errorMessage += "Excercises are not equal: " + excerciseA.getName() + " and " + excerciseB.getName() + "\n";
+        }
+        if (type1A != type1B) {
+            errorMessage += "Type 1 are not equal: " + std::to_string(type1A) + " and " + std::to_string(type1B) + "\n";
+        }
+        if (type2A != type2B) {
+            errorMessage += "Type 2 are not equal: " + std::to_string(type2A) + " and " + std::to_string(type2B) + "\n";
+        }
+        errorMessage += "}\n";
+    }
+    return errorMessage;
+}
+
 testing::AssertionResult AssertHistoryEqual(const char *firstExpr, const char *secondExpr,
                                             const Lab::historyVector &first, const Lab::historyVector &second) {
     if (historyEqual(first, second)) {
         return testing::AssertionSuccess();
     }
 
-    return testing::AssertionFailure() << firstExpr << " and " << secondExpr << " Histories not equal";
+    return testing::AssertionFailure() << firstExpr << " and " << secondExpr << " Histories not equal\n"
+                                       << historyDiff(first, second) << " Differences.\n"
+                                       << historyShowDifferences(first, second);
 }
 
 testing::AssertionResult AssertHistoryNEqual(const char *firstExpr, const char *secondExpr, const char *o_expr,

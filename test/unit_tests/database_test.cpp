@@ -44,12 +44,12 @@ TEST_F(DatabaseTest, SetDBTest) {
         "'Leg', 'Hamstring,Glutes,Lower-Back', 'Weight,Reps')";
     EXPECT_EQ(db1.exec(quer), 1);
     quer = "SELECT musclesTargeted FROM excercises";
-    EXPECT_EQ(db1.execMulti(quer), 1);
-    EXPECT_TRUE(db1.stepExec());
-    EXPECT_EQ(db1.getColumn(0).getString(), static_cast<std::string>("Hamstring,Glutes,Lower-Back"));
+    EXPECT_EQ(db1.exec_and_retrieve(quer), 1);
+    EXPECT_TRUE(db1.retrieve_next_row());
+    EXPECT_EQ(db1.get_column(0).getString(), static_cast<std::string>("Hamstring,Glutes,Lower-Back"));
     quer = "SELECT musclesTargeted FROM excercises WHERE name = 'Bench Press'";
-    EXPECT_EQ(db1.execMulti(quer), 1);
-    EXPECT_FALSE(db1.stepExec());
+    EXPECT_EQ(db1.exec_and_retrieve(quer), 1);
+    EXPECT_FALSE(db1.retrieve_next_row());
     // EXPECT_EQ(db1.getColumn(0), static_cast<std::string>(""));
 }
 
@@ -64,27 +64,27 @@ TEST_F(DatabaseTest, PrepareIndexFunctionTest) {
                           "Push 1", 0, "Bench Press", 20, 15, "Push 1", 1, "Shoulder Press", 2, 8, "Pull 1", 0,
                           "Pull up", 15, 0),
               1);
-    EXPECT_EQ(db2.execQuery(), 1);
-    EXPECT_EQ(db2.execMulti("SELECT * FROM workouts"), 1);
-    EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Push 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 0);
-    EXPECT_EQ(db2.getColumn(2).getString(), static_cast<std::string>("Bench Press"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 20);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 15);
-    EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Push 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 1);
-    EXPECT_EQ(db2.getColumn(2).getString(), static_cast<std::string>("Shoulder Press"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 2);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 8);
-    EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Pull 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 0);
-    EXPECT_EQ(db2.getColumn(2).getString(), static_cast<std::string>("Pull up"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 15);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 0);
-    EXPECT_FALSE(db2.stepExec());
+    EXPECT_EQ(db2.exec_prepared(), 1);
+    EXPECT_EQ(db2.exec_and_retrieve("SELECT * FROM workouts"), 1);
+    EXPECT_TRUE(db2.retrieve_next_row());
+    EXPECT_EQ(db2.get_column(0).getString(), static_cast<std::string>("Push 1"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(1)), 0);
+    EXPECT_EQ(db2.get_column(2).getString(), static_cast<std::string>("Bench Press"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(3)), 20);
+    EXPECT_EQ(static_cast<int>(db2.get_column(4)), 15);
+    EXPECT_TRUE(db2.retrieve_next_row());
+    EXPECT_EQ(db2.get_column(0).getString(), static_cast<std::string>("Push 1"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(1)), 1);
+    EXPECT_EQ(db2.get_column(2).getString(), static_cast<std::string>("Shoulder Press"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(3)), 2);
+    EXPECT_EQ(static_cast<int>(db2.get_column(4)), 8);
+    EXPECT_TRUE(db2.retrieve_next_row());
+    EXPECT_EQ(db2.get_column(0).getString(), static_cast<std::string>("Pull 1"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(1)), 0);
+    EXPECT_EQ(db2.get_column(2).getString(), static_cast<std::string>("Pull up"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(3)), 15);
+    EXPECT_EQ(static_cast<int>(db2.get_column(4)), 0);
+    EXPECT_FALSE(db2.retrieve_next_row());
 }
 
 TEST_F(DatabaseTest, PrepareVariadicFunctionTest) {
@@ -98,17 +98,17 @@ TEST_F(DatabaseTest, PrepareVariadicFunctionTest) {
                           "WHERE excercise = ?",
                           "Incline Bench Press", 15, "Bench Press"),
               1);
-    EXPECT_EQ(db2.execQuery(), 1);
-    EXPECT_EQ(db2.execMulti("SELECT * FROM workouts WHERE excercise ="
-                            "'Incline Bench Press'"),
+    EXPECT_EQ(db2.exec_prepared(), 1);
+    EXPECT_EQ(db2.exec_and_retrieve("SELECT * FROM workouts WHERE excercise ="
+                                    "'Incline Bench Press'"),
               1);
-    EXPECT_TRUE(db2.stepExec());
-    EXPECT_EQ(db2.getColumn(0).getString(), static_cast<std::string>("Push 1"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(1)), 0);
-    EXPECT_EQ(db2.getColumn(2).getString(), static_cast<std::string>("Incline Bench Press"));
-    EXPECT_EQ(static_cast<int>(db2.getColumn(3)), 15);
-    EXPECT_EQ(static_cast<int>(db2.getColumn(4)), 12);
-    EXPECT_FALSE(db2.stepExec());
+    EXPECT_TRUE(db2.retrieve_next_row());
+    EXPECT_EQ(db2.get_column(0).getString(), static_cast<std::string>("Push 1"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(1)), 0);
+    EXPECT_EQ(db2.get_column(2).getString(), static_cast<std::string>("Incline Bench Press"));
+    EXPECT_EQ(static_cast<int>(db2.get_column(3)), 15);
+    EXPECT_EQ(static_cast<int>(db2.get_column(4)), 12);
+    EXPECT_FALSE(db2.retrieve_next_row());
 }
 
 TEST_F(DatabaseTest, SameDBTest) {
@@ -117,15 +117,15 @@ TEST_F(DatabaseTest, SameDBTest) {
                        "the ground raise your legs to a 90 degree angle while "
                        "keeping them straight', 'Core', 'Abs', 'reps') "),
               1);
-    EXPECT_EQ(db4.execMulti("SELECT * FROM excercises"), 1);
-    EXPECT_TRUE(db4.stepExec());
-    EXPECT_EQ(db4.getColumn(0).getString(), static_cast<std::string>("Lying Leg Raise"));
-    EXPECT_EQ(db4.getColumn(1).getString(),
+    EXPECT_EQ(db4.exec_and_retrieve("SELECT * FROM excercises"), 1);
+    EXPECT_TRUE(db4.retrieve_next_row());
+    EXPECT_EQ(db4.get_column(0).getString(), static_cast<std::string>("Lying Leg Raise"));
+    EXPECT_EQ(db4.get_column(1).getString(),
               static_cast<std::string>("Lying on the ground raise your legs to a 90 degree angle while "
                                        "keeping them straight"));
-    EXPECT_EQ(db4.getColumn(2).getString(), static_cast<std::string>("Core"));
-    EXPECT_EQ(db4.getColumn(3).getString(), static_cast<std::string>("Abs"));
-    EXPECT_EQ(db4.getColumn(4).getString(), static_cast<std::string>("reps"));
+    EXPECT_EQ(db4.get_column(2).getString(), static_cast<std::string>("Core"));
+    EXPECT_EQ(db4.get_column(3).getString(), static_cast<std::string>("Abs"));
+    EXPECT_EQ(db4.get_column(4).getString(), static_cast<std::string>("reps"));
 }
 
 TEST_F(DatabaseTest, SharedPtrDBTest) {
@@ -134,18 +134,18 @@ TEST_F(DatabaseTest, SharedPtrDBTest) {
                         "the ground raise your legs to a 90 degree angle while "
                         "keeping them straight', 'Core', 'Abs', 'reps') "),
               1);
-    EXPECT_EQ(db5->execMulti("SELECT * FROM excercises WHERE name = 'Lying Leg Raise'"), 1);
+    EXPECT_EQ(db5->exec_and_retrieve("SELECT * FROM excercises WHERE name = 'Lying Leg Raise'"), 1);
     db6 = db5;
-    EXPECT_TRUE(db6->stepExec());
-    EXPECT_EQ(db6->getColumn(0).getString(), static_cast<std::string>("Lying Leg Raise"));
-    EXPECT_FALSE(db6->stepExec());
+    EXPECT_TRUE(db6->retrieve_next_row());
+    EXPECT_EQ(db6->get_column(0).getString(), static_cast<std::string>("Lying Leg Raise"));
+    EXPECT_FALSE(db6->retrieve_next_row());
 }
 
 TEST_F(DatabaseTest, SanatizeQueryTest) {
     EXPECT_EQ(db1.prepare("INSERT INTO excercises (name) VALUES (?)", "Crunch"), 1);
-    EXPECT_EQ(db1.execQuery(), 1);
+    EXPECT_EQ(db1.exec_prepared(), 1);
     EXPECT_EQ(db1.prepare("INSERT INTO excercises (name) VALUES (?)", "Plank); DROP TABLE history;"), 1);
-    EXPECT_EQ(db1.execQuery(), 1);
+    EXPECT_EQ(db1.exec_prepared(), 1);
     SQLite::Database testdb1("thelab.db");
     EXPECT_TRUE(testdb1.tableExists("history"));
 }
@@ -162,14 +162,14 @@ TEST_F(DatabaseTest, ThrowTest) {
 
 TEST_F(DatabaseTest, ErrorReturnTest) {
     // Test executing prepared query with no prepared query
-    EXPECT_EQ(db1.execQuery(), -1);
-    EXPECT_FALSE(db1.stepExec());
-    EXPECT_THROW(db1.getColumn(0), SQLite::Exception);
+    EXPECT_EQ(db1.exec_prepared(), -1);
+    EXPECT_FALSE(db1.retrieve_next_row());
+    EXPECT_THROW(db1.get_column(0), SQLite::Exception);
 
     // Test SQL syntax errors
     EXPECT_EQ(db1.exec("INSERT INTO excercisess (name) VALUES ('Step up')"), -1);
-    EXPECT_EQ(db1.execMulti("SELECT * FROOM bodyStats"), -1);
-    EXPECT_FALSE(db1.stepExec());
+    EXPECT_EQ(db1.exec_and_retrieve("SELECT * FROOM bodyStats"), -1);
+    EXPECT_FALSE(db1.retrieve_next_row());
 
     // Expect errors when attempting to prepare select statement
     EXPECT_EQ(db1.prepare("SELECT * FROM ?", "history"), -1);

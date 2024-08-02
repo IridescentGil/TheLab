@@ -46,7 +46,7 @@ class WorkoutTest : public testing::Test {
                 "INSERT INTO excercises (name, description, muscleGroup, "
                 "musclesTargeted, type) VALUES (?, ?, ?, ?, ?)",
                 iter.getName(), iter.getDescription(), iter.getMuscleGroup(), musclesWorked, type);
-            db->execQuery();
+            db->exec_prepared();
         }
     }
     void TearDown() override { remove("thelab.db"); }
@@ -396,49 +396,49 @@ TEST_F(WorkoutTest, RemoveMultiExcerciseTest) {
 
 TEST_F(WorkoutTest, SaveWorkOutPlanTest) {
     EXPECT_TRUE(e3.save());
-    EXPECT_EQ(1, db->execMulti("SELECT * FROM workouts"));
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 0);
-    EXPECT_EQ(db->getColumn(2).getString(), "Barbell Row");
-    EXPECT_EQ(db->getColumn(3).getInt(), 50);
-    EXPECT_EQ(db->getColumn(4).getInt(), 5);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 1);
-    EXPECT_EQ(db->getColumn(2).getString(), "Dumbbell Flys");
-    EXPECT_EQ(db->getColumn(3).getInt(), 10);
-    EXPECT_EQ(db->getColumn(4).getInt(), 10);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 2);
-    EXPECT_EQ(db->getColumn(2).getString(), "Wide Grip Pull Ups");
-    EXPECT_EQ(db->getColumn(3).getInt(), 10);
-    EXPECT_EQ(db->getColumn(4).getInt(), 0);
-    EXPECT_FALSE(db->stepExec());
+    EXPECT_EQ(1, db->exec_and_retrieve("SELECT * FROM workouts"));
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 0);
+    EXPECT_EQ(db->get_column(2).getString(), "Barbell Row");
+    EXPECT_EQ(db->get_column(3).getInt(), 50);
+    EXPECT_EQ(db->get_column(4).getInt(), 5);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 1);
+    EXPECT_EQ(db->get_column(2).getString(), "Dumbbell Flys");
+    EXPECT_EQ(db->get_column(3).getInt(), 10);
+    EXPECT_EQ(db->get_column(4).getInt(), 10);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 2);
+    EXPECT_EQ(db->get_column(2).getString(), "Wide Grip Pull Ups");
+    EXPECT_EQ(db->get_column(3).getInt(), 10);
+    EXPECT_EQ(db->get_column(4).getInt(), 0);
+    EXPECT_FALSE(db->retrieve_next_row());
 
     // Empty workout save
     EXPECT_TRUE(e1.save());
-    EXPECT_EQ(1, db->execMulti("SELECT * FROM workouts"));
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 0);
-    EXPECT_EQ(db->getColumn(2).getString(), "Barbell Row");
-    EXPECT_EQ(db->getColumn(3).getInt(), 50);
-    EXPECT_EQ(db->getColumn(4).getInt(), 5);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 1);
-    EXPECT_EQ(db->getColumn(2).getString(), "Dumbbell Flys");
-    EXPECT_EQ(db->getColumn(3).getInt(), 10);
-    EXPECT_EQ(db->getColumn(4).getInt(), 10);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 2);
-    EXPECT_EQ(db->getColumn(2).getString(), "Wide Grip Pull Ups");
-    EXPECT_EQ(db->getColumn(3).getInt(), 10);
-    EXPECT_EQ(db->getColumn(4).getInt(), 0);
-    EXPECT_FALSE(db->stepExec());
+    EXPECT_EQ(1, db->exec_and_retrieve("SELECT * FROM workouts"));
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 0);
+    EXPECT_EQ(db->get_column(2).getString(), "Barbell Row");
+    EXPECT_EQ(db->get_column(3).getInt(), 50);
+    EXPECT_EQ(db->get_column(4).getInt(), 5);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 1);
+    EXPECT_EQ(db->get_column(2).getString(), "Dumbbell Flys");
+    EXPECT_EQ(db->get_column(3).getInt(), 10);
+    EXPECT_EQ(db->get_column(4).getInt(), 10);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 2);
+    EXPECT_EQ(db->get_column(2).getString(), "Wide Grip Pull Ups");
+    EXPECT_EQ(db->get_column(3).getInt(), 10);
+    EXPECT_EQ(db->get_column(4).getInt(), 0);
+    EXPECT_FALSE(db->retrieve_next_row());
 
     // Added more items workout save
     std::vector<Lab::ExcerciseData> plan{
@@ -454,44 +454,44 @@ TEST_F(WorkoutTest, SaveWorkOutPlanTest) {
     e2.setWorkout(plan);
     e2.editName("Full Body Plan");
     EXPECT_TRUE(e2.save());
-    EXPECT_EQ(1, db->execMulti("SELECT * FROM workouts"));
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 0);
-    EXPECT_EQ(db->getColumn(2).getString(), "Barbell Row");
-    EXPECT_EQ(db->getColumn(3).getInt(), 50);
-    EXPECT_EQ(db->getColumn(4).getInt(), 5);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 1);
-    EXPECT_EQ(db->getColumn(2).getString(), "Dumbbell Flys");
-    EXPECT_EQ(db->getColumn(3).getInt(), 10);
-    EXPECT_EQ(db->getColumn(4).getInt(), 10);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Pull Day 1");
-    EXPECT_EQ(db->getColumn(1).getInt(), 2);
-    EXPECT_EQ(db->getColumn(2).getString(), "Wide Grip Pull Ups");
-    EXPECT_EQ(db->getColumn(3).getInt(), 10);
-    EXPECT_EQ(db->getColumn(4).getInt(), 0);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Full Body Plan");
-    EXPECT_EQ(db->getColumn(1).getInt(), 0);
-    EXPECT_EQ(db->getColumn(2).getString(), "Jumping Jacks");
-    EXPECT_EQ(db->getColumn(3).getInt(), 10);
-    EXPECT_EQ(db->getColumn(4).getInt(), 0);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Full Body Plan");
-    EXPECT_EQ(db->getColumn(1).getInt(), 1);
-    EXPECT_EQ(db->getColumn(2).getString(), "Plank");
-    EXPECT_EQ(db->getColumn(3).getInt(), 60);
-    EXPECT_EQ(db->getColumn(4).getInt(), 4);
-    EXPECT_TRUE(db->stepExec());
-    EXPECT_EQ(db->getColumn(0).getString(), "Full Body Plan");
-    EXPECT_EQ(db->getColumn(1).getInt(), 2);
-    EXPECT_EQ(db->getColumn(2).getString(), "Calf Press");
-    EXPECT_EQ(db->getColumn(3).getInt(), 250);
-    EXPECT_EQ(db->getColumn(4).getInt(), 4);
-    EXPECT_FALSE(db->stepExec());
+    EXPECT_EQ(1, db->exec_and_retrieve("SELECT * FROM workouts"));
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 0);
+    EXPECT_EQ(db->get_column(2).getString(), "Barbell Row");
+    EXPECT_EQ(db->get_column(3).getInt(), 50);
+    EXPECT_EQ(db->get_column(4).getInt(), 5);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 1);
+    EXPECT_EQ(db->get_column(2).getString(), "Dumbbell Flys");
+    EXPECT_EQ(db->get_column(3).getInt(), 10);
+    EXPECT_EQ(db->get_column(4).getInt(), 10);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Pull Day 1");
+    EXPECT_EQ(db->get_column(1).getInt(), 2);
+    EXPECT_EQ(db->get_column(2).getString(), "Wide Grip Pull Ups");
+    EXPECT_EQ(db->get_column(3).getInt(), 10);
+    EXPECT_EQ(db->get_column(4).getInt(), 0);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Full Body Plan");
+    EXPECT_EQ(db->get_column(1).getInt(), 0);
+    EXPECT_EQ(db->get_column(2).getString(), "Jumping Jacks");
+    EXPECT_EQ(db->get_column(3).getInt(), 10);
+    EXPECT_EQ(db->get_column(4).getInt(), 0);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Full Body Plan");
+    EXPECT_EQ(db->get_column(1).getInt(), 1);
+    EXPECT_EQ(db->get_column(2).getString(), "Plank");
+    EXPECT_EQ(db->get_column(3).getInt(), 60);
+    EXPECT_EQ(db->get_column(4).getInt(), 4);
+    EXPECT_TRUE(db->retrieve_next_row());
+    EXPECT_EQ(db->get_column(0).getString(), "Full Body Plan");
+    EXPECT_EQ(db->get_column(1).getInt(), 2);
+    EXPECT_EQ(db->get_column(2).getString(), "Calf Press");
+    EXPECT_EQ(db->get_column(3).getInt(), 250);
+    EXPECT_EQ(db->get_column(4).getInt(), 4);
+    EXPECT_FALSE(db->retrieve_next_row());
 }
 
 TEST_F(WorkoutTest, WoPlanSetSaveTest) {
@@ -501,14 +501,14 @@ TEST_F(WorkoutTest, WoPlanSetSaveTest) {
                                        {"weight", "reps"}),
                         30, 10);
     e4.save();
-    db->execMulti("SELECT * FROM workouts");
+    db->exec_and_retrieve("SELECT * FROM workouts");
     int i = 0;
-    while (db->stepExec()) {
-        EXPECT_EQ(db->getColumn(0).getString(), "Calf Crusher");
-        EXPECT_EQ(db->getColumn(1).getInt(), i);
-        EXPECT_EQ(db->getColumn(2).getString(), "Calf Press");
-        EXPECT_EQ(db->getColumn(3).getInt(), 30);
-        EXPECT_EQ(db->getColumn(4).getInt(), 10);
+    while (db->retrieve_next_row()) {
+        EXPECT_EQ(db->get_column(0).getString(), "Calf Crusher");
+        EXPECT_EQ(db->get_column(1).getInt(), i);
+        EXPECT_EQ(db->get_column(2).getString(), "Calf Press");
+        EXPECT_EQ(db->get_column(3).getInt(), 30);
+        EXPECT_EQ(db->get_column(4).getInt(), 10);
         ++i;
     }
 }
@@ -517,8 +517,8 @@ TEST_F(WorkoutTest, InvalidExcerciseSaveTest) {
     e1.addExcercise(Lab::Excercise("Front flips", "Do a front flip", "Cardio", {""}, {"reps"}), 100, 0);
     EXPECT_TRUE(e1.save());
     bool frontFlipsFound = false;
-    db->execMulti("SELECT * FROM workouts");
-    while (db->stepExec())
-        if (db->getColumn(2).getString() == "Front flips") frontFlipsFound = true;
+    db->exec_and_retrieve("SELECT * FROM workouts");
+    while (db->retrieve_next_row())
+        if (db->get_column(2).getString() == "Front flips") frontFlipsFound = true;
     EXPECT_FALSE(frontFlipsFound);
 }

@@ -101,7 +101,7 @@ int Lab::DBConn::exec(const std::string &queryStr) {
     }
 }
 
-int Lab::DBConn::execQuery() {
+int Lab::DBConn::exec_prepared() {
     try {
         int ret = query.exec();
         return (ret >= 0) ? 1 : -1;
@@ -111,7 +111,7 @@ int Lab::DBConn::execQuery() {
     }
 }
 
-int Lab::DBConn::execMulti(const std::string &queryStr) {
+int Lab::DBConn::exec_and_retrieve(const std::string &queryStr) {
     try {
         query = SQLite::Statement(db, queryStr);
         return 1;
@@ -121,7 +121,7 @@ int Lab::DBConn::execMulti(const std::string &queryStr) {
     }
 }
 
-bool Lab::DBConn::stepExec() {
+bool Lab::DBConn::retrieve_next_row() {
     try {
         return query.executeStep();
     } catch (std::exception &e) {

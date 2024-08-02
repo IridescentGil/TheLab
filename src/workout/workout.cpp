@@ -46,7 +46,7 @@ void Lab::Workout::editName(const std::string &workoutName) { name = workoutName
 bool Lab::Workout::save() {
     size_t size = 0;
     db->prepare("SELECT exOrderNum FROM workouts WHERE workoutName = ?", name);
-    while (db->stepExec()) {
+    while (db->retrieve_next_row()) {
         ++size;
     }
 
@@ -79,7 +79,7 @@ bool Lab::Workout::save() {
             }
         }
         ++index;
-        if (db->execQuery() == 0) {
+        if (db->exec_prepared() == 0) {
             return false;
         }
     }
