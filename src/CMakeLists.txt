@@ -41,11 +41,14 @@ else()
       -Wpedantic
       "$<$<CONFIG:DEBUG>:-Og;-g3;-fsanitize=address,leak,undefined;-fno-sanitize-recover=all;-fno-optimize-sibling-calls;-fno-omit-frame-pointer;>"
       "$<$<CONFIG:RELEASE>:-O2;>"
-      "$<$<BOOL:${ENABLE_COVERAGE}>:--coverage;>")
+      "$<$<AND:$<BOOL:${ENABLE_COVERAGE}>,$<CXX_COMPILER_ID:GNU>>:--coverage;>"
+      "$<$<AND:$<BOOL:${ENABLE_COVERAGE}>,$<CXX_COMPILER_ID:Clang>>:-fprofile-instr-generate;-fcoverage-mapping;>"
+  )
   target_link_options(
     Lab
     PRIVATE
-    "$<$<BOOL:${ENABLE_COVERAGE}>:--coverage;>"
+    "$<$<AND:$<BOOL:${ENABLE_COVERAGE}>,$<CXX_COMPILER_ID:GNU>>:--coverage;>"
+    "$<$<AND:$<BOOL:${ENABLE_COVERAGE}>,$<CXX_COMPILER_ID:Clang>>:-fprofile-instr-generate;-fcoverage-mapping;>"
     "$<$<CONFIG:DEBUG>:-Og;-g3;-fsanitize=address,leak,undefined;-fno-sanitize-recover=all;-fno-optimize-sibling-calls;-fno-omit-frame-pointer;>"
   )
 endif()
