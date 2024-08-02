@@ -62,172 +62,75 @@ class AnalyticsTest : public testing::Test {
     constexpr static std::chrono::time_point<std::chrono::system_clock> tp2024 =
         std::chrono::time_point_cast<std::chrono::years>(tpJan13);
 
+    Lab::Excercise barbellOverheadPress =
+        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                       {"weight", "reps"});
+    Lab::Excercise barbellRow = Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
+                                               {"Upper-back", "Lats"}, {"weight", "reps"});
+    Lab::Excercise barbellOverheadPressModified =
+        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                       {"time", "reps"});
+    Lab::Excercise dumbbellFlys = Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards",
+                                                 "Back", {"Upper-back"}, {"weight", "reps"});
+    Lab::Excercise wideGripPullUps = Lab::Excercise("Wide Grip Pull Ups",
+                                                    "Holding the bar with a wide grip, do a "
+                                                    "pullup until your chin is over the bar",
+                                                    "Back", {"Upper-back"}, {"reps"});
+    Lab::Excercise jumpingJacks = Lab::Excercise(
+        "Jumping Jacks", "Jump and spread your legs and put your arms to the sky", "Cardio", {""}, {"reps"});
+    Lab::Excercise plank = Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
+                                          {"Abs"}, {"time", "reps"});
+    Lab::Excercise running =
+        Lab::Excercise("Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"});
+    Lab::Excercise barbellOverheadPressModifiedTwo =
+        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                       {"weight", "time"});
+    Lab::Excercise chestSupportedRow =
+        Lab::Excercise("Chest Supported Row", "Laying on inclined bench facing the bench row with dumbbells", "Back",
+                       {"Upper-back", "Lats"}, {"weight", "reps"});
+
     Lab::History emptyHist{emptyDb};
 
-    Lab::History hist{
-        db,
-        {std::make_tuple(tpMarch4, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpMarch4, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpMarch4, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpMarch4, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         75, 10),
-         std::make_tuple(tpMarch4, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         75, 10),
-         std::make_tuple(tpMarch4, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         75, 10),
-         std::make_tuple(tpFeb10, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpFeb10, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpFeb10, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpFeb20, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         75, 10),
-         std::make_tuple(tpFeb20, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         75, 10),
-         std::make_tuple(tpMarch4, "Full-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"time", "reps"}),
-                         60, 7),
-         std::make_tuple(tpFeb20, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         75, 10),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         80, 4),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         80, 4),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         80, 4),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         40, 15),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         40, 15),
-         std::make_tuple(tpFeb20, "Upper-Body Workout",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "reps"}),
-                         40, 15),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                        {"Upper-back", "Lats"}, {"weight", "reps"}),
-                         60, 10),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards", "Back",
-                                        {"Upper-back"}, {"weight", "reps"}),
-                         20, 12),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards", "Back",
-                                        {"Upper-back"}, {"weight", "reps"}),
-                         20, 12),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards", "Back",
-                                        {"Upper-back"}, {"weight", "reps"}),
-                         20, 12),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Wide Grip Pull Ups",
-                                        "Holding the bar with a wide grip, do a "
-                                        "pullup until your chin is over the bar",
-                                        "Back", {"Upper-back"}, {"reps"}),
-                         10, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Wide Grip Pull Ups",
-                                        "Holding the bar with a wide grip, do a "
-                                        "pullup until your chin is over the bar",
-                                        "Back", {"Upper-back"}, {"reps"}),
-                         10, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Wide Grip Pull Ups",
-                                        "Holding the bar with a wide grip, do a "
-                                        "pullup until your chin is over the bar",
-                                        "Back", {"Upper-back"}, {"reps"}),
-                         10, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Jumping Jacks", "Jump and spread your legs and put your arms to the sky",
-                                        "Cardio", {""}, {"reps"}),
-                         20, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Jumping Jacks", "Jump and spread your legs and put your arms to the sky",
-                                        "Cardio", {""}, {"reps"}),
-                         20, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Jumping Jacks", "Jump and spread your legs and put your arms to the sky",
-                                        "Cardio", {""}, {"reps"}),
-                         20, 0),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
-                                        {"Abs"}, {"time", "reps"}),
-                         60, 10),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
-                                        {"Abs"}, {"time", "reps"}),
-                         60, 10),
-         std::make_tuple(tpJan13, "Full-Body Workout",
-                         Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
-                                        {"Abs"}, {"time", "reps"}),
-                         60, 10),
-         std::make_tuple(
-             tpJan13, "Run",
-             Lab::Excercise("Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"}), 6,
-             60),
-         std::make_tuple(tpMarch4, "Run",
-                         Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest",
-                                        {"Pectoral", "Tricep"}, {"weight", "time"}),
-                         25, 30)}};
+    Lab::History hist{db,
+                      {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+                       std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+                       std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+                       std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+                       std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+                       std::make_tuple(tpMarch4, "Full-Body Workout", barbellOverheadPressModified, 60, 7),
+                       std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+                       std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+                       std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+                       std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+                       std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+                       std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+                       std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+                       std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+                       std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+                       std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+                       std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+                       std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+                       std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+                       std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+                       std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+                       std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+                       std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+                       std::make_tuple(tpJan13, "Run", running, 6, 60),
+                       std::make_tuple(tpMarch4, "Run", barbellOverheadPressModifiedTwo, 25, 30)}};
 };
 
 TEST_F(AnalyticsTest, RepMaxTest) {
@@ -242,12 +145,7 @@ TEST_F(AnalyticsTest, RepMaxTest) {
 }
 
 TEST_F(AnalyticsTest, MapHighestValuesTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, hist);
+    auto maxRep = Lab::Analytics::mapHighestValues("reps", barbellOverheadPress, hist);
     Lab::Analytics::analyticsMap testRep{{std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 10},
                                          {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 15},
                                          {std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 10}};
@@ -259,38 +157,22 @@ TEST_F(AnalyticsTest, MapHighestValuesTest) {
 }
 
 TEST_F(AnalyticsTest, MapHighestValuesNoValuesInHistoryTest) {
-    Lab::Excercise exc{"Chest Supported Row",
-                       "Laying on inclined bench facing the bench row with dumbbells",
-                       "Back",
-                       {"Upper-back", "Lats"},
-                       {"weight", "reps"}};
-    auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, hist);
+    auto maxRep = Lab::Analytics::mapHighestValues("reps", chestSupportedRow, hist);
     EXPECT_TRUE(maxRep.empty());
 }
 
 TEST_F(AnalyticsTest, MapHighestValuesNoHistoryTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, emptyHist);
+    auto maxRep = Lab::Analytics::mapHighestValues("reps", barbellOverheadPress, emptyHist);
     EXPECT_TRUE(maxRep.empty());
 }
 
 TEST_F(AnalyticsTest, MapHighestValuesExcerciseHasWrongTypesTest) {
-    Lab::Excercise exc{"Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"}};
-    auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, hist);
+    auto maxRep = Lab::Analytics::mapHighestValues("reps", running, hist);
     EXPECT_TRUE(maxRep.empty());
 }
 
 TEST_F(AnalyticsTest, MapHighestValuesExcerciseTypeChangedTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"time", "reps"}};
-    auto maxRep = Lab::Analytics::mapHighestValues("reps", exc, hist);
+    auto maxRep = Lab::Analytics::mapHighestValues("reps", barbellOverheadPressModified, hist);
     Lab::Analytics::analyticsMap testRep{{std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 7}};
     EXPECT_EQ(maxRep.size(), testRep.size());
     for (auto iter = maxRep.cbegin(), bter = testRep.cbegin(); iter != maxRep.cend(); ++iter, ++bter) {
@@ -300,12 +182,7 @@ TEST_F(AnalyticsTest, MapHighestValuesExcerciseTypeChangedTest) {
 }
 
 TEST_F(AnalyticsTest, MapHighestValuesVolumeTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto maxVolume = Lab::Analytics::mapHighestValues("volume", exc, hist);
+    auto maxVolume = Lab::Analytics::mapHighestValues("volume", barbellOverheadPress, hist);
     Lab::Analytics::analyticsMap testVolume{{std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 600},
                                             {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 600},
                                             {std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 600}};
@@ -317,8 +194,7 @@ TEST_F(AnalyticsTest, MapHighestValuesVolumeTest) {
 }
 
 TEST_F(AnalyticsTest, MapHighestValuesPaceTest) {
-    Lab::Excercise exc{"Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"}};
-    auto maxPace = Lab::Analytics::mapHighestValues("pace", exc, hist);
+    auto maxPace = Lab::Analytics::mapHighestValues("pace", running, hist);
     Lab::Analytics::analyticsMap testPace{{std::chrono::time_point_cast<std::chrono::days>(tpJan13), 10}};
     EXPECT_EQ(maxPace.size(), testPace.size());
     for (auto iter = maxPace.cbegin(), bter = testPace.cbegin(); iter != maxPace.cend(); ++iter, ++bter) {
@@ -328,12 +204,7 @@ TEST_F(AnalyticsTest, MapHighestValuesPaceTest) {
 }
 
 TEST_F(AnalyticsTest, MapWeightForRepTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(exc, hist);
+    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(barbellOverheadPress, hist);
     Lab::Analytics::analyticsRepForWeightMap testWFR{
         {4, {{std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 80}}},
         {10,
@@ -355,38 +226,22 @@ TEST_F(AnalyticsTest, MapWeightForRepTest) {
 }
 
 TEST_F(AnalyticsTest, MapWeightForRepNoHistoryTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(exc, emptyHist);
+    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(barbellOverheadPress, emptyHist);
     EXPECT_TRUE(maxWeightForRep.empty());
 }
 
 TEST_F(AnalyticsTest, MapWeightForRepNoValuesInHistoryTest) {
-    Lab::Excercise exc{"Chest Supported Row",
-                       "Laying on inclined bench facing the bench row with dumbbells",
-                       "Back",
-                       {"Upper-back", "Lats"},
-                       {"weight", "reps"}};
-    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(exc, hist);
+    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(chestSupportedRow, hist);
     EXPECT_TRUE(maxWeightForRep.empty());
 }
 
 TEST_F(AnalyticsTest, MapWeightForRepNoWrongTypeTest) {
-    Lab::Excercise exc{"Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"}};
-    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(exc, hist);
+    auto maxWeightForRep = Lab::Analytics::mapWeightForRep(running, hist);
     EXPECT_TRUE(maxWeightForRep.empty());
 }
 
 TEST_F(AnalyticsTest, MapTotalValuesTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto workoutVolume = Lab::Analytics::mapTotalValues("volume", exc, hist);
+    auto workoutVolume = Lab::Analytics::mapTotalValues("volume", barbellOverheadPress, hist);
     Lab::Analytics::analyticsMap testVolume{{std::chrono::time_point_cast<std::chrono::days>(tpFeb10), 1800},
                                             {std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 4560},
                                             {std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 1800}};
@@ -398,22 +253,12 @@ TEST_F(AnalyticsTest, MapTotalValuesTest) {
 }
 
 TEST_F(AnalyticsTest, MapTotalValuesNoHistoryTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto workoutVolume = Lab::Analytics::mapTotalValues("volume", exc, emptyHist);
+    auto workoutVolume = Lab::Analytics::mapTotalValues("volume", barbellOverheadPress, emptyHist);
     EXPECT_TRUE(workoutVolume.empty());
 }
 
 TEST_F(AnalyticsTest, MapTotalValuesExcerciseHasNoValuesInHistoryTest) {
-    Lab::Excercise exc{"Chest Supported Row",
-                       "Laying on inclined bench facing the bench row with dumbbells",
-                       "Back",
-                       {"Upper-back", "Lats"},
-                       {"weight", "reps"}};
-    auto workoutVolume = Lab::Analytics::mapTotalValues("volume", exc, hist);
+    auto workoutVolume = Lab::Analytics::mapTotalValues("volume", chestSupportedRow, hist);
     EXPECT_TRUE(workoutVolume.empty());
 }
 
@@ -468,12 +313,7 @@ TEST_F(AnalyticsTest, MapValuesPerPeriodNoHistoryTest) {
 }
 
 TEST_F(AnalyticsTest, dateConstraintTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto maxRep = Lab::Analytics::constrainDate(Lab::Analytics::mapHighestValues("reps", exc, hist),
+    auto maxRep = Lab::Analytics::constrainDate(Lab::Analytics::mapHighestValues("reps", barbellOverheadPress, hist),
                                                 std::chrono::sys_days{std::chrono::February / 19 / 2024}, tpMarch4);
     Lab::Analytics::analyticsMap testRep{{std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 15},
                                          {std::chrono::time_point_cast<std::chrono::days>(tpMarch4), 10}};
@@ -485,13 +325,9 @@ TEST_F(AnalyticsTest, dateConstraintTest) {
 }
 
 TEST_F(AnalyticsTest, dateConstraintWeightForRepTest) {
-    Lab::Excercise exc{"Barbell Overhead Press",
-                       "Standing bent over row with Barbell",
-                       "Chest",
-                       {"Pectoral", "Tricep"},
-                       {"weight", "reps"}};
-    auto weightForRep = Lab::Analytics::constrainDate(
-        Lab::Analytics::mapWeightForRep(exc, hist), std::chrono::sys_days{std::chrono::February / 19 / 2024}, tpMarch4);
+    auto weightForRep =
+        Lab::Analytics::constrainDate(Lab::Analytics::mapWeightForRep(barbellOverheadPress, hist),
+                                      std::chrono::sys_days{std::chrono::February / 19 / 2024}, tpMarch4);
     Lab::Analytics::analyticsRepForWeightMap testWFR{
         {4, {{std::chrono::time_point_cast<std::chrono::days>(tpFeb20), 80}}},
         {10,
