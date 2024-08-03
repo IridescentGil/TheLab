@@ -45,6 +45,7 @@ struct Measurements {
 
 class Body {
    public:
+    Body() : height(0), weight(0), age(0){};
     Body(std::shared_ptr<Lab::DBConn> dbBase);
 
     /**

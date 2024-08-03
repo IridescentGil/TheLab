@@ -122,27 +122,41 @@ bool Lab::Excercise::load(const std::shared_ptr<Lab::DBConn> &database, const st
 };
 
 bool Lab::Excercise::save(const std::shared_ptr<Lab::DBConn> &database) const {
-    std::string musclesWorked;
-    std::string type;
-    for (const auto &iter : this->getMusclesWorked()) {
-        musclesWorked += iter;
-        if (*(this->getMusclesWorked().end() - 1) != iter) {
-            musclesWorked += ",";
+    std::string musclesWorkedString;
+    std::string typeString;
+    for (const auto &iter : musclesWorked) {
+        musclesWorkedString += iter;
+        if (*(musclesWorked.end() - 1) != iter) {
+            musclesWorkedString += ",";
         }
     }
-    for (const auto &iter : this->getType()) {
-        type += iter;
-        if (*(this->getType().end() - 1) != iter) {
-            type += ",";
+    for (const auto &iter : type) {
+        typeString += iter;
+        if (*(type.end() - 1) != iter) {
+            typeString += ",";
         }
     }
-    if (database->prepare("INSERT INTO excercises (name, description, muscleGroup, "
-                          "musclesTargeted, type) VALUES (?, ?, ?, ?, ?)",
-                          this->getName(), this->getDescription(), this->getMuscleGroup(), musclesWorked, type) == -1) {
-        return false;
-    }
-    if (database->exec_prepared() == -1) {
-        return false;
+
+    database->prepare("SELECT name FROM excercises WHERE name = ?", name);
+    if (database->retrieve_next_row()) {
+        if (database->prepare("UPDATE excercises SET name = ?, description = ?, muscleGroup = ?, "
+                              "musclesTargeted = ?, type = ? WHERE name = ?",
+                              name, description, muscleGroup, musclesWorkedString, typeString, name) == -1) {
+            return false;
+        }
+        if (database->exec_prepared() == -1) {
+            return false;
+        }
+
+    } else {
+        if (database->prepare("INSERT INTO excercises (name, description, muscleGroup, "
+                              "musclesTargeted, type) VALUES (?, ?, ?, ?, ?)",
+                              name, description, muscleGroup, musclesWorkedString, typeString) == -1) {
+            return false;
+        }
+        if (database->exec_prepared() == -1) {
+            return false;
+        }
     }
     return true;
 }

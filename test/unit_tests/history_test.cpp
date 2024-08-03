@@ -14,12 +14,46 @@
 class HistoryTest : public testing::Test {
    protected:
     void SetUp() override {
-        std::vector<Lab::Excercise> testEx = {barbellRow,   dumbbellFlys, wideGripPullUps,
-                                              jumpingJacks, plank,        calfPress};
+        std::vector<Lab::Excercise> testEx = {barbellRow, dumbbellFlys,         wideGripPullUps, jumpingJacks,
+                                              plank,      barbellOverheadPress, calfPress,       dumbbellCurls,
+                                              running,    tricepExtensions};
 
         for (auto& excerciseToSave : testEx) {
             excerciseToSave.save(db);
         }
+
+        h1 = {db,
+              {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10)}};
+
+        h3 = {db,
+              {std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10)}};
+
+        h4 = {db,
+              {std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+               std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+               std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+               std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10)}};
     }
     void TearDown() override { remove("thelab.db"); }
 
@@ -62,43 +96,16 @@ class HistoryTest : public testing::Test {
     Lab::Excercise calfPress = Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs",
                                               {"Calf"}, {"weight", "reps"});
     // Object to test general history class funtionality
-    Lab::History h1{db,
-                    {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
-                     std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
-                     std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
-                     std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
-                     std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
-                     std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10)}};
+    Lab::History h1;
 
     // Object to test functionailty with empty history
     Lab::History h2{db};
 
     // Object to test history date slices functionality
-    Lab::History h3{db,
-                    {std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
-                     std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
-                     std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
-                     std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
-                     std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
-                     std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10)}};
+    Lab::History h3;
 
     // Object to test saving to database
-    Lab::History h4{db,
-                    {std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
-                     std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
-                     std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
-                     std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
-                     std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
-                     std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
-                     std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
-                     std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
-                     std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
-                     std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
-                     std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
-                     std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
-                     std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
-                     std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
-                     std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10)}};
+    Lab::History h4;
 };
 
 TEST_F(HistoryTest, ConstructorTest) {
@@ -506,12 +513,21 @@ TEST_F(HistoryTest, OverwriteEmptyHistorySaveTest) {
     EXPECT_FALSE(db->retrieve_next_row());
 }
 
+/* FIXME: Change to InvalidAddTest test checking that only excercises existing in database can be added
 TEST_F(HistoryTest, InvalidSaveHistoryTest) {
     h4.addItem(tpMarch4, "Arm Workout", dumbbellCurls, 50, 15);
     EXPECT_FALSE(h4.save());
 }
+*/
 
-TEST_F(HistoryTest, MessyDataSetTest) {
-    // TODO: bring analysis test history object to here save it read the database for the history into another history
-    // object compare them.
+// TEST_F(HistoryTest, MessyDataSetTest) {
+// TODO: bring analysis test history object to here save it read the database for the history into another history
+// object compare them.
+// }
+
+/* TODO: test for creating history object with excercise that does not exist in db
+TEST_F(HistoryTest, ExcerciseDoesntExistInDatabaseTest){
+
+
 }
+*/

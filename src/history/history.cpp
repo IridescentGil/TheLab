@@ -33,13 +33,13 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(std::move(newDB))
         std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string, std::string, double, unsigned long>>
         tempHist;
 
-    db->execMulti("SELECT * FROM history");
-    while (db->stepExec()) {
+    db->exec_and_retrieve("SELECT * FROM history");
+    while (db->retrieve_next_row()) {
         tempHist.push_back(std::make_tuple(
             std::chrono::system_clock::time_point{
-                std::chrono::system_clock::duration{db->getColumn(DATE_DB_INDEX).getInt64()}},
-            db->getColumn(WORKOUT_NAME_DB_INDEX), db->getColumn(HISTORY_EXCERCISE_NAME_DB_INDEX),
-            db->getColumn(TYPE_1_DB_INDEX).getDouble(), db->getColumn(TYPE_2_DB_INDEX).getInt64()));
+                std::chrono::system_clock::duration{db->get_column(DATE_DB_INDEX).getInt64()}},
+            db->get_column(WORKOUT_NAME_DB_INDEX), db->get_column(HISTORY_EXCERCISE_NAME_DB_INDEX),
+            db->get_column(TYPE_1_DB_INDEX).getDouble(), db->get_column(TYPE_2_DB_INDEX).getInt64()));
     }
 
     for (auto const &iter : tempHist) {
@@ -47,10 +47,10 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(std::move(newDB))
         std::vector<std::string> mWorked;
         std::vector<std::string> exType;
         db->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
-        db->stepExec();
+        db->retrieve_next_row();
 
-        std::stringstream streamMusclesWorked(db->getColumn(MUSCLES_WORKED_DB_INDEX));
-        std::stringstream streamExcerciseType(db->getColumn(EXCERCISE_TYPE_DB_INDEX));
+        std::stringstream streamMusclesWorked(db->get_column(MUSCLES_WORKED_DB_INDEX));
+        std::stringstream streamExcerciseType(db->get_column(EXCERCISE_TYPE_DB_INDEX));
         std::string tempString;
         while (std::getline(streamMusclesWorked, tempString, ',')) {
             mWorked.push_back(tempString);
@@ -61,13 +61,17 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(std::move(newDB))
 
         history.push_back(std::make_tuple(
             date, workoutName,
-            Lab::Excercise(db->getColumn(EXCERCISE_NAME_DB_INDEX), db->getColumn(EXCERCISE_DESCRIPTION_DB_INDEX),
-                           db->getColumn(MUSCLE_GROUP_DB_INDEX), mWorked, exType),
+            Lab::Excercise(db->get_column(EXCERCISE_NAME_DB_INDEX), db->get_column(EXCERCISE_DESCRIPTION_DB_INDEX),
+                           db->get_column(MUSCLE_GROUP_DB_INDEX), mWorked, exType),
             type1, type2));
     }
+    this->sort();
 }
 Lab::History::History(std::shared_ptr<Lab::DBConn> newDB, historyVector newHistory)
-    : db(std::move(newDB)), history(std::move(newHistory)) {}
+    : db(std::move(newDB)), history(std::move(newHistory)) {
+    removeExcercisesNotInDB();
+    this->sort();
+}
 
 Lab::historyVector &Lab::History::getHistory() { return history; }
 
@@ -97,21 +101,48 @@ void Lab::History::setHistory(const historyVector &newHistory) { history = newHi
 void Lab::History::addItem(const std::chrono::time_point<std::chrono::system_clock> &date,
                            const std::string &workoutName, const Lab::Excercise &excercise, const double &type1Val,
                            const unsigned long &type2Val) {
-    history.push_back(std::make_tuple(date, workoutName, excercise, type1Val, type2Val));
+    Lab::Excercise excerciseComp;
+    excerciseComp.load(db, excercise.getName());
+    if (excercise == excerciseComp) {
+        history.push_back(std::make_tuple(date, workoutName, excercise, type1Val, type2Val));
+    }
+    // FIXME: this->sort();
 }
 
 void Lab::History::remItem(historyVector::iterator iter) { history.erase(iter); }
 
 void Lab::History::remItem(historyVector::iterator start, historyVector::iterator end) { history.erase(start, end); }
 
-bool Lab::History::save() {
-    std::sort(history.begin(), history.end(),
-              [](auto first, auto second) { return (std::get<0>(first) < std::get<0>(second)); });
+void Lab::History::sort() {
+    std::sort(history.begin(), history.end(), [](auto first, auto second) {
+        /* FIXME:
+        if (std::get<0>(first) == std::get<0>(second) && std::get<1>(first) == std::get<1>(second)) {
+            return (std::get<2>(first) < std::get<2>(second));
+        }
+        if (std::get<0>(first) == std::get<0>(second)) {
+            return (std::get<1>(first) < std::get<1>(second));
+        }
+        */
+        return (std::get<0>(first) < std::get<0>(second));
+    });
+}
 
+void Lab::History::removeExcercisesNotInDB() {
+    for (auto historyIter = history.begin(); historyIter != history.end(); ++historyIter) {
+        Lab::Excercise excercise;
+        excercise.load(db, std::get<2>(*historyIter).getName());
+        if (std::get<2>(*historyIter) != excercise) {
+            historyIter = history.erase(historyIter);
+            --historyIter;
+        }
+    }
+}
+
+bool Lab::History::save() {
     std::uint64_t size = 0;
     std::uint64_t index = 0;
-    db->execMulti("SELECT ID FROM history");
-    while (db->stepExec()) {
+    db->exec_and_retrieve("SELECT ID FROM history");
+    while (db->retrieve_next_row()) {
         ++size;
     }
 
@@ -132,7 +163,7 @@ bool Lab::History::save() {
                             static_cast<long>(type2), static_cast<long>(index)) == -1) {
                 return false;
             }
-            if (db->execQuery() == -1) {
+            if (db->exec_prepared() == -1) {
                 return false;
             }
         } else {
@@ -142,7 +173,7 @@ bool Lab::History::save() {
                             static_cast<long>(type2)) == -1) {
                 return false;
             }
-            if (db->execQuery() == -1) {
+            if (db->exec_prepared() == -1) {
                 return false;
             }
         }
