@@ -7,8 +7,29 @@
 Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB) : db(std::move(initDB)) {}
 
 Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName)
-    : name(std::move(workoutName)), db(std::move(initDB)) {}
+    : name(std::move(workoutName)), db(std::move(initDB)) {
+    std::vector<std::string> excerciseNameList;
+    std::vector<Lab::Excercise> excerciseObjects;
+    Lab::Excercise excerciseLoader;
 
+    db->prepare("SELECT excercise FROM workouts WHERE workoutName = ?", name);
+    while (db->retrieve_next_row()) {
+        excerciseNameList.push_back(db->get_column(0));
+    }
+    for (const auto &excerciseName : excerciseNameList) {
+        excerciseLoader.load(db, excerciseName);
+        excerciseObjects.push_back(excerciseLoader);
+    }
+
+    db->prepare("SELECT * FROM workouts WHERE workoutName = ?", name);
+    auto excercise = excerciseObjects.cbegin();
+    while (db->retrieve_next_row()) {
+        workout.push_back(Lab::ExcerciseData(*excercise, db->get_column(3), db->get_column(4).getInt64()));
+        ++excercise;
+    }
+}
+
+// TODO: Make workout check if excercise exists in database before adding it to vector
 Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName,
                       std::vector<Lab::ExcerciseData> newWorkout)
     : name(std::move(workoutName)), db(std::move(initDB)), workout(std::move(newWorkout)) {}
@@ -51,7 +72,8 @@ bool Lab::Workout::save() {
     }
 
     if (workout.size() < size) {
-        db->exec("DELETE FROM workouts");
+        db->prepare("DELETE FROM workouts WHERE workoutName = ?", name);
+        db->exec_prepared();
         size = 0;
     }
 

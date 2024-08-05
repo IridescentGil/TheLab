@@ -54,10 +54,10 @@
   - [ ] Records header
   - [ ] Records implementation
   - [ ] Records unit tests
-- [ ] Lab class
-  - [ ] Lab header
-  - [ ] Lab implementation
-  - [ ] Lab unit tests
+- [x] Lab class
+  - [x] Lab header
+  - [x] Lab implementation
+  - [x] Lab unit tests
 - [ ] Import Data class
   - [ ] Import Data header
   - [ ] Import Data implementation
@@ -87,5 +87,6 @@
 - [ ] Extend database for calendar, injuries, goals, records
 
 ## Review
-- [ ] DB Class thread safe?
-- [ ] Function and variable names
+- [ ] Change DB class to use std::expected as return types
+- [ ] Refactor Function and variable names for clarity
+- [ ] make history and workout save better (get id and only update id index if edited. Replace entire table if history vector is changed)

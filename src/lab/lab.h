@@ -2,8 +2,9 @@
 ///@file
 
 #include <chrono>
+#include <filesystem>
 #include <memory>
-#include <string_view>
+#include <string>
 #include <vector>
 
 #include "body.h"
@@ -15,12 +16,11 @@
 namespace Lab {
 class TheLab {
    public:
-    TheLab();
-    TheLab(std::string_view dbName);
-    TheLab(TheLab &&) = default;
-    TheLab(const TheLab &) = default;
-    TheLab &operator=(TheLab &&) = default;
-    TheLab &operator=(const TheLab &) = default;
+    TheLab(const std::string &dbName, const std::filesystem::path &path);
+    TheLab(TheLab &&) noexcept;
+    TheLab(const TheLab &);
+    TheLab &operator=(TheLab &&) noexcept;
+    TheLab &operator=(const TheLab &);
     ~TheLab() = default;
 
     bool saveExcercises();
@@ -46,12 +46,12 @@ class TheLab {
     const Lab::History &getHistoryObject() const;
     void setHistory(const Lab::History &newHistory);
     Lab::historyVector &getHistory();
-    Lab::historyVector &getHistory(std::chrono::time_point<std::chrono::system_clock> startDate,
-                                   std::chrono::time_point<std::chrono::system_clock> endDate);
+    Lab::historyVector getHistory(const std::chrono::time_point<std::chrono::system_clock> &startDate,
+                                  const std::chrono::time_point<std::chrono::system_clock> &endDate);
     const Lab::historyVector &getHistory() const;
-    const Lab::historyVector &getHistory(std::chrono::time_point<std::chrono::system_clock> startDate,
-                                         std::chrono::time_point<std::chrono::system_clock> endDate) const;
-    void addItemToHistory(Lab::historyTuple excerciseItem);
+    Lab::historyVector getHistory(const std::chrono::time_point<std::chrono::system_clock> &startDate,
+                                  const std::chrono::time_point<std::chrono::system_clock> &endDate) const;
+    void addItemToHistory(const Lab::historyTuple &excerciseItem);
     void removeItemFromHistory(Lab::historyVector::iterator iter);
     void removeItemFromHistory(Lab::historyVector::iterator start, Lab::historyVector::iterator end);
 

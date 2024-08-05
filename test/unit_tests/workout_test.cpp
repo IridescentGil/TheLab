@@ -7,6 +7,7 @@
 
 #include "database.h"
 #include "excercise.h"
+#include "gtest/gtest.h"
 #include "testHelper.h"
 
 class WorkoutTest : public testing::Test {
@@ -27,26 +28,8 @@ class WorkoutTest : public testing::Test {
                            {"time", "reps"}),
             Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs", {"Calf"},
                            {"weight", "reps"})};
-        for (const auto& iter : testEx) {
-            std::string musclesWorked;
-            std::string type;
-            for (const auto& bter : iter.getMusclesWorked()) {
-                musclesWorked += bter;
-                if (*(iter.getMusclesWorked().end() - 1) != bter) {
-                    musclesWorked += ",";
-                }
-            }
-            for (const auto& bter : iter.getType()) {
-                type += bter;
-                if (*(iter.getType().end() - 1) != bter) {
-                    type += ",";
-                }
-            }
-            db->prepare(
-                "INSERT INTO excercises (name, description, muscleGroup, "
-                "musclesTargeted, type) VALUES (?, ?, ?, ?, ?)",
-                iter.getName(), iter.getDescription(), iter.getMuscleGroup(), musclesWorked, type);
-            db->exec_prepared();
+        for (const auto& excerciseToSave : testEx) {
+            excerciseToSave.save(db);
         }
     }
     void TearDown() override { remove("thelab.db"); }
@@ -94,6 +77,22 @@ TEST_F(WorkoutTest, SetNameTest) {
     EXPECT_EQ(e2.getName(), "Full Body Day");
     e3.editName("Back Workout");
     EXPECT_EQ(e3.getName(), "Back Workout");
+}
+
+TEST_F(WorkoutTest, RetrieveWorkoutFroDBTest) {
+    e3.save();
+
+    Lab::Workout readWorkout(db, "Pull Day 1");
+    const auto& savedWorkoutData = e3.getWorkout();
+    const auto& readWorkoudData = readWorkout.getWorkout();
+
+    EXPECT_EQ(e3.getName(), readWorkout.getName());
+    EXPECT_EQ(savedWorkoutData.size(), readWorkoudData.size());
+
+    for (auto savedExcerciseData = savedWorkoutData.cbegin(), readExcerciseData = readWorkoudData.cbegin();
+         savedExcerciseData != savedWorkoutData.cend(); ++savedExcerciseData, ++readExcerciseData) {
+        EXPECT_PRED_FORMAT2(AssertWorkoutEqual, *savedExcerciseData, *readExcerciseData);
+    }
 }
 
 TEST_F(WorkoutTest, SetWoPlanTest) {

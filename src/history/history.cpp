@@ -69,7 +69,7 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(std::move(newDB))
 }
 Lab::History::History(std::shared_ptr<Lab::DBConn> newDB, historyVector newHistory)
     : db(std::move(newDB)), history(std::move(newHistory)) {
-    removeExcercisesNotInDB();
+    this->removeExcercisesNotInDB();
     this->sort();
 }
 
@@ -114,17 +114,27 @@ void Lab::History::remItem(historyVector::iterator iter) { history.erase(iter); 
 void Lab::History::remItem(historyVector::iterator start, historyVector::iterator end) { history.erase(start, end); }
 
 void Lab::History::sort() {
-    std::sort(history.begin(), history.end(), [](auto first, auto second) {
-        /* FIXME:
-        if (std::get<0>(first) == std::get<0>(second) && std::get<1>(first) == std::get<1>(second)) {
-            return (std::get<2>(first) < std::get<2>(second));
+    /* FIXME: Make sort() sort by date then workout name
+    if (std::get<0>(first) == std::get<0>(second) && std::get<1>(first) == std::get<1>(second)) {
+        return (std::get<2>(first) < std::get<2>(second));
+    }
+    if (std::get<0>(first) == std::get<0>(second)) {
+        return (std::get<1>(first) < std::get<1>(second));
+    }
+    */
+    bool sorted = false;
+    historyTuple temp;
+    while (!sorted) {
+        sorted = true;
+        for (auto historyIter = history.begin(); historyIter != history.end(); ++historyIter) {
+            if (historyIter + 1 != history.end() && std::get<0>(*historyIter) > std::get<0>(*(historyIter + 1))) {
+                temp = *historyIter;
+                *historyIter = *(historyIter + 1);
+                *(historyIter + 1) = temp;
+                sorted = false;
+            }
         }
-        if (std::get<0>(first) == std::get<0>(second)) {
-            return (std::get<1>(first) < std::get<1>(second));
-        }
-        */
-        return (std::get<0>(first) < std::get<0>(second));
-    });
+    }
 }
 
 void Lab::History::removeExcercisesNotInDB() {
