@@ -9,6 +9,7 @@
 
 #include "database.h"
 #include "excercise.h"
+#include "gtest/gtest.h"
 #include "testHelper.h"
 
 class HistoryTest : public testing::Test {
@@ -54,6 +55,88 @@ class HistoryTest : public testing::Test {
                std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
                std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
                std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10)}};
+
+        h5 = {db,
+              {
+                  std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+                  std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+                  std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+                  std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+                  std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+                  std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+                  std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+                  std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+                  std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+                  std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+                  std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+                  std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+                  std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+                  std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+                  std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+                  std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+                  std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+                  std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+                  std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+                  std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+                  std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+                  std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+                  std::make_tuple(tpJan13, "Run", running, 6, 60),
+              }};
+
+        h6 = {db,
+              {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpMarch4, "Full-Body Workout", barbellOverheadPressModified, 60, 7),
+               std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 60, 10),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 80, 4),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+               std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
+               std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+               std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+               std::make_tuple(tpJan13, "Full-Body Workout", dumbbellFlys, 20, 12),
+               std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", jumpingJacks, 20, 0),
+               std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+               std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
+               std::make_tuple(tpJan13, "Run", running, 6, 60),
+               std::make_tuple(tpMarch4, "Run", barbellOverheadPressModifiedTwo, 25, 30)}};
     }
     void TearDown() override { remove("thelab.db"); }
 
@@ -95,6 +178,13 @@ class HistoryTest : public testing::Test {
     Lab::Excercise running = Lab::Excercise("Running", "Long distance timed run", "Cardio", {}, {"distance", "time"});
     Lab::Excercise calfPress = Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs",
                                               {"Calf"}, {"weight", "reps"});
+    Lab::Excercise barbellOverheadPressModified =
+        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                       {"time", "reps"});
+    Lab::Excercise barbellOverheadPressModifiedTwo =
+        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                       {"weight", "time"});
+
     // Object to test general history class funtionality
     Lab::History h1;
 
@@ -106,6 +196,12 @@ class HistoryTest : public testing::Test {
 
     // Object to test saving to database
     Lab::History h4;
+
+    // Object to test sorting in DB
+    Lab::History h5;
+
+    // Object to test invalid additions to database
+    Lab::History h6;
 };
 
 TEST_F(HistoryTest, ConstructorTest) {
@@ -513,21 +609,25 @@ TEST_F(HistoryTest, OverwriteEmptyHistorySaveTest) {
     EXPECT_FALSE(db->retrieve_next_row());
 }
 
-/* FIXME: Change to InvalidAddTest test checking that only excercises existing in database can be added
-TEST_F(HistoryTest, InvalidSaveHistoryTest) {
-    h4.addItem(tpMarch4, "Arm Workout", dumbbellCurls, 50, 15);
-    EXPECT_FALSE(h4.save());
+TEST_F(HistoryTest, InvalidAddToHistoryTest) {
+    const int H1_SIZE = 6;
+    const auto history = h1.getHistory();
+    const Lab::Excercise skipping = {"skipping", "Jumping rope", "Cardio", {}, {"reps"}};
+
+    EXPECT_EQ(H1_SIZE, h1.getHistory().size());
+    h1.addItem(tpMarch4, "Arm Workout", skipping, 50, 15);
+
+    EXPECT_EQ(H1_SIZE, h1.getHistory().size());
+    EXPECT_PRED_FORMAT2(AssertHistoryEqual, history, h1.getHistory());
 }
-*/
 
-// TEST_F(HistoryTest, MessyDataSetTest) {
-// TODO: bring analysis test history object to here save it read the database for the history into another history
-// object compare them.
-// }
+TEST_F(HistoryTest, MessyDataSetTest) {
+    h5.save();
 
-/* TODO: test for creating history object with excercise that does not exist in db
-TEST_F(HistoryTest, ExcerciseDoesntExistInDatabaseTest){
-
-
+    Lab::History historyComp = Lab::History(db);
+    EXPECT_PRED_FORMAT2(AssertHistoryEqual, h5.getHistory(), historyComp.getHistory());
 }
-*/
+
+TEST_F(HistoryTest, ExcerciseDoesntExistInDatabaseTest) {
+    EXPECT_PRED_FORMAT2(AssertHistoryEqual, h5.getHistory(), h6.getHistory());
+}
