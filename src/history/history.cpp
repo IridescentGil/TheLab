@@ -1,6 +1,5 @@
 #include "history.h"
 
-#include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <sstream>
@@ -106,7 +105,7 @@ void Lab::History::addItem(const std::chrono::time_point<std::chrono::system_clo
     if (excercise == excerciseComp) {
         history.push_back(std::make_tuple(date, workoutName, excercise, type1Val, type2Val));
     }
-    // FIXME: this->sort();
+    this->sort();
 }
 
 void Lab::History::remItem(historyVector::iterator iter) { history.erase(iter); }
