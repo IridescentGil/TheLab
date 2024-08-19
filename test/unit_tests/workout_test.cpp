@@ -7,7 +7,6 @@
 
 #include "database.h"
 #include "excercise.h"
-#include "gtest/gtest.h"
 #include "testHelper.h"
 
 class WorkoutTest : public testing::Test {
@@ -27,10 +26,34 @@ class WorkoutTest : public testing::Test {
             Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core", {"Abs"},
                            {"time", "reps"}),
             Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs", {"Calf"},
-                           {"weight", "reps"})};
+                           {"weight", "reps"}),
+            Lab::Excercise("Kettlebell Swing",
+                           "With the kettlebell on the ground hinge at the hips and hike the "
+                           "kettlebell between your legs, push the kettlebell with your hips "
+                           "as you straighten and let it lift to chest height and fall again",
+                           "Core", {"Abs", "Glutes", "Lower-Back"}, {"weight", "reps"}),
+
+            Lab::Excercise("Chest Supported Row", "Row at a chest supported row machine", "Back",
+                           {"Upper-Back", "Lats"}, {"weight", "reps"})
+
+        };
         for (const auto& excerciseToSave : testEx) {
             excerciseToSave.save(db);
         }
+
+        e3 = {db,
+              "Pull Day 1",
+              {Lab::ExcerciseData(Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
+                                                 {"Upper-back", "Lats"}, {"weight", "reps"}),
+                                  50, 5),
+               Lab::ExcerciseData(Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards",
+                                                 "Back", {"Upper-back"}, {"weight", "reps"}),
+                                  10, 10),
+               Lab::ExcerciseData(Lab::Excercise("Wide Grip Pull Ups",
+                                                 "Holding the bar with a wide grip, do a "
+                                                 "pullup until your chin is over the bar",
+                                                 "Back", {"Upper-back"}, {"reps"}),
+                                  10, 0)}};
     }
     void TearDown() override { remove("thelab.db"); }
 
@@ -38,19 +61,7 @@ class WorkoutTest : public testing::Test {
     std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
     Lab::Workout e1{db};
     Lab::Workout e2{db, "Push Day 1"};
-    Lab::Workout e3{db,
-                    "Pull Day 1",
-                    {Lab::ExcerciseData(Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                                       {"Upper-back", "Lats"}, {"weight", "reps"}),
-                                        50, 5),
-                     Lab::ExcerciseData(Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards",
-                                                       "Back", {"Upper-back"}, {"weight", "reps"}),
-                                        10, 10),
-                     Lab::ExcerciseData(Lab::Excercise("Wide Grip Pull Ups",
-                                                       "Holding the bar with a wide grip, do a "
-                                                       "pullup until your chin is over the bar",
-                                                       "Back", {"Upper-back"}, {"reps"}),
-                                        10, 0)}};
+    Lab::Workout e3{db};
     Lab::Workout e4 = Lab::Workout(db);
 };
 

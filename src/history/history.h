@@ -15,9 +15,7 @@ using historyTuple =
     std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string, Lab::Excercise, double, unsigned long>;
 using historyVector = std::vector<historyTuple>;
 
-/* NOTE: change history to log workout order number and history order number; add function to move item in history.
- * history order number cannot be seen by user.
- * data structure ideas change pure vector to map with keys being dates and values being vectors of excercises
+/* NOTE:  add function to move item in history.
  */
 class History {
    public:

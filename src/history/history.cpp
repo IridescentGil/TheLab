@@ -114,13 +114,8 @@ void Lab::History::remItem(historyVector::iterator start, historyVector::iterato
 
 void Lab::History::sort() {
     /* FIXME: Make sort() sort by date then workout name
-    if (std::get<0>(first) == std::get<0>(second) && std::get<1>(first) == std::get<1>(second)) {
-        return (std::get<2>(first) < std::get<2>(second));
-    }
-    if (std::get<0>(first) == std::get<0>(second)) {
-        return (std::get<1>(first) < std::get<1>(second));
-    }
-    */
+     * NOTE: Use more efficient sorting algorithm
+     */
     bool sorted = false;
     historyTuple temp;
     while (!sorted) {

@@ -29,16 +29,21 @@ Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutNa
     }
 }
 
-// TODO: Make workout check if excercise exists in database before adding it to vector
 Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName,
                       std::vector<Lab::ExcerciseData> newWorkout)
-    : name(std::move(workoutName)), db(std::move(initDB)), workout(std::move(newWorkout)) {}
+    : name(std::move(workoutName)), db(std::move(initDB)), workout(std::move(newWorkout)) {
+    this->removeExcercisesNotInDB();
+}
 
 void Lab::Workout::setWorkout(const std::vector<Lab::ExcerciseData> &newWorkout) { workout = newWorkout; }
 
 void Lab::Workout::addExcercise(const Lab::Excercise &newExcercise, const double &type1Val,
                                 const unsigned long &type2Val) {
-    workout.push_back(Lab::ExcerciseData{newExcercise, type1Val, type2Val});
+    Lab::Excercise excerciseComp;
+    excerciseComp.load(db, newExcercise.getName());
+    if (newExcercise == excerciseComp) {
+        workout.push_back(Lab::ExcerciseData{newExcercise, type1Val, type2Val});
+    }
 }
 
 void Lab::Workout::remExcercise(std::vector<Lab::ExcerciseData>::iterator iter) { workout.erase(iter); }
@@ -106,4 +111,15 @@ bool Lab::Workout::save() {
         }
     }
     return true;
+}
+
+void Lab::Workout::removeExcercisesNotInDB() {
+    for (auto workoutIter = workout.begin(); workoutIter != workout.end(); ++workoutIter) {
+        Lab::Excercise excercise;
+        excercise.load(db, workoutIter->exc.getName());
+        if (workoutIter->exc != excercise) {
+            workoutIter = workout.erase(workoutIter);
+            --workoutIter;
+        }
+    }
 }

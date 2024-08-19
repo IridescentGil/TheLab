@@ -63,6 +63,7 @@ class Workout {
     bool save();
 
    private:
+    void removeExcercisesNotInDB();
     std::string name;
     std::shared_ptr<Lab::DBConn> db;
     std::vector<Lab::ExcerciseData> workout;

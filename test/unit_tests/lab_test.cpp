@@ -13,6 +13,11 @@ class TheLabTest : public testing::Test {
             excercise.save(testDB);
         }
 
+        testWorkout = {testDB,
+                       "Pull Day 1",
+                       {Lab::ExcerciseData(barbellRow, 50, 5), Lab::ExcerciseData(dumbbellFlys, 10, 10),
+                        Lab::ExcerciseData(wideGripPullUps, 10, 0)}};
+
         testHistory = {testDB,
                        {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                         std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -111,10 +116,7 @@ class TheLabTest : public testing::Test {
     Lab::Body testBody{testDB};
     std::vector<Lab::Excercise> testEx = {barbellOverheadPress, barbellRow, calfPress, dumbbellFlys,
                                           jumpingJacks,         plank,      running,   wideGripPullUps};
-    Lab::Workout testWorkout{testDB,
-                             "Pull Day 1",
-                             {Lab::ExcerciseData(barbellRow, 50, 5), Lab::ExcerciseData(dumbbellFlys, 10, 10),
-                              Lab::ExcerciseData(wideGripPullUps, 10, 0)}};
+    Lab::Workout testWorkout{testDB};
     Lab::History testHistory;
 };
 
