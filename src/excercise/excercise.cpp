@@ -1,7 +1,6 @@
 #include "excercise.h"
 
 #include <algorithm>
-#include <memory>
 #include <utility>
 
 #include "database.h"
@@ -100,7 +99,7 @@ bool Lab::Excercise::isType(const std::vector<std::string> &nType) {
     return true;
 }
 
-bool Lab::Excercise::load(const std::shared_ptr<Lab::DBConn> &database, const std::string &excercise) {
+bool Lab::Excercise::load(Lab::DBConn *database, const std::string &excercise) {
     database->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
     while (database->retrieve_next_row()) {
         std::vector<std::string> musclesWorked;
@@ -121,7 +120,7 @@ bool Lab::Excercise::load(const std::shared_ptr<Lab::DBConn> &database, const st
     return false;
 };
 
-bool Lab::Excercise::save(const std::shared_ptr<Lab::DBConn> &database) const {
+bool Lab::Excercise::save(Lab::DBConn *database) const {
     std::string musclesWorkedString;
     std::string typeString;
     for (const auto &iter : musclesWorked) {

@@ -9,7 +9,6 @@
 
 #include "database.h"
 #include "excercise.h"
-#include "gtest/gtest.h"
 #include "testHelper.h"
 
 class HistoryTest : public testing::Test {
@@ -20,10 +19,10 @@ class HistoryTest : public testing::Test {
                                               running,    tricepExtensions};
 
         for (auto& excerciseToSave : testEx) {
-            excerciseToSave.save(db);
+            excerciseToSave.save(db.get());
         }
 
-        h1 = {db,
+        h1 = {db.get(),
               {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -31,7 +30,7 @@ class HistoryTest : public testing::Test {
                std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
                std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10)}};
 
-        h3 = {db,
+        h3 = {db.get(),
               {std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                std::make_tuple(tpFeb10, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -39,7 +38,7 @@ class HistoryTest : public testing::Test {
                std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10),
                std::make_tuple(tpFeb20, "Full-Body Workout", barbellRow, 75, 10)}};
 
-        h4 = {db,
+        h4 = {db.get(),
               {std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
                std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
                std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
@@ -56,7 +55,7 @@ class HistoryTest : public testing::Test {
                std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10),
                std::make_tuple(tpJan13, "Full-Body Workout", plank, 60, 10)}};
 
-        h5 = {db,
+        h5 = {db.get(),
               {
                   std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                   std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -97,7 +96,7 @@ class HistoryTest : public testing::Test {
                   std::make_tuple(tpJan13, "Run", running, 6, 60),
               }};
 
-        h6 = {db,
+        h6 = {db.get(),
               {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -141,7 +140,7 @@ class HistoryTest : public testing::Test {
     void TearDown() override { remove("thelab.db"); }
 
    public:
-    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
+    std::unique_ptr<Lab::DBConn> db = std::make_unique<Lab::DBConn>();
 
     constexpr static std::chrono::time_point<std::chrono::system_clock> tpMarch4 =
         std::chrono::sys_days{std::chrono::March / 4 / 2024} + std::chrono::hours(12);
@@ -189,7 +188,7 @@ class HistoryTest : public testing::Test {
     Lab::History h1;
 
     // Object to test functionailty with empty history
-    Lab::History h2{db};
+    Lab::History h2{db.get()};
 
     // Object to test history date slices functionality
     Lab::History h3;
@@ -212,7 +211,7 @@ TEST_F(HistoryTest, ConstructorTest) {
         epoch, "Leg-Day", "Plank", PLANK_LENGTH, 0, epoch, "Leg-Day", "Plank", PLANK_LENGTH, 0, epoch, "Leg-Day",
         "Plank", PLANK_LENGTH, 0);
     db->exec_prepared();
-    Lab::History existing(db);
+    Lab::History existing(db.get());
 
     const auto& history = existing.getHistory();
     EXPECT_EQ(history.size(), 3);
@@ -624,7 +623,7 @@ TEST_F(HistoryTest, InvalidAddToHistoryTest) {
 TEST_F(HistoryTest, MessyDataSetTest) {
     h5.save();
 
-    Lab::History historyComp = Lab::History(db);
+    Lab::History historyComp = Lab::History(db.get());
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, h5.getHistory(), historyComp.getHistory());
 }
 

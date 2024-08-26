@@ -38,10 +38,10 @@ class WorkoutTest : public testing::Test {
 
         };
         for (const auto& excerciseToSave : testEx) {
-            excerciseToSave.save(db);
+            excerciseToSave.save(db.get());
         }
 
-        e3 = {db,
+        e3 = {db.get(),
               "Pull Day 1",
               {Lab::ExcerciseData(Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
                                                  {"Upper-back", "Lats"}, {"weight", "reps"}),
@@ -58,11 +58,11 @@ class WorkoutTest : public testing::Test {
     void TearDown() override { remove("thelab.db"); }
 
    public:
-    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
-    Lab::Workout e1{db};
-    Lab::Workout e2{db, "Push Day 1"};
-    Lab::Workout e3{db};
-    Lab::Workout e4 = Lab::Workout(db);
+    std::unique_ptr<Lab::DBConn> db = std::make_unique<Lab::DBConn>();
+    Lab::Workout e1{db.get()};
+    Lab::Workout e2{db.get(), "Push Day 1"};
+    Lab::Workout e3{db.get()};
+    Lab::Workout e4 = Lab::Workout(db.get());
 };
 
 TEST_F(WorkoutTest, EmptyWorkOutPlanTest) {
@@ -93,7 +93,7 @@ TEST_F(WorkoutTest, SetNameTest) {
 TEST_F(WorkoutTest, RetrieveWorkoutFroDBTest) {
     e3.save();
 
-    Lab::Workout readWorkout(db, "Pull Day 1");
+    Lab::Workout readWorkout(db.get(), "Pull Day 1");
     const auto& savedWorkoutData = e3.getWorkout();
     const auto& readWorkoudData = readWorkout.getWorkout();
 
@@ -218,10 +218,10 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
                     60, 12);
     EXPECT_EQ(e2.getWorkout().size(), 7);
 
-    int i = 0;
-    for (auto woPlan : e2.getWorkout()) {
+    int excerciseIndex = 0;
+    for (const auto& woPlan : e2.getWorkout()) {
         const auto [excer, type1, type2] = woPlan;
-        if (i < 4) {
+        if (excerciseIndex < 4) {
             EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer,
                                 Lab::Excercise("Kettlebell Swing",
                                                "With the kettlebell on the ground hinge at the hips "
@@ -238,7 +238,7 @@ TEST_F(WorkoutTest, AddExcerciseTest) {
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 12);
         }
-        ++i;
+        ++excerciseIndex;
     }
 }
 
@@ -334,7 +334,7 @@ TEST_F(WorkoutTest, ChangedMulipleExcerciseTest) {
                        Lab::Excercise("Chest Supported Row", "Row at a chest supported row machine", "Back",
                                       {"Upper-Back", "Lats"}, {"weight", "reps"}),
                        50, 14);
-    for (auto plan : woPlan) {
+    for (const auto& plan : woPlan) {
         EXPECT_PRED_FORMAT2(
             AssertWorkoutEqual, plan,
             Lab::ExcerciseData(Lab::Excercise("Chest Supported Row", "Row at a chest supported row machine", "Back",
@@ -506,20 +506,21 @@ TEST_F(WorkoutTest, SaveWorkOutPlanTest) {
 
 TEST_F(WorkoutTest, WoPlanSetSaveTest) {
     e4.editName("Calf Crusher");
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i) {
         e4.addExcercise(Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs", {"Calf"},
                                        {"weight", "reps"}),
                         30, 10);
+    }
     e4.save();
     db->exec_and_retrieve("SELECT * FROM workouts");
-    int i = 0;
+    int workoutIndex = 0;
     while (db->retrieve_next_row()) {
         EXPECT_EQ(db->get_column(0).getString(), "Calf Crusher");
-        EXPECT_EQ(db->get_column(1).getInt(), i);
+        EXPECT_EQ(db->get_column(1).getInt(), workoutIndex);
         EXPECT_EQ(db->get_column(2).getString(), "Calf Press");
         EXPECT_EQ(db->get_column(3).getInt(), 30);
         EXPECT_EQ(db->get_column(4).getInt(), 10);
-        ++i;
+        ++workoutIndex;
     }
 }
 
@@ -528,7 +529,10 @@ TEST_F(WorkoutTest, InvalidExcerciseSaveTest) {
     EXPECT_TRUE(e1.save());
     bool frontFlipsFound = false;
     db->exec_and_retrieve("SELECT * FROM workouts");
-    while (db->retrieve_next_row())
-        if (db->get_column(2).getString() == "Front flips") frontFlipsFound = true;
+    while (db->retrieve_next_row()) {
+        if (db->get_column(2).getString() == "Front flips") {
+            frontFlipsFound = true;
+        }
+    }
     EXPECT_FALSE(frontFlipsFound);
 }

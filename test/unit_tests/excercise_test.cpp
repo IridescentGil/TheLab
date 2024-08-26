@@ -145,10 +145,10 @@ TEST_F(ExcerciseTest, VectorPushBackTest) {
 }
 
 TEST_F(ExcerciseTest, ExcersiseSaveTest) {
-    std::shared_ptr<Lab::DBConn> test = std::make_shared<Lab::DBConn>();
+    std::unique_ptr<Lab::DBConn> test = std::make_unique<Lab::DBConn>();
 
-    e1.save(test);
-    e2.save(test);
+    e1.save(test.get());
+    e2.save(test.get());
 
     test->exec_and_retrieve("SELECT * FROM excercises");
     test->retrieve_next_row();
@@ -175,13 +175,13 @@ TEST_F(ExcerciseTest, ExcersiseSaveTest) {
 }
 
 TEST_F(ExcerciseTest, ExcerciseLoadFromDatabaseTest) {
-    std::shared_ptr<Lab::DBConn> test = std::make_shared<Lab::DBConn>();
+    std::unique_ptr<Lab::DBConn> test = std::make_unique<Lab::DBConn>();
 
-    e1.save(test);
-    e2.save(test);
+    e1.save(test.get());
+    e2.save(test.get());
 
     Lab::Excercise newExcercise;
-    newExcercise.load(test, "Deadlift");
+    newExcercise.load(test.get(), "Deadlift");
 
     EXPECT_PRED_FORMAT2(AssertExcerciseEqual, e1, newExcercise);
 

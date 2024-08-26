@@ -58,7 +58,7 @@ class TheLab {
     void removeItemFromHistory(Lab::historyVector::iterator start, Lab::historyVector::iterator end);
 
    private:
-    std::shared_ptr<Lab::DBConn> database;
+    std::unique_ptr<Lab::DBConn> database;
     Lab::History history;
     Lab::Body body;
     std::vector<Lab::Excercise> excercises;

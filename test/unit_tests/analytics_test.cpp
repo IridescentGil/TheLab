@@ -17,16 +17,16 @@
 class AnalyticsTest : public testing::Test {
    protected:
     void SetUp() override {
-        barbellRow.save(db);
-        barbellOverheadPress.save(db);
-        dumbbellFlys.save(db);
-        wideGripPullUps.save(db);
-        jumpingJacks.save(db);
-        plank.save(db);
-        running.save(db);
-        chestSupportedRow.save(db);
+        barbellRow.save(db.get());
+        barbellOverheadPress.save(db.get());
+        dumbbellFlys.save(db.get());
+        wideGripPullUps.save(db.get());
+        jumpingJacks.save(db.get());
+        plank.save(db.get());
+        running.save(db.get());
+        chestSupportedRow.save(db.get());
 
-        hist = {db,
+        hist = {db.get(),
                 {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                  std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                  std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -73,8 +73,8 @@ class AnalyticsTest : public testing::Test {
     }
 
    public:
-    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
-    std::shared_ptr<Lab::DBConn> emptyDb = std::make_shared<Lab::DBConn>("empty.db");
+    std::unique_ptr<Lab::DBConn> db = std::make_unique<Lab::DBConn>();
+    std::unique_ptr<Lab::DBConn> emptyDb = std::make_unique<Lab::DBConn>("empty.db");
 
     constexpr static std::chrono::time_point<std::chrono::system_clock> tpMarch4 =
         std::chrono::sys_days{std::chrono::March / 4 / 2024} + std::chrono::hours(12);
@@ -139,7 +139,7 @@ class AnalyticsTest : public testing::Test {
         Lab::Excercise("Chest Supported Row", "Laying on inclined bench facing the bench row with dumbbells", "Back",
                        {"Upper-back", "Lats"}, {"weight", "reps"});
 
-    Lab::History emptyHist{emptyDb};
+    Lab::History emptyHist{emptyDb.get()};
 
     Lab::History hist;
 };

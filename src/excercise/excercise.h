@@ -1,7 +1,6 @@
 #pragma once
 ///@file
 
-#include <memory>
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -74,8 +73,8 @@ class Excercise {
     int setMusclesWorked(const std::vector<std::string> &newMW);
     int setType(const std::vector<std::string> &newType);
 
-    bool load(const std::shared_ptr<Lab::DBConn> &database, const std::string &excercise);
-    bool save(const std::shared_ptr<Lab::DBConn> &database) const;
+    bool load(Lab::DBConn *database, const std::string &excercise);
+    bool save(Lab::DBConn *database) const;
 
     bool isMuscleGroup(const std::string &mGroup);
     bool isMuscle(const std::vector<std::string> &mWorked);

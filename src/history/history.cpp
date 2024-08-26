@@ -27,7 +27,7 @@ enum EXCERCISE_DATABASE_INDEXES {
 };
 }  // namespace
 
-Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(std::move(newDB)) {
+Lab::History::History(Lab::DBConn *newDB) : db(newDB) {
     std::vector<
         std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string, std::string, double, unsigned long>>
         tempHist;
@@ -66,8 +66,7 @@ Lab::History::History(std::shared_ptr<Lab::DBConn> newDB) : db(std::move(newDB))
     }
     this->sort();
 }
-Lab::History::History(std::shared_ptr<Lab::DBConn> newDB, historyVector newHistory)
-    : db(std::move(newDB)), history(std::move(newHistory)) {
+Lab::History::History(Lab::DBConn *newDB, historyVector newHistory) : db(newDB), history(std::move(newHistory)) {
     this->removeExcercisesNotInDB();
     this->sort();
 }

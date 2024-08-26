@@ -1,7 +1,6 @@
 #include "body.h"
 
 #include <chrono>
-#include <utility>
 
 #include "database.h"
 
@@ -42,7 +41,7 @@ enum CONDITION_DATABASE_DB_INDEXES {
 };
 }  // namespace
 
-Lab::Body::Body(std::shared_ptr<Lab::DBConn> dbBase) : db(std::move(dbBase)) {
+Lab::Body::Body(Lab::DBConn *dbBase) : db(dbBase) {
     db->exec_and_retrieve("SELECT * FROM bodyStats ORDER BY date DESC LIMIT 1");
     if (db->retrieve_next_row()) {
         weight = db->get_column(WEIGHT_DB_INDEX);

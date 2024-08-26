@@ -1,7 +1,6 @@
 #pragma once
 ///@file
 
-#include <memory>
 #include <vector>
 
 #include "database.h"
@@ -38,9 +37,9 @@ struct ExcerciseData {
 
 class Workout {
    public:
-    Workout(std::shared_ptr<Lab::DBConn> initDB);
-    Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName);
-    Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName, std::vector<Lab::ExcerciseData> newWorkout);
+    Workout(Lab::DBConn *initDB);
+    Workout(Lab::DBConn *initDB, std::string workoutName);
+    Workout(Lab::DBConn *initDB, std::string workoutName, std::vector<Lab::ExcerciseData> newWorkout);
 
     const std::vector<Lab::ExcerciseData> &getWorkout() const { return workout; };
     std::vector<Lab::ExcerciseData> &getWorkout() { return workout; };
@@ -65,7 +64,7 @@ class Workout {
    private:
     void removeExcercisesNotInDB();
     std::string name;
-    std::shared_ptr<Lab::DBConn> db;
+    Lab::DBConn *db;
     std::vector<Lab::ExcerciseData> workout;
 };
 

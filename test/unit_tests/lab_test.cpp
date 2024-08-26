@@ -13,15 +13,15 @@ class TheLabTest : public testing::Test {
    protected:
     void SetUp() override {
         for (auto &excercise : testEx) {
-            excercise.save(testDB);
+            excercise.save(testDB.get());
         }
 
-        testWorkout = {testDB,
+        testWorkout = {testDB.get(),
                        "Pull Day 1",
                        {Lab::ExcerciseData(barbellRow, 50, 5), Lab::ExcerciseData(dumbbellFlys, 10, 10),
                         Lab::ExcerciseData(wideGripPullUps, 10, 0)}};
 
-        testHistory = {testDB,
+        testHistory = {testDB.get(),
                        {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                         std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                         std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -114,12 +114,12 @@ class TheLabTest : public testing::Test {
     const int AGE = 45;
     const int LATS_CONDITION = 23;
 
-    std::shared_ptr<Lab::DBConn> testDB = std::make_shared<Lab::DBConn>("read.db");
+    std::unique_ptr<Lab::DBConn> testDB = std::make_unique<Lab::DBConn>("read.db");
 
-    Lab::Body testBody{testDB};
+    Lab::Body testBody{testDB.get()};
     std::vector<Lab::Excercise> testEx = {barbellOverheadPress, barbellRow, calfPress, dumbbellFlys,
                                           jumpingJacks,         plank,      running,   wideGripPullUps};
-    Lab::Workout testWorkout{testDB};
+    Lab::Workout testWorkout{testDB.get()};
     Lab::History testHistory;
 };
 
@@ -167,8 +167,8 @@ TEST_F(TheLabTest, ReadFromDatabaseTest) {
 
 TEST_F(TheLabTest, WorkoutsSaveRemovesNonexistentWorkoutsTest) {
     std::vector<Lab::Workout> newWorkouts = {
-        Lab::Workout(testDB, "Bar Day", {{barbellRow, 40, 6}, {barbellOverheadPress, 70, 2}}),
-        Lab::Workout(testDB, "CrossFit", std::vector<Lab::ExcerciseData>{{running, 3600, 0}, {plank, 60, 0}})};
+        Lab::Workout(testDB.get(), "Bar Day", {{barbellRow, 40, 6}, {barbellOverheadPress, 70, 2}}),
+        Lab::Workout(testDB.get(), "CrossFit", std::vector<Lab::ExcerciseData>{{running, 3600, 0}, {plank, 60, 0}})};
 
     {
         Lab::TheLab testLab("read.db", ".");
@@ -248,7 +248,7 @@ TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
 
     testLab.EditExcercise(excercises.begin() + 3, excerciseChanged);
 
-    const Lab::History historyTest = {testDB,
+    const Lab::History historyTest = {testDB.get(),
                                       {
                                           std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                                           std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -311,7 +311,7 @@ TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
 
     Lab::TheLab testLab("read.db", ".");
 
-    const Lab::History historyTest = {testDB,
+    const Lab::History historyTest = {testDB.get(),
                                       {
                                           std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
                                           std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -344,7 +344,9 @@ TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
                                       }};
 
     const Lab::Workout workoutTest{
-        testDB, "Pull Day 1", {Lab::ExcerciseData(dumbbellFlys, 10, 10), Lab::ExcerciseData(wideGripPullUps, 10, 0)}};
+        testDB.get(),
+        "Pull Day 1",
+        {Lab::ExcerciseData(dumbbellFlys, 10, 10), Lab::ExcerciseData(wideGripPullUps, 10, 0)}};
 
     auto &history = testLab.getHistory();
     auto &workouts = testLab.getWorkouts();
@@ -382,7 +384,7 @@ TEST_F(TheLabTest, ExcerciseTypeChangeTest) {
     const int HISTORY_SIZE = 37;
     const int NUMBER_OF_OVERHEADPRESS_IN_HISTORY = 15;
     const int HISTORY_WITHOUT_OVERHEADPRESS_SIZE = HISTORY_SIZE - NUMBER_OF_OVERHEADPRESS_IN_HISTORY;
-    const Lab::History historyTest = {testDB,
+    const Lab::History historyTest = {testDB.get(),
                                       {std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
                                        std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),
                                        std::make_tuple(tpMarch4, "Full-Body Workout", barbellRow, 75, 10),

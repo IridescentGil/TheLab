@@ -4,10 +4,9 @@
 
 #include "database.h"
 
-Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB) : db(std::move(initDB)) {}
+Lab::Workout::Workout(Lab::DBConn *initDB) : db(initDB) {}
 
-Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName)
-    : name(std::move(workoutName)), db(std::move(initDB)) {
+Lab::Workout::Workout(Lab::DBConn *initDB, std::string workoutName) : name(std::move(workoutName)), db(initDB) {
     std::vector<std::string> excerciseNameList;
     std::vector<Lab::Excercise> excerciseObjects;
     Lab::Excercise excerciseLoader;
@@ -29,9 +28,8 @@ Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutNa
     }
 }
 
-Lab::Workout::Workout(std::shared_ptr<Lab::DBConn> initDB, std::string workoutName,
-                      std::vector<Lab::ExcerciseData> newWorkout)
-    : name(std::move(workoutName)), db(std::move(initDB)), workout(std::move(newWorkout)) {
+Lab::Workout::Workout(Lab::DBConn *initDB, std::string workoutName, std::vector<Lab::ExcerciseData> newWorkout)
+    : name(std::move(workoutName)), db(initDB), workout(std::move(newWorkout)) {
     this->removeExcercisesNotInDB();
 }
 

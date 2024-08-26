@@ -2,7 +2,6 @@
 ///@file
 
 #include <chrono>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -20,8 +19,8 @@ using historyVector = std::vector<historyTuple>;
 class History {
    public:
     History() {};
-    History(std::shared_ptr<Lab::DBConn> newDB);
-    History(std::shared_ptr<Lab::DBConn> newDB, historyVector newHistory);
+    History(Lab::DBConn *newDB);
+    History(Lab::DBConn *newDB, historyVector newHistory);
 
     historyVector &getHistory();
     const historyVector &getHistory() const;
@@ -43,7 +42,7 @@ class History {
     void remItem(historyVector::iterator start, historyVector::iterator end);
 
    private:
-    std::shared_ptr<Lab::DBConn> db;
+    Lab::DBConn *db{};
     historyVector history;
 
     void sort();

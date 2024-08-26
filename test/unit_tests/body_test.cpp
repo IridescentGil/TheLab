@@ -11,8 +11,8 @@ class BodyTest : public testing::Test {
     void TearDown() override { remove("thelab.db"); }
 
    public:
-    std::shared_ptr<Lab::DBConn> db = std::make_shared<Lab::DBConn>();
-    Lab::Body body1{db};
+    std::unique_ptr<Lab::DBConn> db = std::make_unique<Lab::DBConn>();
+    Lab::Body body1{db.get()};
 };
 
 TEST_F(BodyTest, EmptyDBTest) {
@@ -45,7 +45,7 @@ TEST_F(BodyTest, SetDBTest) {
     body1.setMeasurement(tMes);
 
     EXPECT_EQ(body1.save(), 1);
-    Lab::Body body2{db};
+    Lab::Body body2{db.get()};
     EXPECT_EQ(175, body2.getHeight());
     EXPECT_EQ(80, body2.getWeight());
     EXPECT_EQ(18, body2.getAge());

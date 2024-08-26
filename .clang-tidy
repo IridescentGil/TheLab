@@ -8,3 +8,6 @@ Checks:
   - performance-*
   - bugprone-*
   - -bugprone-easily-swappable-parameters
+
+  - -cppcoreguidelines-avoid-magic-numbers
+  - -readability-magic-numbers

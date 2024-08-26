@@ -9,9 +9,9 @@
 Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path) {
     try {
         if (std::filesystem::exists(path) || std::filesystem::create_directory(path)) {
-            database = std::make_shared<Lab::DBConn>(path.string() + "/" + dbName);
-            history = Lab::History(database);
-            body = Lab::Body(database);
+            database = std::make_unique<Lab::DBConn>(path.string() + "/" + dbName);
+            history = Lab::History(database.get());
+            body = Lab::Body(database.get());
             std::vector<std::string> databaseExcercises;
             std::vector<std::string> databaseWorkouts;
 
@@ -21,7 +21,7 @@ Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path
             }
             for (const auto &excerciseToRetrieve : databaseExcercises) {
                 Lab::Excercise tempExcercise;
-                tempExcercise.load(database, excerciseToRetrieve);
+                tempExcercise.load(database.get(), excerciseToRetrieve);
                 excercises.push_back(tempExcercise);
             }
 
@@ -33,7 +33,7 @@ Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path
                 }
             }
             for (const auto &workoutToRetrieve : databaseWorkouts) {
-                workouts.push_back(Lab::Workout(database, workoutToRetrieve));
+                workouts.push_back(Lab::Workout(database.get(), workoutToRetrieve));
             }
         }
     } catch (std::exception e) {
@@ -53,7 +53,7 @@ bool Lab::TheLab::saveExcercises() {
     saveSuccess = std::ranges::all_of(excercises.cbegin(), excercises.cend(),
                                       [this, &excerciseNames](const Excercise &excerciseToSave) {
                                           std::erase(excerciseNames, excerciseToSave.getName());
-                                          return excerciseToSave.save(database);
+                                          return excerciseToSave.save(database.get());
                                       });
     saveSuccess &= std::ranges::all_of(
         excerciseNames.cbegin(), excerciseNames.cend(), [this](const std::string &excerciseToDelete) {

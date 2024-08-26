@@ -1,8 +1,6 @@
 #pragma once
 ///@file
 
-#include <memory>
-
 #include "database.h"
 
 namespace Lab {
@@ -45,8 +43,8 @@ struct Measurements {
 
 class Body {
    public:
-    Body() : height(0), weight(0), age(0){};
-    Body(std::shared_ptr<Lab::DBConn> dbBase);
+    Body() : height(0), weight(0), age(0) {};
+    Body(Lab::DBConn *dbBase);
 
     /**
      * @brief Update database if any values have been changed
@@ -68,7 +66,7 @@ class Body {
     void setMeasurement(const Measurements &newMeasurements);
 
    private:
-    std::shared_ptr<Lab::DBConn> db;
+    Lab::DBConn *db{};
     unsigned short height;
     unsigned short weight;
     unsigned short age;
