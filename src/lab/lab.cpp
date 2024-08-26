@@ -42,8 +42,28 @@ Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path
 }
 
 bool Lab::TheLab::saveExcercises() {
-    return std::ranges::all_of(excercises.cbegin(), excercises.cend(),
-                               [this](const Excercise &excerciseToSave) { return excerciseToSave.save(database); });
+    std::vector<std::string> excerciseNames;
+    bool saveSuccess = false;
+
+    database->exec_and_retrieve("SELECT name FROM excercises");
+    while (database->retrieve_next_row()) {
+        excerciseNames.push_back(database->get_column(0));
+    }
+
+    saveSuccess = std::ranges::all_of(excercises.cbegin(), excercises.cend(),
+                                      [this, &excerciseNames](const Excercise &excerciseToSave) {
+                                          std::erase(excerciseNames, excerciseToSave.getName());
+                                          return excerciseToSave.save(database);
+                                      });
+    saveSuccess &= std::ranges::all_of(
+        excerciseNames.cbegin(), excerciseNames.cend(), [this](const std::string &excerciseToDelete) {
+            if (database->prepare("DELETE FROM excercises WHERE name = ?", excerciseToDelete) == 1) {
+                return database->exec_prepared() == 1;
+            }
+            return false;
+        });
+
+    return saveSuccess;
 }
 
 void Lab::TheLab::setExcercises(const std::vector<Lab::Excercise> &newExcercises) { excercises = newExcercises; }
@@ -54,15 +74,102 @@ const std::vector<Lab::Excercise> &Lab::TheLab::getExcercises() const { return e
 
 void Lab::TheLab::addExcercise(const Lab::Excercise &newExcercise) { excercises.push_back(newExcercise); }
 
-void Lab::TheLab::removeExcercise(std::vector<Lab::Excercise>::iterator iter) { excercises.erase(iter); }
+void Lab::TheLab::removeExcercise(std::vector<Lab::Excercise>::iterator iter) {
+    auto &historyVector = history.getHistory();
 
-bool Lab::TheLab::saveWorkouts() {
-    for (auto &workoutsToSave : workouts) {
-        if (!workoutsToSave.save()) {
-            return false;
+    for (auto historyIter = historyVector.begin(); historyIter != historyVector.end();) {
+        if (std::get<2>(*historyIter) == *iter) {
+            historyIter = historyVector.erase(historyIter);
+        } else {
+            ++historyIter;
         }
     }
-    return true;
+
+    for (auto &workout : workouts) {
+        auto &individualWorkout = workout.getWorkout();
+        for (auto excerciseData = individualWorkout.begin(); excerciseData != individualWorkout.end();
+             ++excerciseData) {
+            if (excerciseData->exc == *iter) {
+                excerciseData = individualWorkout.erase(excerciseData);
+            }
+        }
+    }
+
+    database->prepare("DELETE FROM excercises WHERE name = ?", iter->getName());
+    database->exec_prepared();
+    excercises.erase(iter);
+
+    this->saveExcercises();
+    this->saveWorkouts();
+    this->saveHistory();
+}
+
+void Lab::TheLab::EditExcercise(std::vector<Lab::Excercise>::iterator iter, const Lab::Excercise &newExcercise) {
+    bool smallerType = newExcercise.getType().size() < iter->getType().size();
+
+    if (iter->getType() == newExcercise.getType()) {
+        auto &historyVector = history.getHistory();
+        for (auto historyIter = historyVector.begin(); historyIter != historyVector.end(); ++historyIter) {
+            if (std::get<2>(*historyIter) == *iter) {
+                std::get<2>(*historyIter) = newExcercise;
+            }
+        }
+
+    } else {
+        auto &historyVector = history.getHistory();
+        for (auto historyIter = historyVector.begin(); historyIter != historyVector.end();) {
+            if (std::get<2>(*historyIter) == *iter) {
+                historyIter = historyVector.erase(historyIter);
+            } else {
+                ++historyIter;
+            }
+        }
+    }
+    for (auto &workout : workouts) {
+        for (auto &excerciseData : workout.getWorkout()) {
+            if (excerciseData.exc == *iter) {
+                excerciseData.exc = newExcercise;
+                if (smallerType) {
+                    excerciseData.type2 = 0;
+                }
+            }
+        }
+    }
+
+    if (iter->getName() != newExcercise.getName()) {
+        database->prepare("Update excercises SET name = ? WHERE name = ?", newExcercise.getName(), iter->getName());
+        database->exec_prepared();
+    }
+
+    *iter = newExcercise;
+    this->saveExcercises();
+    this->saveWorkouts();
+    this->saveHistory();
+}
+
+bool Lab::TheLab::saveWorkouts() {
+    std::vector<std::string> workoutNames;
+    bool saveSuccess = false;
+
+    database->exec_and_retrieve("SELECT DISTINCT workoutName FROM workouts");
+    while (database->retrieve_next_row()) {
+        workoutNames.push_back(database->get_column(0));
+    }
+
+    saveSuccess = std::ranges::all_of(workouts.begin(), workouts.end(), [&workoutNames](Lab::Workout &workoutsToSave) {
+        std::erase(workoutNames, workoutsToSave.getName());
+        return workoutsToSave.save();
+    });
+
+    saveSuccess &= std::ranges::all_of(workoutNames.cbegin(), workoutNames.cend(), [this](const auto &workoutToDelete) {
+        if (database->prepare("DELETE FROM workouts WHERE workoutName = ?", workoutToDelete) == 1) {
+            if (database->exec_prepared() == -1) {
+                return false;
+            }
+        }
+        return true;
+    });
+    return saveSuccess;
 }
 
 void Lab::TheLab::setWorkouts(const std::vector<Lab::Workout> &newWorkouts) { workouts = newWorkouts; }
@@ -73,7 +180,11 @@ const std::vector<Lab::Workout> &Lab::TheLab::getWorkouts() const { return worko
 
 void Lab::TheLab::addWorkout(const Lab::Workout &newWorkout) { workouts.push_back(newWorkout); }
 
-void Lab::TheLab::removeWorkout(std::vector<Lab::Workout>::iterator iter) { workouts.erase(iter); }
+void Lab::TheLab::removeWorkout(std::vector<Lab::Workout>::iterator iter) {
+    database->prepare("DELETE FROM workouts WHERE workoutName = ?", iter->getName());
+    database->exec_prepared();
+    workouts.erase(iter);
+}
 
 bool Lab::TheLab::saveBody() { return body.save() == 1; }
 

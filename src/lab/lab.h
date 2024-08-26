@@ -30,6 +30,8 @@ class TheLab {
     void addExcercise(const Lab::Excercise &newExcercise);
     void removeExcercise(std::vector<Lab::Excercise>::iterator iter);
 
+    void EditExcercise(std::vector<Lab::Excercise>::iterator iter, const Lab::Excercise &newExcercise);
+
     bool saveWorkouts();
     void setWorkouts(const std::vector<Lab::Workout> &newWorkouts);
     std::vector<Lab::Workout> &getWorkouts();

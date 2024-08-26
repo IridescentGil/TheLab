@@ -3,8 +3,11 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
+#include <vector>
 
+#include "excercise.h"
 #include "testHelper.h"
+#include "workout.h"
 
 class TheLabTest : public testing::Test {
    protected:
@@ -162,6 +165,76 @@ TEST_F(TheLabTest, ReadFromDatabaseTest) {
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, testHistoryVector, readHistory.getHistory());
 }
 
+TEST_F(TheLabTest, WorkoutsSaveRemovesNonexistentWorkoutsTest) {
+    std::vector<Lab::Workout> newWorkouts = {
+        Lab::Workout(testDB, "Bar Day", {{barbellRow, 40, 6}, {barbellOverheadPress, 70, 2}}),
+        Lab::Workout(testDB, "CrossFit", std::vector<Lab::ExcerciseData>{{running, 3600, 0}, {plank, 60, 0}})};
+
+    {
+        Lab::TheLab testLab("read.db", ".");
+
+        testLab.setWorkouts(newWorkouts);
+        EXPECT_TRUE(testLab.saveWorkouts());
+    }
+
+    Lab::TheLab testLab("read.db", ".");
+    auto readWorkout = testLab.getWorkouts();
+    for (auto readWorkoutIter = readWorkout.cbegin(), newWorkoutIter = newWorkouts.cbegin();
+         readWorkoutIter != readWorkout.cend(); ++readWorkoutIter, ++newWorkoutIter) {
+        auto readExcerciseData = readWorkoutIter->getWorkout();
+        auto newExcerciseData = newWorkoutIter->getWorkout();
+        EXPECT_EQ(readWorkoutIter->getName(), newWorkoutIter->getName());
+        for (auto readExcerciseDataIter = readExcerciseData.cbegin(), newExcerciseDataIter = newExcerciseData.cbegin();
+             readExcerciseDataIter != readExcerciseData.cend(); ++readExcerciseDataIter, ++newExcerciseDataIter) {
+            EXPECT_PRED_FORMAT2(AssertWorkoutEqual, *readExcerciseDataIter, *newExcerciseDataIter);
+        }
+    }
+}
+
+TEST_F(TheLabTest, ExcercisesSaveRemovedNonExistentExcercisesTest) {
+    std::vector<Lab::Excercise> newExcercises = {calfPress, jumpingJacks, plank, running};
+
+    {
+        Lab::TheLab testLab("read.db", ".");
+        testLab.setExcercises(newExcercises);
+        EXPECT_TRUE(testLab.saveExcercises());
+    }
+
+    Lab::TheLab testLab("read.db", ".");
+    auto excercises = testLab.getExcercises();
+    EXPECT_EQ(excercises, newExcercises);
+}
+
+TEST_F(TheLabTest, RemoveExcerciseRemovesExcerciseFromDatabaseTest) {
+    std::vector<Lab::Excercise> compareExcercises = {barbellOverheadPress, barbellRow, calfPress,      dumbbellFlys,
+                                                     jumpingJacks,         running,    wideGripPullUps};
+    {
+        Lab::TheLab testLab("read.db", ".");
+        auto &excercises = testLab.getExcercises();
+        auto excerciseIter = excercises.begin() + 5;
+        testLab.removeExcercise(excerciseIter);
+    }
+
+    {
+        Lab::TheLab testLab("read.db", ".");
+        const auto &excercises = testLab.getExcercises();
+        EXPECT_EQ(excercises, compareExcercises);
+    }
+}
+TEST_F(TheLabTest, RemoveWorkoutRemovesWorkoutFromDatabaseTest) {
+    {
+        Lab::TheLab testLab("read.db", ".");
+        auto &workouts = testLab.getWorkouts();
+        testLab.removeWorkout(workouts.begin());
+    }
+
+    {
+        Lab::TheLab testLab("read.db", ".");
+        auto &workouts = testLab.getWorkouts();
+        EXPECT_TRUE(workouts.empty());
+    }
+}
+
 TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
     Lab::TheLab testLab("read.db", ".");
 
@@ -172,6 +245,8 @@ TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
 
     excerciseChanged.setName("Reverse dumbbell flys");
     excerciseChanged.setMusclesWorked({"Upper-back", "Lats"});
+
+    testLab.EditExcercise(excercises.begin() + 3, excerciseChanged);
 
     const Lab::History historyTest = {testDB,
                                       {
@@ -275,7 +350,11 @@ TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
     auto &workouts = testLab.getWorkouts();
     auto &excercises = testLab.getExcercises();
     auto excerciseIter = excercises.begin();
-    ++excerciseIter;
+    for (; excerciseIter != excercises.end(); ++excerciseIter) {
+        if (excerciseIter->getName() == "Barbell Row") {
+            break;
+        }
+    }
 
     const auto &workoutComparison = workoutTest.getWorkout();
 
@@ -331,10 +410,12 @@ TEST_F(TheLabTest, ExcerciseTypeChangeTest) {
     auto &history = testLab.getHistory();
     size_t historySize = history.size();
     /* excercise at 0 expected to be barbell Overhead Press */
-    auto &excercisetoChange = excercises.at(0);
+    auto excercisetoChange = excercises.at(0);
+    auto excercisesIter = excercises.begin();
 
     EXPECT_EQ(HISTORY_SIZE, historySize);
     excercisetoChange.setType({"reps"});
-    EXPECT_EQ(HISTORY_WITHOUT_OVERHEADPRESS_SIZE, historySize);
+    testLab.EditExcercise(excercisesIter, excercisetoChange);
+    EXPECT_EQ(HISTORY_WITHOUT_OVERHEADPRESS_SIZE, history.size());
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, historyTest.getHistory(), history);
 }
