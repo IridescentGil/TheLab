@@ -150,8 +150,8 @@ bool Lab::History::save() {
     }
 
     if (history.size() < size) {
-        db->exec("DELETE FROM history");
-        size = 0;
+        db->prepare("DELETE FROM history WHERE ID >= ?", static_cast<long>(history.size()));
+        db->exec_prepared();
     }
 
     /*
@@ -170,10 +170,10 @@ bool Lab::History::save() {
                 return false;
             }
         } else {
-            if (db->prepare("INSERT INTO history (date, workout, excercise, "
-                            "type1, type2) VALUES (?, ?, ?, ?, ?)",
-                            date.time_since_epoch().count(), workoutName, excerciseName.getName(), type1,
-                            static_cast<long>(type2)) == -1) {
+            if (db->prepare("INSERT INTO history (ID, date, workout, excercise, "
+                            "type1, type2) VALUES (?, ?, ?, ?, ?, ?)",
+                            static_cast<long>(index), date.time_since_epoch().count(), workoutName,
+                            excerciseName.getName(), type1, static_cast<long>(type2)) == -1) {
                 return false;
             }
             if (db->exec_prepared() == -1) {

@@ -89,4 +89,3 @@
 ## Review
 - [ ] Change DB class to use std::expected as return types
 - [ ] Refactor Function and variable names for clarity
-- [ ] make history and workout save better (get id and only update id index if edited. Replace entire table if history vector is changed)

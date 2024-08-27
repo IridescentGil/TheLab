@@ -75,9 +75,9 @@ bool Lab::Workout::save() {
     }
 
     if (workout.size() < size) {
-        db->prepare("DELETE FROM workouts WHERE workoutName = ?", name);
+        db->prepare("DELETE FROM workouts WHERE workoutName = ? AND exOrderNum >= ?", name,
+                    static_cast<long>(workout.size()));
         db->exec_prepared();
-        size = 0;
     }
 
     size_t index = 0;

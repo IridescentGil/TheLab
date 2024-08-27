@@ -37,8 +37,7 @@ void Lab::DBConn::createTables() {
         }
         if (!db.tableExists("history")) {
             db.exec(
-                "CREATE TABLE history (ID INTEGER NOT NULL PRIMARY KEY "
-                "AUTOINCREMENT, "
+                "CREATE TABLE history (ID INTEGER NOT NULL PRIMARY KEY, "
                 "date "
                 "INTEGER NOT NULL, workout TEXT, excercise TEXT NOT NULL, "
                 "type1 REAL NOT NULL, type2 INTEGER, FOREIGN KEY(excercise) "
