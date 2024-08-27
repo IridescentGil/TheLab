@@ -98,14 +98,15 @@ void Lab::TheLab::removeExcercise(std::vector<Lab::Excercise>::iterator iter) {
     database->prepare("DELETE FROM excercises WHERE name = ?", iter->getName());
     database->exec_prepared();
     excercises.erase(iter);
-
-    this->saveExcercises();
-    this->saveWorkouts();
-    this->saveHistory();
 }
 
 void Lab::TheLab::EditExcercise(std::vector<Lab::Excercise>::iterator iter, const Lab::Excercise &newExcercise) {
     bool smallerType = newExcercise.getType().size() < iter->getType().size();
+
+    if (iter->getName() != newExcercise.getName()) {
+        database->prepare("UPDATE excercises SET name = ? WHERE name = ?", newExcercise.getName(), iter->getName());
+        database->exec_prepared();
+    }
 
     if (iter->getType() == newExcercise.getType()) {
         auto &historyVector = history.getHistory();
@@ -124,6 +125,7 @@ void Lab::TheLab::EditExcercise(std::vector<Lab::Excercise>::iterator iter, cons
                 ++historyIter;
             }
         }
+        this->saveHistory();
     }
     for (auto &workout : workouts) {
         for (auto &excerciseData : workout.getWorkout()) {
@@ -136,15 +138,9 @@ void Lab::TheLab::EditExcercise(std::vector<Lab::Excercise>::iterator iter, cons
         }
     }
 
-    if (iter->getName() != newExcercise.getName()) {
-        database->prepare("Update excercises SET name = ? WHERE name = ?", newExcercise.getName(), iter->getName());
-        database->exec_prepared();
-    }
-
     *iter = newExcercise;
     this->saveExcercises();
     this->saveWorkouts();
-    this->saveHistory();
 }
 
 bool Lab::TheLab::saveWorkouts() {

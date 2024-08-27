@@ -123,7 +123,12 @@ int Lab::DBConn::exec_and_retrieve(const std::string &queryStr) {
 
 bool Lab::DBConn::retrieve_next_row() {
     try {
-        return query.executeStep();
+        if (query.executeStep()) {
+            return true;
+        }
+        query.reset();
+        return false;
+
     } catch (std::exception &e) {
         std::cerr << "SQLite error: " << e.what() << '\n';
         return false;
