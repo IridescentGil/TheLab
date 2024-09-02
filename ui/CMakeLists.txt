@@ -2,12 +2,8 @@ find_package(QT NAMES Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Quick)
 qt_standard_project_setup(REQUIRES 6.5)
 
-
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-  qt_add_executable(
-    TheLab
-    MANUAL_FINALIZATION
-    main.cpp)
+  qt_add_executable(TheLab MANUAL_FINALIZATION main.cpp)
   # Define target properties for Android with Qt 6 as: set_property(TARGET
   # TheLab APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
   # ${CMAKE_CURRENT_SOURCE_DIR}/android) For more information, see
@@ -37,12 +33,14 @@ else()
   endif()
 endif()
 
-qt_add_qml_module(TheLab
-    URI Lab
-    VERSION 0.1
-    QML_FILES
-    Main.qml
-)
+qt_add_qml_module(
+  TheLab
+  URI
+  Lab
+  VERSION
+  0.1
+  QML_FILES
+  Main.qml)
 
 target_include_directories(TheLab PRIVATE ${TheLab_SOURCE_DIR}/src/lab)
 target_link_libraries(TheLab PRIVATE Qt${QT_VERSION_MAJOR}::Quick Lab pthread

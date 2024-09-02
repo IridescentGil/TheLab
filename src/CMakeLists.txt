@@ -53,7 +53,7 @@ else()
   )
 endif()
 
-option(DOCUMENTATION "Create Doxygen documentation" ON)
+option(DOCUMENTATION "Create Doxygen documentation" OFF)
 if(DOCUMENTATION)
   find_package(Doxygen REQUIRED dot)
   if(DOXYGEN_FOUND)
