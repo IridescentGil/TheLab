@@ -23,7 +23,8 @@ Lab::Workout::Workout(Lab::DBConn *initDB, std::string workoutName) : name(std::
     db->prepare("SELECT * FROM workouts WHERE workoutName = ?", name);
     auto excercise = excerciseObjects.cbegin();
     while (db->retrieve_next_row()) {
-        workout.push_back(Lab::ExcerciseData(*excercise, db->get_column(3), db->get_column(4).getInt64()));
+        workout.push_back(Lab::ExcerciseData(*excercise, db->get_column(3),
+                                             static_cast<unsigned long>(db->get_column(4).getInt64())));
         ++excercise;
     }
 }

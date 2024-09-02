@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "database.h"
 #include "excercise.h"
 
 namespace Lab {
+class DBConn;
 
 using historyTuple =
     std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string, Lab::Excercise, double, unsigned long>;

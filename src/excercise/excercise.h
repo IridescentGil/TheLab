@@ -4,11 +4,11 @@
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <utility>
 #include <vector>
 
-#include "database.h"
-
 namespace Lab {
+class DBConn;
 
 class Excercise {
    public:

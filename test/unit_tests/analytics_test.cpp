@@ -6,13 +6,14 @@
 #include <cmath>
 #include <map>
 #include <memory>
+#include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 #include "database.h"
 #include "excercise.h"
 #include "history.h"
-#include "testHelper.h"
 
 class AnalyticsTest : public testing::Test {
    protected:

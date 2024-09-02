@@ -1,12 +1,15 @@
 #pragma once
 ///@file
 
+#include <string>
+#include <utility>
 #include <vector>
 
-#include "database.h"
 #include "excercise.h"
 
 namespace Lab {
+class DBConn;
+
 struct ExcerciseData {
     ExcerciseData(const Lab::Excercise &newEx, double newT1, unsigned long newT2)
         : exc(newEx), type1(newT1), type2(newT2) {}

@@ -5,11 +5,12 @@
 #include <map>
 #include <string_view>
 
-#include "excercise.h"
 #include "history.h"
 
 ///@brief Lab classes, namespaces and functions
 namespace Lab {
+class Excercise;
+
 namespace Analytics {
 using analyticsMap = std::map<std::chrono::time_point<std::chrono::system_clock>, double>;
 using analyticsRepForWeightMap = std::map<unsigned long, analyticsMap>;

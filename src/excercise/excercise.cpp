@@ -1,6 +1,7 @@
 #include "excercise.h"
 
 #include <algorithm>
+#include <sstream>
 #include <utility>
 
 #include "database.h"
@@ -102,19 +103,19 @@ bool Lab::Excercise::isType(const std::vector<std::string> &nType) {
 bool Lab::Excercise::load(Lab::DBConn *database, const std::string &excercise) {
     database->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
     while (database->retrieve_next_row()) {
-        std::vector<std::string> musclesWorked;
-        std::vector<std::string> excerciseType;
+        std::vector<std::string> loadedMusclesWorked;
+        std::vector<std::string> loadedExcerciseType;
         std::istringstream musclesWorkedStream(database->get_column(MUSCLES_WORKED_DB_INDEX));
         std::istringstream excerciseTypeStream(database->get_column(EXCERCISE_TYPE_DB_INDEX));
         for (std::string str; std::getline(musclesWorkedStream, str, ',');) {
-            musclesWorked.push_back(str);
+            loadedMusclesWorked.push_back(str);
         }
         for (std::string str; std::getline(excerciseTypeStream, str, ',');) {
-            excerciseType.push_back(str);
+            loadedExcerciseType.push_back(str);
         }
         *this = Lab::Excercise(database->get_column(EXCERCISE_NAME_DB_INDEX),
                                database->get_column(EXCERCISE_DESCRIPTION_DB_INDEX),
-                               database->get_column(MUSCLE_GROUP_DB_INDEX), musclesWorked, excerciseType);
+                               database->get_column(MUSCLE_GROUP_DB_INDEX), loadedMusclesWorked, loadedExcerciseType);
         return true;
     }
     return false;

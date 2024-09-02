@@ -4,7 +4,6 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
 
-#include <cstddef>
 #include <exception>
 #include <iostream>
 #include <string>
@@ -57,7 +56,7 @@ class DBConn {
      * @param args[in]
      */
     template <typename T, typename... Args>
-    int prepare(std::size_t index, const std::string &queryStr, const T &fArg, const Args &...args);
+    int prepare(int index, const std::string &queryStr, const T &fArg, const Args &...args);
     ///@}
 
     /**
@@ -81,7 +80,7 @@ class DBConn {
 };
 
 template <typename T, typename... Args>
-int DBConn::prepare(std::size_t index, const std::string &queryStr, const T &fArg, const Args &...args) {
+int DBConn::prepare(int index, const std::string &queryStr, const T &fArg, const Args &...args) {
     try {
         if (index == 1) {
             query = SQLite::Statement(db, queryStr);

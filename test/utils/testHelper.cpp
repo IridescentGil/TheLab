@@ -2,7 +2,10 @@
 
 #include <string>
 
+#include "body.h"
+#include "excercise.h"
 #include "history.h"
+#include "workout.h"
 
 bool excerEqual(const Lab::Excercise &first, const Lab::Excercise &second) { return first == second; };
 

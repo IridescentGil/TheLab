@@ -1,7 +1,9 @@
 #include "lab.h"
 
 #include <algorithm>
+#include <exception>
 #include <filesystem>
+#include <iostream>
 #include <string>
 
 #include "excercise.h"

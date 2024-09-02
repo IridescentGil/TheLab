@@ -1,10 +1,15 @@
 #include <gtest/gtest.h>
 
+#include <string>
 #include <tuple>
+#include <vector>
 
-#include "body.h"
-#include "excercise.h"
-#include "workout.h"
+namespace Lab {
+class Excercise;
+struct ExcerciseData;
+struct Measurements;
+struct Muscles;
+}  // namespace Lab
 
 bool excerEqual(const Lab::Excercise& first, const Lab::Excercise& second);
 bool workoutEqual(const Lab::ExcerciseData& first, const Lab::ExcerciseData& second);

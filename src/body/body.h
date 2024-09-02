@@ -1,9 +1,9 @@
 #pragma once
 ///@file
 
-#include "database.h"
-
 namespace Lab {
+class DBConn;
+
 namespace Constants {
 static const unsigned short FULLY_HEALED = 100;
 }

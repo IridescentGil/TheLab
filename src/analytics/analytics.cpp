@@ -1,9 +1,12 @@
 #include "analytics.h"
 
 #include <algorithm>
-#include <chrono>
 #include <cstddef>
+#include <string>
+#include <utility>
+#include <vector>
 
+#include "excercise.h"
 #include "history.h"
 
 namespace {

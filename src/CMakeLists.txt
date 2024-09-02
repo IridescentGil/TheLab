@@ -39,7 +39,24 @@ else()
       -Wall
       -Wextra
       -Wpedantic
-      "$<$<CONFIG:DEBUG>:-Og;-g3;-fsanitize=address,leak,undefined;-fno-sanitize-recover=all;-fno-optimize-sibling-calls;-fno-omit-frame-pointer;>"
+      -Wshadow
+      -Wnon-virtual-dtor
+      -Wold-style-cast
+      -Wcast-align
+      -Wunused
+      -Woverloaded-virtual
+      -pedantic
+      -Wconversion
+      -Wsign-conversion
+      -Wmisleading-indentation
+      -Wnull-dereference
+      -Wdouble-promotion
+      -Wformat=2
+      -Wimplicit-fallthrough
+      -Werror=format-security
+      -fPIC
+      -D_GLIBCXX_ASSERTIONS
+      "$<$<CONFIG:DEBUG>:-Werror;-Og;-g3;-fsanitize=address,leak,undefined;-fno-sanitize-recover=all;-fno-optimize-sibling-calls;-fno-omit-frame-pointer;>"
       "$<$<CONFIG:RELEASE>:-O2;>"
       "$<$<AND:$<BOOL:${ENABLE_COVERAGE}>,$<CXX_COMPILER_ID:GNU>>:--coverage;>"
       "$<$<AND:$<BOOL:${ENABLE_COVERAGE}>,$<CXX_COMPILER_ID:Clang>>:-fprofile-instr-generate;-fcoverage-mapping;>"

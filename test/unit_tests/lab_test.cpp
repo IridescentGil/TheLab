@@ -2,7 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include <chrono>
 #include <filesystem>
+#include <tuple>
 #include <vector>
 
 #include "excercise.h"
@@ -112,8 +114,8 @@ class TheLabTest : public testing::Test {
     Lab::Excercise calfPress = Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs",
                                               {"Calf"}, {"weight", "reps"});
 
-    const int AGE = 45;
-    const int LATS_CONDITION = 23;
+    const unsigned short AGE = 45;
+    const unsigned short LATS_CONDITION = 23;
 
     std::unique_ptr<Lab::DBConn> testDB = std::make_unique<Lab::DBConn>("read.db");
 
