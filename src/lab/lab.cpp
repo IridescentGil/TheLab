@@ -38,7 +38,7 @@ Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path
                 workouts.push_back(Lab::Workout(database.get(), workoutToRetrieve));
             }
         }
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         std::clog << e.what();
     }
 }

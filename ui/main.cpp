@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-    if (argc == 2 && strcmp(argv[1], "--cli") == 0) {
+    if (argc == 2 && strcmp(*(argv + 1), "--cli") == 0) {
         std::cout << "The Lab Cli\n";
         return 0;
     }
@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app, []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("Lab", "Main");
+    engine.load(QUrl("qrc:qt/qml/Lab/Main.qml"));
 
     return app.exec();
 }

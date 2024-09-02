@@ -18,9 +18,9 @@ enum EXCERCISE_DATABASE_INDEXES {
 
 Lab::Excercise::Excercise() {}
 
-Lab::Excercise::Excercise(std::string name, std::string desc, const std::string &mGroup,
+Lab::Excercise::Excercise(std::string newName, std::string desc, const std::string &mGroup,
                           const std::vector<std::string> &mWorked, const std::vector<std::string> &eType)
-    : name(std::move(name)), description(std::move(desc)) {
+    : name(std::move(newName)), description(std::move(desc)) {
     if (isMuscle(mWorked)) {
         musclesWorked = mWorked;
     }
