@@ -1,7 +1,7 @@
 //import related modules
-import QtQuick
-import QtQuick.Layouts
-import QtQuick.Controls
+import QtQuick 6.7
+import QtQuick.Controls 6.7
+import QtQuick.Layouts 6.7
 
 //window containing the application
 ApplicationWindow {
@@ -9,7 +9,8 @@ ApplicationWindow {
     visible: true
 
     //title of the application
-    title: qsTr("Hello World")
+    title: qsTr("TheLab")
+    color: "#c8c4c4"
     width: 1920
     height: 720
 
@@ -31,43 +32,47 @@ ApplicationWindow {
     //Content Area
 
     //a button in the middle of the content area
-    GridLayout {
-        columns: 2
-
-        DayOfWeekRow {
-            locale: grid.locale
-
-            Layout.column: 1
-            Layout.fillWidth: true
+    RowLayout {
+        id: rowLayout
+        anchors.fill: parent
+        
+        ListView {
+            id: listview
+        
+            width: 200; height: 200
+            snapMode: ListView.SnapOneItem
+            orientation: ListView.Horizontal
+            highlightRangeMode: ListView.StrictlyEnforceRange
+        
+            model: CalendarModel {
+                from: new Date(2000, 0, 1)
+                to: new Date(2032, 11, 31)
+            }
+        
+            delegate: MonthGrid {
+                width: listview.width
+                height: listview.height
+        
+                month: model.month
+                year: model.year
+                locale: Qt.locale("en_US")
+            }
+        
+            ScrollIndicator.horizontal: ScrollIndicator { }
         }
 
-        WeekNumberColumn {
-            month: grid.month
-            year: grid.year
-            locale: grid.locale
+        Column {
+            id: column
+            width: 195
+            height: 480
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
 
-            Layout.fillHeight: true
-        }
-
-        MonthGrid {
-            id: grid
-            month: Calendar.December
-            year: 2015
-            locale: Qt.locale("en_US")
-
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
-        Button {
-            id: button
-            text: "A Special Button"
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 40
-                color: button.down ? "#d6d6d6" : "#f6f6f6"
-                border.color: "#26282a"
-                border.width: 1
-                radius: 4
+            Rectangle {
+                id: rectangle
+                width: 200
+                height: 40
+                color: "#3ce6ef"
             }
         }
     }

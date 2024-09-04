@@ -1,5 +1,5 @@
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Quick)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Quick)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Quick QuickControls2)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Quick QuickControls2)
 qt_standard_project_setup(REQUIRES 6.5)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -43,8 +43,9 @@ qt_add_qml_module(
   Main.qml)
 
 target_include_directories(TheLab PRIVATE ${TheLab_SOURCE_DIR}/src/lab)
-target_link_libraries(TheLab PRIVATE Qt${QT_VERSION_MAJOR}::Quick Lab pthread
-                                     dl)
+target_link_libraries(
+  TheLab PRIVATE Qt${QT_VERSION_MAJOR}::Quick
+                 Qt${QT_VERSION_MAJOR}::QuickControls2 Lab pthread dl)
 target_compile_features(TheLab PUBLIC cxx_std_23)
 if(MSVC)
   target_compile_options(TheLab PRIVATE /W4 /WX)

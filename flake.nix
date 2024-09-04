@@ -39,6 +39,7 @@
               sqlite
               sqlitecpp
               qt6Packages.full
+              qt6Packages.qtdeclarative
               qt6Packages.qtbase
             ];
 
