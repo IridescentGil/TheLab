@@ -38,20 +38,14 @@
             buildInputs = with pkgs; [
               sqlite
               sqlitecpp
-              qt6Packages.full
-              qt6Packages.qtbase
             ];
 
-            nativeBuildInputs = with pkgs; [
-              cmake
-              qt6Packages.wrapQtAppsHook
-            ];
+            nativeBuildInputs = with pkgs; [ cmake ];
 
           };
           devShells.default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
             inputsFrom = [ self.packages.${system}.default ];
             packages = with pkgs; [
-              qtcreator
               cmake
               gtest
               clang-tools
@@ -60,19 +54,7 @@
               graphviz
 
               llvmPackages.bintools-unwrapped
-              # this is for the shellhook portion
-              qt6.wrapQtAppsHook
-              makeWrapper
-              bashInteractive
             ];
-            # set the environment variables that unpatched Qt apps expect
-            shellHook = ''
-              setQtEnvironment=$(mktemp)
-              random=$(openssl rand -base64 20 | sed "s/[^a-zA-Z0-9]//g")
-              makeWrapper "$(type -p sh)" "$setQtEnvironment" "''${qtWrapperArgs[@]}" --argv0 "$random"
-              sed "/$random/d" -i "$setQtEnvironment"
-              source "$setQtEnvironment"
-            '';
           };
         }
       );

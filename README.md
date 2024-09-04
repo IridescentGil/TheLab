@@ -3,11 +3,10 @@
 TheLab is made to track the progress of your workouts and view analytics.
 TheLab is currently under development and does not have a working version.
 
-
 ## Building
 
 Compiling TheLab requires:
-- Qt6
+
 - SQLite
 - SQLitecpp
 - Gtest
