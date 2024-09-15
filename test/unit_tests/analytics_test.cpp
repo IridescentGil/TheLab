@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "database.h"
-#include "excercise.h"
+#include "exercise.h"
 #include "history.h"
 
 class AnalyticsTest : public testing::Test {
@@ -113,32 +113,31 @@ class AnalyticsTest : public testing::Test {
     constexpr static std::chrono::time_point<std::chrono::system_clock> tp2024 =
         std::chrono::time_point_cast<std::chrono::years>(tpJan13);
 
-    Lab::Excercise barbellOverheadPress =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
-                       {"weight", "reps"});
-    Lab::Excercise barbellRow = Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                               {"Upper-back", "Lats"}, {"weight", "reps"});
-    Lab::Excercise barbellOverheadPressModified =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
-                       {"time", "reps"});
-    Lab::Excercise dumbbellFlys = Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards",
-                                                 "Back", {"Upper-back"}, {"weight", "reps"});
-    Lab::Excercise wideGripPullUps = Lab::Excercise("Wide Grip Pull Ups",
-                                                    "Holding the bar with a wide grip, do a "
-                                                    "pullup until your chin is over the bar",
-                                                    "Back", {"Upper-back"}, {"reps"});
-    Lab::Excercise jumpingJacks = Lab::Excercise(
+    Lab::Exercise barbellOverheadPress = Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell",
+                                                       "Chest", {"Pectoral", "Tricep"}, {"weight", "reps"});
+    Lab::Exercise barbellRow = Lab::Exercise("Barbell Row", "Standing bent over row with Barbell", "Back",
+                                             {"Upper-back", "Lats"}, {"weight", "reps"});
+    Lab::Exercise barbellOverheadPressModified =
+        Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                      {"time", "reps"});
+    Lab::Exercise dumbbellFlys = Lab::Exercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards", "Back",
+                                               {"Upper-back"}, {"weight", "reps"});
+    Lab::Exercise wideGripPullUps = Lab::Exercise("Wide Grip Pull Ups",
+                                                  "Holding the bar with a wide grip, do a "
+                                                  "pullup until your chin is over the bar",
+                                                  "Back", {"Upper-back"}, {"reps"});
+    Lab::Exercise jumpingJacks = Lab::Exercise(
         "Jumping Jacks", "Jump and spread your legs and put your arms to the sky", "Cardio", {""}, {"reps"});
-    Lab::Excercise plank = Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
-                                          {"Abs"}, {"time", "reps"});
-    Lab::Excercise running =
-        Lab::Excercise("Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"});
-    Lab::Excercise barbellOverheadPressModifiedTwo =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
-                       {"weight", "time"});
-    Lab::Excercise chestSupportedRow =
-        Lab::Excercise("Chest Supported Row", "Laying on inclined bench facing the bench row with dumbbells", "Back",
-                       {"Upper-back", "Lats"}, {"weight", "reps"});
+    Lab::Exercise plank = Lab::Exercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
+                                        {"Abs"}, {"time", "reps"});
+    Lab::Exercise running =
+        Lab::Exercise("Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"});
+    Lab::Exercise barbellOverheadPressModifiedTwo =
+        Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                      {"weight", "time"});
+    Lab::Exercise chestSupportedRow =
+        Lab::Exercise("Chest Supported Row", "Laying on inclined bench facing the bench row with dumbbells", "Back",
+                      {"Upper-back", "Lats"}, {"weight", "reps"});
 
     Lab::History emptyHist{emptyDb.get()};
 
@@ -178,7 +177,7 @@ TEST_F(AnalyticsTest, MapHighestValuesNoHistoryTest) {
     EXPECT_TRUE(maxRep.empty());
 }
 
-TEST_F(AnalyticsTest, MapHighestValuesExcerciseHasWrongTypesTest) {
+TEST_F(AnalyticsTest, MapHighestValuesExerciseHasWrongTypesTest) {
     auto maxRep = Lab::Analytics::mapHighestValues("reps", running, hist);
     EXPECT_TRUE(maxRep.empty());
 }
@@ -259,7 +258,7 @@ TEST_F(AnalyticsTest, MapTotalValuesNoHistoryTest) {
     EXPECT_TRUE(workoutVolume.empty());
 }
 
-TEST_F(AnalyticsTest, MapTotalValuesExcerciseHasNoValuesInHistoryTest) {
+TEST_F(AnalyticsTest, MapTotalValuesExerciseHasNoValuesInHistoryTest) {
     auto workoutVolume = Lab::Analytics::mapTotalValues("volume", chestSupportedRow, hist);
     EXPECT_TRUE(workoutVolume.empty());
 }

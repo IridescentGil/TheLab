@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-#include "excercise.h"
+#include "exercise.h"
 
 Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path) {
     try {
@@ -14,17 +14,17 @@ Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path
             database = std::make_unique<Lab::DBConn>(path.string() + "/" + dbName);
             history = Lab::History(database.get());
             body = Lab::Body(database.get());
-            std::vector<std::string> databaseExcercises;
+            std::vector<std::string> databaseExercises;
             std::vector<std::string> databaseWorkouts;
 
-            database->exec_and_retrieve("SELECT name FROM excercises");
+            database->exec_and_retrieve("SELECT name FROM exercises");
             while (database->retrieve_next_row()) {
-                databaseExcercises.push_back(database->get_column(0));
+                databaseExercises.push_back(database->get_column(0));
             }
-            for (const auto &excerciseToRetrieve : databaseExcercises) {
-                Lab::Excercise tempExcercise;
-                tempExcercise.load(database.get(), excerciseToRetrieve);
-                excercises.push_back(tempExcercise);
+            for (const auto &exerciseToRetrieve : databaseExercises) {
+                Lab::Exercise tempExercise;
+                tempExercise.load(database.get(), exerciseToRetrieve);
+                exercises.push_back(tempExercise);
             }
 
             database->exec_and_retrieve("SELECT workoutName FROM workouts");
@@ -43,23 +43,23 @@ Lab::TheLab::TheLab(const std::string &dbName, const std::filesystem::path &path
     }
 }
 
-bool Lab::TheLab::saveExcercises() {
-    std::vector<std::string> excerciseNames;
+bool Lab::TheLab::saveExercises() {
+    std::vector<std::string> exerciseNames;
     bool saveSuccess = false;
 
-    database->exec_and_retrieve("SELECT name FROM excercises");
+    database->exec_and_retrieve("SELECT name FROM exercises");
     while (database->retrieve_next_row()) {
-        excerciseNames.push_back(database->get_column(0));
+        exerciseNames.push_back(database->get_column(0));
     }
 
-    saveSuccess = std::ranges::all_of(excercises.cbegin(), excercises.cend(),
-                                      [this, &excerciseNames](const Excercise &excerciseToSave) {
-                                          std::erase(excerciseNames, excerciseToSave.getName());
-                                          return excerciseToSave.save(database.get());
+    saveSuccess = std::ranges::all_of(exercises.cbegin(), exercises.cend(),
+                                      [this, &exerciseNames](const Exercise &exerciseToSave) {
+                                          std::erase(exerciseNames, exerciseToSave.getName());
+                                          return exerciseToSave.save(database.get());
                                       });
-    saveSuccess &= std::ranges::all_of(
-        excerciseNames.cbegin(), excerciseNames.cend(), [this](const std::string &excerciseToDelete) {
-            if (database->prepare("DELETE FROM excercises WHERE name = ?", excerciseToDelete) == 1) {
+    saveSuccess &=
+        std::ranges::all_of(exerciseNames.cbegin(), exerciseNames.cend(), [this](const std::string &exerciseToDelete) {
+            if (database->prepare("DELETE FROM exercises WHERE name = ?", exerciseToDelete) == 1) {
                 return database->exec_prepared() == 1;
             }
             return false;
@@ -68,15 +68,15 @@ bool Lab::TheLab::saveExcercises() {
     return saveSuccess;
 }
 
-void Lab::TheLab::setExcercises(const std::vector<Lab::Excercise> &newExcercises) { excercises = newExcercises; }
+void Lab::TheLab::setExercises(const std::vector<Lab::Exercise> &newExercises) { exercises = newExercises; }
 
-std::vector<Lab::Excercise> &Lab::TheLab::getExcercises() { return excercises; }
+std::vector<Lab::Exercise> &Lab::TheLab::getExercises() { return exercises; }
 
-const std::vector<Lab::Excercise> &Lab::TheLab::getExcercises() const { return excercises; }
+const std::vector<Lab::Exercise> &Lab::TheLab::getExercises() const { return exercises; }
 
-void Lab::TheLab::addExcercise(const Lab::Excercise &newExcercise) { excercises.push_back(newExcercise); }
+void Lab::TheLab::addExercise(const Lab::Exercise &newExercise) { exercises.push_back(newExercise); }
 
-void Lab::TheLab::removeExcercise(std::vector<Lab::Excercise>::iterator iter) {
+void Lab::TheLab::removeExercise(std::vector<Lab::Exercise>::iterator iter) {
     auto &historyVector = history.getHistory();
 
     for (auto historyIter = historyVector.begin(); historyIter != historyVector.end();) {
@@ -89,32 +89,31 @@ void Lab::TheLab::removeExcercise(std::vector<Lab::Excercise>::iterator iter) {
 
     for (auto &workout : workouts) {
         auto &individualWorkout = workout.getWorkout();
-        for (auto excerciseData = individualWorkout.begin(); excerciseData != individualWorkout.end();
-             ++excerciseData) {
-            if (excerciseData->exc == *iter) {
-                excerciseData = individualWorkout.erase(excerciseData);
+        for (auto exerciseData = individualWorkout.begin(); exerciseData != individualWorkout.end(); ++exerciseData) {
+            if (exerciseData->exc == *iter) {
+                exerciseData = individualWorkout.erase(exerciseData);
             }
         }
     }
 
-    database->prepare("DELETE FROM excercises WHERE name = ?", iter->getName());
+    database->prepare("DELETE FROM exercises WHERE name = ?", iter->getName());
     database->exec_prepared();
-    excercises.erase(iter);
+    exercises.erase(iter);
 }
 
-void Lab::TheLab::EditExcercise(std::vector<Lab::Excercise>::iterator iter, const Lab::Excercise &newExcercise) {
-    bool smallerType = newExcercise.getType().size() < iter->getType().size();
+void Lab::TheLab::EditExercise(std::vector<Lab::Exercise>::iterator iter, const Lab::Exercise &newExercise) {
+    bool smallerType = newExercise.getType().size() < iter->getType().size();
 
-    if (iter->getName() != newExcercise.getName()) {
-        database->prepare("UPDATE excercises SET name = ? WHERE name = ?", newExcercise.getName(), iter->getName());
+    if (iter->getName() != newExercise.getName()) {
+        database->prepare("UPDATE exercises SET name = ? WHERE name = ?", newExercise.getName(), iter->getName());
         database->exec_prepared();
     }
 
-    if (iter->getType() == newExcercise.getType()) {
+    if (iter->getType() == newExercise.getType()) {
         auto &historyVector = history.getHistory();
         for (auto historyIter = historyVector.begin(); historyIter != historyVector.end(); ++historyIter) {
             if (std::get<2>(*historyIter) == *iter) {
-                std::get<2>(*historyIter) = newExcercise;
+                std::get<2>(*historyIter) = newExercise;
             }
         }
 
@@ -130,18 +129,18 @@ void Lab::TheLab::EditExcercise(std::vector<Lab::Excercise>::iterator iter, cons
         this->saveHistory();
     }
     for (auto &workout : workouts) {
-        for (auto &excerciseData : workout.getWorkout()) {
-            if (excerciseData.exc == *iter) {
-                excerciseData.exc = newExcercise;
+        for (auto &exerciseData : workout.getWorkout()) {
+            if (exerciseData.exc == *iter) {
+                exerciseData.exc = newExercise;
                 if (smallerType) {
-                    excerciseData.type2 = 0;
+                    exerciseData.type2 = 0;
                 }
             }
         }
     }
 
-    *iter = newExcercise;
-    this->saveExcercises();
+    *iter = newExercise;
+    this->saveExercises();
     this->saveWorkouts();
 }
 
@@ -215,9 +214,9 @@ Lab::historyVector Lab::TheLab::getHistory(const std::chrono::time_point<std::ch
     return sliceHistory;
 }
 
-void Lab::TheLab::addItemToHistory(const Lab::historyTuple &excerciseItem) {
-    const auto &[date, workoutName, excercise, type1Val, type2Val] = excerciseItem;
-    history.addItem(date, workoutName, excercise, type1Val, type2Val);
+void Lab::TheLab::addItemToHistory(const Lab::historyTuple &exerciseItem) {
+    const auto &[date, workoutName, exercise, type1Val, type2Val] = exerciseItem;
+    history.addItem(date, workoutName, exercise, type1Val, type2Val);
 }
 
 void Lab::TheLab::removeItemFromHistory(Lab::historyVector::iterator iter) { history.remItem(iter); }

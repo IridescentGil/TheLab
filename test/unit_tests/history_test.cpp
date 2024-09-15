@@ -9,18 +9,18 @@
 #include <vector>
 
 #include "database.h"
-#include "excercise.h"
+#include "exercise.h"
 #include "testHelper.h"
 
 class HistoryTest : public testing::Test {
    protected:
     void SetUp() override {
-        std::vector<Lab::Excercise> testEx = {barbellRow, dumbbellFlys,         wideGripPullUps, jumpingJacks,
-                                              plank,      barbellOverheadPress, calfPress,       dumbbellCurls,
-                                              running,    tricepExtensions};
+        std::vector<Lab::Exercise> testEx = {barbellRow, dumbbellFlys,         wideGripPullUps, jumpingJacks,
+                                             plank,      barbellOverheadPress, calfPress,       dumbbellCurls,
+                                             running,    tricepExtensions};
 
-        for (auto& excerciseToSave : testEx) {
-            excerciseToSave.save(db.get());
+        for (auto& exerciseToSave : testEx) {
+            exerciseToSave.save(db.get());
         }
 
         h1 = {db.get(),
@@ -155,35 +155,34 @@ class HistoryTest : public testing::Test {
     constexpr static std::chrono::time_point<std::chrono::system_clock> tpFeb10 =
         std::chrono::sys_days{std::chrono::February / 10 / 2024} + std::chrono::hours(12);
 
-    Lab::Excercise barbellOverheadPress =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
-                       {"weight", "reps"});
-    Lab::Excercise barbellRow = Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
-                                               {"Upper-back", "Lats"}, {"weight", "reps"});
+    Lab::Exercise barbellOverheadPress = Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell",
+                                                       "Chest", {"Pectoral", "Tricep"}, {"weight", "reps"});
+    Lab::Exercise barbellRow = Lab::Exercise("Barbell Row", "Standing bent over row with Barbell", "Back",
+                                             {"Upper-back", "Lats"}, {"weight", "reps"});
 
-    Lab::Excercise dumbbellFlys = Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards",
-                                                 "Back", {"Upper-back"}, {"weight", "reps"});
-    Lab::Excercise wideGripPullUps = Lab::Excercise("Wide Grip Pull Ups",
-                                                    "Holding the bar with a wide grip, do a "
-                                                    "pullup until your chin is over the bar",
-                                                    "Back", {"Upper-back"}, {"reps"});
-    Lab::Excercise dumbbellCurls =
-        Lab::Excercise("Dumbell Curls", "Alternate curling dumbells", "Arms", {"Biceps"}, {"weight", "reps"});
-    Lab::Excercise jumpingJacks = Lab::Excercise(
+    Lab::Exercise dumbbellFlys = Lab::Exercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards", "Back",
+                                               {"Upper-back"}, {"weight", "reps"});
+    Lab::Exercise wideGripPullUps = Lab::Exercise("Wide Grip Pull Ups",
+                                                  "Holding the bar with a wide grip, do a "
+                                                  "pullup until your chin is over the bar",
+                                                  "Back", {"Upper-back"}, {"reps"});
+    Lab::Exercise dumbbellCurls =
+        Lab::Exercise("Dumbell Curls", "Alternate curling dumbells", "Arms", {"Biceps"}, {"weight", "reps"});
+    Lab::Exercise jumpingJacks = Lab::Exercise(
         "Jumping Jacks", "Jump and spread your legs and put your arms to the sky", "Cardio", {""}, {"reps"});
-    Lab::Excercise plank = Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
-                                          {"Abs"}, {"time", "reps"});
-    Lab::Excercise tricepExtensions = Lab::Excercise("Tricep Extensions", "Tricep extensions on machine pullies",
-                                                     "Arms", {"Triceps"}, {"weight", "reps"});
-    Lab::Excercise running = Lab::Excercise("Running", "Long distance timed run", "Cardio", {}, {"distance", "time"});
-    Lab::Excercise calfPress = Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs",
-                                              {"Calf"}, {"weight", "reps"});
-    Lab::Excercise barbellOverheadPressModified =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
-                       {"time", "reps"});
-    Lab::Excercise barbellOverheadPressModifiedTwo =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
-                       {"weight", "time"});
+    Lab::Exercise plank = Lab::Exercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
+                                        {"Abs"}, {"time", "reps"});
+    Lab::Exercise tricepExtensions = Lab::Exercise("Tricep Extensions", "Tricep extensions on machine pullies", "Arms",
+                                                   {"Triceps"}, {"weight", "reps"});
+    Lab::Exercise running = Lab::Exercise("Running", "Long distance timed run", "Cardio", {}, {"distance", "time"});
+    Lab::Exercise calfPress = Lab::Exercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs",
+                                            {"Calf"}, {"weight", "reps"});
+    Lab::Exercise barbellOverheadPressModified =
+        Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                      {"time", "reps"});
+    Lab::Exercise barbellOverheadPressModifiedTwo =
+        Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+                      {"weight", "time"});
 
     // Object to test general history class funtionality
     Lab::History h1;
@@ -208,7 +207,7 @@ TEST_F(HistoryTest, ConstructorTest) {
     auto epoch = tpJan13.time_since_epoch().count();
     const short PLANK_LENGTH = 30;
     db->prepare(
-        "INSERT INTO history (date, workout, excercise, type1, type2) VALUES (?,?,?,?,?), (?,?,?,?,?), (?,?,?,?,?)",
+        "INSERT INTO history (date, workout, exercise, type1, type2) VALUES (?,?,?,?,?), (?,?,?,?,?), (?,?,?,?,?)",
         epoch, "Leg-Day", "Plank", PLANK_LENGTH, 0, epoch, "Leg-Day", "Plank", PLANK_LENGTH, 0, epoch, "Leg-Day",
         "Plank", PLANK_LENGTH, 0);
     db->exec_prepared();
@@ -217,10 +216,10 @@ TEST_F(HistoryTest, ConstructorTest) {
     const auto& history = existing.getHistory();
     EXPECT_EQ(history.size(), 3);
     for (const auto& index : history) {
-        const auto& [date, workout, excercise, type1, type2] = index;
+        const auto& [date, workout, exercise, type1, type2] = index;
         EXPECT_EQ(tpJan13, date);
         EXPECT_EQ("Leg-Day", workout);
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, plank, excercise);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, plank, exercise);
         EXPECT_EQ(PLANK_LENGTH, type1);
         EXPECT_EQ(0, type2);
     }
@@ -243,13 +242,13 @@ TEST_F(HistoryTest, GetHistoryTest) {
         if (index < 3) {
             EXPECT_EQ(time, tpMarch4);
             EXPECT_EQ(woPlan, "Upper-Body Workout");
-            EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+            EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 10);
         } else {
             EXPECT_EQ(time, tpMarch4);
             EXPECT_EQ(woPlan, "Full-Body Workout");
-            EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellRow);
+            EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellRow);
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
@@ -267,7 +266,7 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb20);
         EXPECT_EQ(woPlan, "Full-Body Workout");
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellRow);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellRow);
         EXPECT_EQ(type1, 75);
         EXPECT_EQ(type2, 10);
     }
@@ -280,7 +279,7 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb10);
         EXPECT_EQ(woPlan, "Upper-Body Workout");
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -294,7 +293,7 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb10);
         EXPECT_EQ(woPlan, "Upper-Body Workout");
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -308,7 +307,7 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         const auto [time, woPlan, excer, type1, type2] = iter;
         EXPECT_EQ(time, tpFeb10);
         EXPECT_EQ(woPlan, "Upper-Body Workout");
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -323,13 +322,13 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         if (index < 3) {
             EXPECT_EQ(time, tpFeb10);
             EXPECT_EQ(woPlan, "Upper-Body Workout");
-            EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+            EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 10);
         } else {
             EXPECT_EQ(time, tpFeb20);
             EXPECT_EQ(woPlan, "Full-Body Workout");
-            EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellRow);
+            EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellRow);
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
@@ -347,13 +346,13 @@ TEST_F(HistoryTest, GetHistorySliceTest) {
         if (index < 3) {
             EXPECT_EQ(time, tpFeb10);
             EXPECT_EQ(woPlan, "Upper-Body Workout");
-            EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+            EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
             EXPECT_EQ(type1, 60);
             EXPECT_EQ(type2, 10);
         } else {
             EXPECT_EQ(time, tpFeb20);
             EXPECT_EQ(woPlan, "Full-Body Workout");
-            EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellRow);
+            EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellRow);
             EXPECT_EQ(type1, 75);
             EXPECT_EQ(type2, 10);
         }
@@ -419,7 +418,7 @@ TEST_F(HistoryTest, GetHistoryItemTest) {
     auto [date, woPlan, excer, type1, type2] = histItem;
     EXPECT_EQ(date, tpMarch4);
     EXPECT_EQ(woPlan, "Upper-Body Workout");
-    EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+    EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
     EXPECT_EQ(type1, 60);
     EXPECT_EQ(type2, 10);
 }
@@ -435,7 +434,7 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
         const auto [date, woPlan, excer, type1, type2] = *iter;
         EXPECT_EQ(date, tpMarch4);
         EXPECT_EQ(woPlan, "Upper-Body Workout");
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellOverheadPress);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellOverheadPress);
         EXPECT_EQ(type1, 60);
         EXPECT_EQ(type2, 10);
     }
@@ -444,7 +443,7 @@ TEST_F(HistoryTest, GetMultipleHistoryItemsTest) {
         const auto [date, woPlan, excer, type1, type2] = *iter;
         EXPECT_EQ(date, tpMarch4);
         EXPECT_EQ(woPlan, "Full-Body Workout");
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excer, barbellRow);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, excer, barbellRow);
         EXPECT_EQ(type1, 75);
         EXPECT_EQ(type2, 10);
     }
@@ -612,7 +611,7 @@ TEST_F(HistoryTest, OverwriteEmptyHistorySaveTest) {
 TEST_F(HistoryTest, InvalidAddToHistoryTest) {
     const int H1_SIZE = 6;
     const auto history = h1.getHistory();
-    const Lab::Excercise skipping = {"skipping", "Jumping rope", "Cardio", {}, {"reps"}};
+    const Lab::Exercise skipping = {"skipping", "Jumping rope", "Cardio", {}, {"reps"}};
 
     EXPECT_EQ(H1_SIZE, h1.getHistory().size());
     h1.addItem(tpMarch4, "Arm Workout", skipping, 50, 15);
@@ -628,6 +627,6 @@ TEST_F(HistoryTest, MessyDataSetTest) {
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, h5.getHistory(), historyComp.getHistory());
 }
 
-TEST_F(HistoryTest, ExcerciseDoesntExistInDatabaseTest) {
+TEST_F(HistoryTest, ExerciseDoesntExistInDatabaseTest) {
     EXPECT_PRED_FORMAT2(AssertHistoryEqual, h5.getHistory(), h6.getHistory());
 }

@@ -2,15 +2,15 @@
 
 A feature is considered implemented when a fully functional ui exists and can be used
 
-- [ ] Track Excercises
+- [ ] Track Exercises
   - [ ] View Worked Muscles
-  - [ ] Excercise description
-- [ ] Create Workouts: Groups of excercises
+  - [ ] Exercise description
+- [ ] Create Workouts: Groups of exercises
 - [ ] Create Workout plans: Groups of workouts
 - [ ] Calendar
-  - [ ] Place excercises, workouts, workoutplans
+  - [ ] Place exercises, workouts, workoutplans
   - [ ] Place workout plan in advance on days you want repeating
-- [ ] Track Excercise History
+- [ ] Track Exercise History
 - [ ] Track injuries and rehab workouts
 - [ ] Track muscle wear and recovery
 - [ ] Set goals
@@ -28,8 +28,8 @@ A feature is considered implemented when a fully functional ui exists and can be
     - [ ] workout duration per week/month/year
     - [ ] Filters
       - [ ] MuscleGroup
-      - [ ] Excercise
-  - [ ] Excercises
+      - [ ] Exercise
+  - [ ] Exercises
     - [ ] n-1 Rep max
     - [ ] Estimate n Rep Max
     - [ ] Max reps

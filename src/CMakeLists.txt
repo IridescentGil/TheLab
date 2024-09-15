@@ -2,8 +2,8 @@ find_package(SQLiteCpp REQUIRED)
 
 add_library(
   Lab SHARED
-  excercise/excercise.cpp
-  excercise/excercise.h
+  exercise/exercise.cpp
+  exercise/exercise.h
   body/body.h
   body/body.cpp
   database/database.h
@@ -19,7 +19,7 @@ add_library(
 
 target_include_directories(
   Lab
-  PUBLIC excercise
+  PUBLIC exercise
          body
          database
          analytics

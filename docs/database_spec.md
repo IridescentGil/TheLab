@@ -4,7 +4,7 @@ SQLite3 database
 
 ## Tables
 
-### excercises
+### exercises
 
 | Column | Data Type | Constraints |
 | --- | --- | --- |
@@ -63,7 +63,7 @@ SQLite3 database
 | ID | INTEGER | PRIMARY KEY NOT NULL AUTOINCREMENT |
 | WorkoutName | TEXT | NOT NULL |
 | exOrderNum | INTEGER | NOT NULL |
-| excercise | TEXT | NOT NULL FOREIGN KEY REFERENCES excercises(name) |
+| exercise | TEXT | NOT NULL FOREIGN KEY REFERENCES exercises(name) |
 | type1 | INTEGER | NOT NULL |
 | type2 | INTEGER | |
 
@@ -81,7 +81,7 @@ SQLite3 database
 | --- | --- | --- |
 | ID | INTEGER | PRIMARY KEY NOT NULL AUTOINCREMENT |
 | date | INTEGER | NOT NULL |
-| excercise | TEXT | NOT NULL FOREIGN KEY REFERENCES excercises(name) |
+| exercise | TEXT | NOT NULL FOREIGN KEY REFERENCES exercises(name) |
 | workout | TEXT | |
 | type1 | TEXT | NOT NULL |
 | type2 | TEXT | |

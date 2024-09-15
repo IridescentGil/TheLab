@@ -1,10 +1,9 @@
-#include "excercise.h"
-
 #include <algorithm>
 #include <sstream>
 #include <utility>
 
 #include "database.h"
+#include "exercise.h"
 
 namespace {
 enum EXCERCISE_DATABASE_INDEXES {
@@ -16,10 +15,10 @@ enum EXCERCISE_DATABASE_INDEXES {
 };
 }  // namespace
 
-Lab::Excercise::Excercise() {}
+Lab::Exercise::Exercise() {}
 
-Lab::Excercise::Excercise(std::string newName, std::string desc, const std::string &mGroup,
-                          const std::vector<std::string> &mWorked, const std::vector<std::string> &eType)
+Lab::Exercise::Exercise(std::string newName, std::string desc, const std::string &mGroup,
+                        const std::vector<std::string> &mWorked, const std::vector<std::string> &eType)
     : name(std::move(newName)), description(std::move(desc)) {
     if (isMuscle(mWorked)) {
         musclesWorked = mWorked;
@@ -33,15 +32,15 @@ Lab::Excercise::Excercise(std::string newName, std::string desc, const std::stri
 }
 
 std::tuple<std::string, std::string, std::string, std::vector<std::string>, std::vector<std::string>>
-Lab::Excercise::getDetails() const {
+Lab::Exercise::getDetails() const {
     return std::make_tuple(name, description, muscleGroup, musclesWorked, type);
 }
 
-void Lab::Excercise::setName(const std::string &newName) { name = newName; }
+void Lab::Exercise::setName(const std::string &newName) { name = newName; }
 
-void Lab::Excercise::setDescription(const std::string &newDesc) { description = newDesc; }
+void Lab::Exercise::setDescription(const std::string &newDesc) { description = newDesc; }
 
-int Lab::Excercise::setMuscleGroup(const std::string &newMG) {
+int Lab::Exercise::setMuscleGroup(const std::string &newMG) {
     if (isMuscleGroup(newMG)) {
         muscleGroup = newMG;
     } else {
@@ -51,7 +50,7 @@ int Lab::Excercise::setMuscleGroup(const std::string &newMG) {
     return 0;
 }
 
-int Lab::Excercise::setMusclesWorked(const std::vector<std::string> &newMW) {
+int Lab::Exercise::setMusclesWorked(const std::vector<std::string> &newMW) {
     if (isMuscle(newMW)) {
         musclesWorked = newMW;
     } else {
@@ -61,7 +60,7 @@ int Lab::Excercise::setMusclesWorked(const std::vector<std::string> &newMW) {
     return 0;
 }
 
-int Lab::Excercise::setType(const std::vector<std::string> &newType) {
+int Lab::Exercise::setType(const std::vector<std::string> &newType) {
     if (isType(newType)) {
         type = newType;
     } else {
@@ -71,10 +70,10 @@ int Lab::Excercise::setType(const std::vector<std::string> &newType) {
     return 0;
 }
 
-bool Lab::Excercise::isMuscleGroup(const std::string &mGroup) {
+bool Lab::Exercise::isMuscleGroup(const std::string &mGroup) {
     return std::find(groupCheck.cbegin(), groupCheck.cend(), mGroup) != groupCheck.cend();
 }
-bool Lab::Excercise::isMuscle(const std::vector<std::string> &mWorked) {
+bool Lab::Exercise::isMuscle(const std::vector<std::string> &mWorked) {
     if (mWorked.empty()) {
         return false;
     }
@@ -87,7 +86,7 @@ bool Lab::Excercise::isMuscle(const std::vector<std::string> &mWorked) {
     return true;
 }
 
-bool Lab::Excercise::isType(const std::vector<std::string> &nType) {
+bool Lab::Exercise::isType(const std::vector<std::string> &nType) {
     if (nType.size() > 2 || nType.empty()) {
         return false;
     }
@@ -100,28 +99,28 @@ bool Lab::Excercise::isType(const std::vector<std::string> &nType) {
     return true;
 }
 
-bool Lab::Excercise::load(Lab::DBConn *database, const std::string &excercise) {
-    database->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
+bool Lab::Exercise::load(Lab::DBConn *database, const std::string &exercise) {
+    database->prepare("SELECT * FROM exercises WHERE name = ?", exercise);
     while (database->retrieve_next_row()) {
         std::vector<std::string> loadedMusclesWorked;
-        std::vector<std::string> loadedExcerciseType;
+        std::vector<std::string> loadedExerciseType;
         std::istringstream musclesWorkedStream(database->get_column(MUSCLES_WORKED_DB_INDEX));
-        std::istringstream excerciseTypeStream(database->get_column(EXCERCISE_TYPE_DB_INDEX));
+        std::istringstream exerciseTypeStream(database->get_column(EXCERCISE_TYPE_DB_INDEX));
         for (std::string str; std::getline(musclesWorkedStream, str, ',');) {
             loadedMusclesWorked.push_back(str);
         }
-        for (std::string str; std::getline(excerciseTypeStream, str, ',');) {
-            loadedExcerciseType.push_back(str);
+        for (std::string str; std::getline(exerciseTypeStream, str, ',');) {
+            loadedExerciseType.push_back(str);
         }
-        *this = Lab::Excercise(database->get_column(EXCERCISE_NAME_DB_INDEX),
-                               database->get_column(EXCERCISE_DESCRIPTION_DB_INDEX),
-                               database->get_column(MUSCLE_GROUP_DB_INDEX), loadedMusclesWorked, loadedExcerciseType);
+        *this = Lab::Exercise(database->get_column(EXCERCISE_NAME_DB_INDEX),
+                              database->get_column(EXCERCISE_DESCRIPTION_DB_INDEX),
+                              database->get_column(MUSCLE_GROUP_DB_INDEX), loadedMusclesWorked, loadedExerciseType);
         return true;
     }
     return false;
 };
 
-bool Lab::Excercise::save(Lab::DBConn *database) const {
+bool Lab::Exercise::save(Lab::DBConn *database) const {
     std::string musclesWorkedString;
     std::string typeString;
     for (const auto &iter : musclesWorked) {
@@ -137,9 +136,9 @@ bool Lab::Excercise::save(Lab::DBConn *database) const {
         }
     }
 
-    database->prepare("SELECT name FROM excercises WHERE name = ?", name);
+    database->prepare("SELECT name FROM exercises WHERE name = ?", name);
     if (database->retrieve_next_row()) {
-        if (database->prepare("UPDATE excercises SET name = ?, description = ?, muscleGroup = ?, "
+        if (database->prepare("UPDATE exercises SET name = ?, description = ?, muscleGroup = ?, "
                               "musclesTargeted = ?, type = ? WHERE name = ?",
                               name, description, muscleGroup, musclesWorkedString, typeString, name) == -1) {
             return false;
@@ -149,7 +148,7 @@ bool Lab::Excercise::save(Lab::DBConn *database) const {
         }
 
     } else {
-        if (database->prepare("INSERT INTO excercises (name, description, muscleGroup, "
+        if (database->prepare("INSERT INTO exercises (name, description, muscleGroup, "
                               "musclesTargeted, type) VALUES (?, ?, ?, ?, ?)",
                               name, description, muscleGroup, musclesWorkedString, typeString) == -1) {
             return false;

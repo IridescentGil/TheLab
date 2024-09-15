@@ -9,7 +9,7 @@
 
 #include "body.h"
 #include "database.h"
-#include "excercise.h"
+#include "exercise.h"
 #include "history.h"
 #include "workout.h"
 
@@ -23,14 +23,14 @@ class TheLab {
     TheLab &operator=(const TheLab &);
     ~TheLab() = default;
 
-    bool saveExcercises();
-    void setExcercises(const std::vector<Lab::Excercise> &newExcercises);
-    std::vector<Lab::Excercise> &getExcercises();
-    const std::vector<Lab::Excercise> &getExcercises() const;
-    void addExcercise(const Lab::Excercise &newExcercise);
-    void removeExcercise(std::vector<Lab::Excercise>::iterator iter);
+    bool saveExercises();
+    void setExercises(const std::vector<Lab::Exercise> &newExercises);
+    std::vector<Lab::Exercise> &getExercises();
+    const std::vector<Lab::Exercise> &getExercises() const;
+    void addExercise(const Lab::Exercise &newExercise);
+    void removeExercise(std::vector<Lab::Exercise>::iterator iter);
 
-    void EditExcercise(std::vector<Lab::Excercise>::iterator iter, const Lab::Excercise &newExcercise);
+    void EditExercise(std::vector<Lab::Exercise>::iterator iter, const Lab::Exercise &newExercise);
 
     bool saveWorkouts();
     void setWorkouts(const std::vector<Lab::Workout> &newWorkouts);
@@ -53,7 +53,7 @@ class TheLab {
     const Lab::historyVector &getHistory() const;
     Lab::historyVector getHistory(const std::chrono::time_point<std::chrono::system_clock> &startDate,
                                   const std::chrono::time_point<std::chrono::system_clock> &endDate) const;
-    void addItemToHistory(const Lab::historyTuple &excerciseItem);
+    void addItemToHistory(const Lab::historyTuple &exerciseItem);
     void removeItemFromHistory(Lab::historyVector::iterator iter);
     void removeItemFromHistory(Lab::historyVector::iterator start, Lab::historyVector::iterator end);
 
@@ -61,7 +61,7 @@ class TheLab {
     std::unique_ptr<Lab::DBConn> database;
     Lab::History history;
     Lab::Body body;
-    std::vector<Lab::Excercise> excercises;
+    std::vector<Lab::Exercise> exercises;
     std::vector<Lab::Workout> workouts;
 };
 

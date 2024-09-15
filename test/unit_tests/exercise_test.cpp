@@ -1,13 +1,12 @@
-#include "excercise.h"
-
 #include <gtest/gtest.h>
 
 #include <memory>
 
 #include "database.h"
+#include "exercise.h"
 #include "testHelper.h"
 
-class ExcerciseTest : public testing::Test {
+class ExerciseTest : public testing::Test {
    protected:
     void SetUp() override {
         e2.setName("Bulgarian Split Squat");
@@ -15,36 +14,36 @@ class ExcerciseTest : public testing::Test {
     }
 
    public:
-    Lab::Excercise e1{
+    Lab::Exercise e1{
         "Deadlift", "Lift Barbell off the floor", "Legs", {"Glutes", "Hamstring", "Lower-back"}, {"weight", "reps"}};
-    Lab::Excercise e2{"Barbell Squat",
-                      "With the bar resting high on the shoulders squat until your "
-                      "thigh are perpendicular with the floor",
-                      "Legs",
-                      {"Glutes", "Quads"},
-                      {"weight", "reps"}};
-    Lab::Excercise e3{
+    Lab::Exercise e2{"Barbell Squat",
+                     "With the bar resting high on the shoulders squat until your "
+                     "thigh are perpendicular with the floor",
+                     "Legs",
+                     {"Glutes", "Quads"},
+                     {"weight", "reps"}};
+    Lab::Exercise e3{
         "Row", "Rowg in a row machine", "Cardio", {"Glutes", "Quads", "Lower-back", "Upper-back"}, {"Time"}};
-    Lab::Excercise e4{
+    Lab::Exercise e4{
         "Bench Press", "Flat back bench press with a barbell", "Chest", {"Pectorals", "Triceps"}, {"Distance"}};
-    std::vector<Lab::Excercise> e6;
+    std::vector<Lab::Exercise> e6;
 };
 
 TEST(TypeCheckingGroup, CorrectMGVariableTest) {
-    Lab::Excercise test;
+    Lab::Exercise test;
     EXPECT_TRUE(test.isMuscleGroup("Chest"));
     EXPECT_TRUE(test.isMuscleGroup("Back"));
 }
 
 TEST(TypeCheckingGroup, WrongMGVariableTest) {
-    Lab::Excercise test;
+    Lab::Exercise test;
     EXPECT_FALSE(test.isMuscleGroup("Finger"));
     EXPECT_FALSE(test.isMuscleGroup("Butt"));
     EXPECT_FALSE(test.isMuscleGroup("arms"));
 }
 
 TEST(TypeCheckingGroup, CorrectMWVariableTest) {
-    Lab::Excercise test;
+    Lab::Exercise test;
     std::vector<std::string> vec1{"Bicep", "Upper-back"};
     std::vector<std::string> vec2{"Tricep"};
 
@@ -53,7 +52,7 @@ TEST(TypeCheckingGroup, CorrectMWVariableTest) {
 }
 
 TEST(TypeCheckingGroup, WrongMWVariableTest) {
-    Lab::Excercise test;
+    Lab::Exercise test;
     std::vector<std::string> vec1{"Latimus Bordi"};
     std::vector<std::string> vec2{"Quads", "Hamstring", "Blute"};
     std::vector<std::string> vec3;
@@ -64,7 +63,7 @@ TEST(TypeCheckingGroup, WrongMWVariableTest) {
 }
 
 TEST(TypeCheckingGroup, CorrectTVariableTest) {
-    Lab::Excercise test;
+    Lab::Exercise test;
     std::vector<std::string> vec1{"weight", "reps"};
     std::vector<std::string> vec2{"distance", "time"};
     std::vector<std::string> vec3{"reps"};
@@ -75,7 +74,7 @@ TEST(TypeCheckingGroup, CorrectTVariableTest) {
 }
 
 TEST(TypeCheckingGroup, WrongTVariableTest) {
-    Lab::Excercise test;
+    Lab::Exercise test;
     std::vector<std::string> vec1{"weight", "rpm"};
     std::vector<std::string> vec2{"weight", "reps", "drinks"};
     std::vector<std::string> vec3{"wight"};
@@ -88,11 +87,11 @@ TEST(TypeCheckingGroup, WrongTVariableTest) {
 }
 
 TEST(OperatorOverrideGroup, EqualityTest) {
-    Lab::Excercise ex1{
+    Lab::Exercise ex1{
         "Bench Press", "Flat back bench press with a barbell", "Chest", {"Pectorals", "Triceps"}, {"Distance"}};
-    Lab::Excercise ex2{
+    Lab::Exercise ex2{
         "Bench Press", "Flat back bench press with a barbell", "Chest", {"Pectorals", "Triceps"}, {"Distance"}};
-    Lab::Excercise ex3{
+    Lab::Exercise ex3{
         "Row", "Rowg in a row machine", "Cardio", {"Glutes", "Quads", "Lower-back", "Upper-back"}, {"Time"}};
 
     EXPECT_TRUE(ex1 == ex2);
@@ -100,21 +99,21 @@ TEST(OperatorOverrideGroup, EqualityTest) {
 }
 
 TEST(OperatorOverrideGroup, ConstructorsTest) {
-    Lab::Excercise ex1{
+    Lab::Exercise ex1{
         "Bench Press", "Flat back bench press with a barbell", "Chest", {"Pectorals", "Triceps"}, {"Distance"}};
-    Lab::Excercise ex2 = {
+    Lab::Exercise ex2 = {
         "Bench Press", "Flat back bench press with a barbell", "Chest", {"Pectorals", "Triceps"}, {"Distance"}};
-    Lab::Excercise ex3 = Lab::Excercise("Bench Press", "Flat back bench press with a barbell", "Chest",
-                                        {"Pectorals", "Triceps"}, {"Distance"});
-    Lab::Excercise ex4("Bench Press", "Flat back bench press with a barbell", "Chest", {"Pectorals", "Triceps"},
-                       {"Distance"});
+    Lab::Exercise ex3 = Lab::Exercise("Bench Press", "Flat back bench press with a barbell", "Chest",
+                                      {"Pectorals", "Triceps"}, {"Distance"});
+    Lab::Exercise ex4("Bench Press", "Flat back bench press with a barbell", "Chest", {"Pectorals", "Triceps"},
+                      {"Distance"});
 
     EXPECT_TRUE(ex1 == ex2);
     EXPECT_TRUE(ex1 == ex3);
     EXPECT_TRUE(ex1 == ex4);
 }
 
-TEST_F(ExcerciseTest, GetValuesTest) {
+TEST_F(ExerciseTest, GetValuesTest) {
     EXPECT_EQ(e1.getName(), "Deadlift");
     EXPECT_EQ(e1.getDescription(), "Lift Barbell off the floor");
     EXPECT_EQ(e1.getMuscleGroup(), "Legs");
@@ -131,26 +130,26 @@ TEST_F(ExcerciseTest, GetValuesTest) {
     EXPECT_EQ(e1.getType(), tType);
 }
 
-TEST_F(ExcerciseTest, NameChangedTest) { EXPECT_EQ(e2.getName(), "Bulgarian Split Squat"); }
-TEST_F(ExcerciseTest, DescriptionChangedTest) { EXPECT_EQ(e3.getDescription(), ""); }
+TEST_F(ExerciseTest, NameChangedTest) { EXPECT_EQ(e2.getName(), "Bulgarian Split Squat"); }
+TEST_F(ExerciseTest, DescriptionChangedTest) { EXPECT_EQ(e3.getDescription(), ""); }
 
-TEST_F(ExcerciseTest, VectorSizeTest) { EXPECT_EQ(e6.size(), 0); }
+TEST_F(ExerciseTest, VectorSizeTest) { EXPECT_EQ(e6.size(), 0); }
 
-TEST_F(ExcerciseTest, VectorEmptyIteratorTest) { EXPECT_EQ(e6.begin(), e6.end()); }
+TEST_F(ExerciseTest, VectorEmptyIteratorTest) { EXPECT_EQ(e6.begin(), e6.end()); }
 
-TEST_F(ExcerciseTest, VectorPushBackTest) {
+TEST_F(ExerciseTest, VectorPushBackTest) {
     e6.push_back({"Pushups", "Push up from the ground", "Chest", {"Pectoral", "Tricep"}, {"Reps"}});
     EXPECT_NE(e6.begin(), e6.end());
     EXPECT_EQ((e6.begin())->getName(), "Pushups");
 }
 
-TEST_F(ExcerciseTest, ExcersiseSaveTest) {
+TEST_F(ExerciseTest, ExcersiseSaveTest) {
     std::unique_ptr<Lab::DBConn> test = std::make_unique<Lab::DBConn>();
 
     e1.save(test.get());
     e2.save(test.get());
 
-    test->exec_and_retrieve("SELECT * FROM excercises");
+    test->exec_and_retrieve("SELECT * FROM exercises");
     test->retrieve_next_row();
 
     EXPECT_EQ(test->get_column(0).getString(), static_cast<std::string>("Deadlift"));
@@ -174,16 +173,16 @@ TEST_F(ExcerciseTest, ExcersiseSaveTest) {
     std::remove("thelab.db");
 }
 
-TEST_F(ExcerciseTest, ExcerciseLoadFromDatabaseTest) {
+TEST_F(ExerciseTest, ExerciseLoadFromDatabaseTest) {
     std::unique_ptr<Lab::DBConn> test = std::make_unique<Lab::DBConn>();
 
     e1.save(test.get());
     e2.save(test.get());
 
-    Lab::Excercise newExcercise;
-    newExcercise.load(test.get(), "Deadlift");
+    Lab::Exercise newExercise;
+    newExercise.load(test.get(), "Deadlift");
 
-    EXPECT_PRED_FORMAT2(AssertExcerciseEqual, e1, newExcercise);
+    EXPECT_PRED_FORMAT2(AssertExerciseEqual, e1, newExercise);
 
     std::remove("thelab.db");
 }

@@ -5,13 +5,13 @@
 #include <string>
 #include <vector>
 
-#include "excercise.h"
+#include "exercise.h"
 
 namespace Lab {
 class DBConn;
 
 using historyTuple =
-    std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string, Lab::Excercise, double, unsigned long>;
+    std::tuple<std::chrono::time_point<std::chrono::system_clock>, std::string, Lab::Exercise, double, unsigned long>;
 using historyVector = std::vector<historyTuple>;
 
 /* NOTE:  add function to move item in history.
@@ -36,7 +36,7 @@ class History {
     void setHistory(const historyVector &newHistory);
 
     void addItem(const std::chrono::time_point<std::chrono::system_clock> &date, const std::string &workoutName,
-                 const Lab::Excercise &excercise, const double &type1Val, const unsigned long &type2Val);
+                 const Lab::Exercise &exercise, const double &type1Val, const unsigned long &type2Val);
 
     void remItem(historyVector::iterator iter);
     void remItem(historyVector::iterator start, historyVector::iterator end);
@@ -46,7 +46,7 @@ class History {
     historyVector history;
 
     void sort();
-    void removeExcercisesNotInDB();
+    void removeExercisesNotInDB();
 };
 
 }  // namespace Lab

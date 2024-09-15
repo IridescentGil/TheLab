@@ -9,9 +9,9 @@ Lab::DBConn::DBConn(std::string_view name) : db(name, SQLite::OPEN_READWRITE | S
 void Lab::DBConn::createTables() {
     try {
         db.exec("PRAGMA foreign_keys = ON");
-        if (!db.tableExists("excercises")) {
+        if (!db.tableExists("exercises")) {
             db.exec(
-                "CREATE TABLE excercises (name TEXT NOT NULL PRIMARY KEY, "
+                "CREATE TABLE exercises (name TEXT NOT NULL PRIMARY KEY, "
                 "description "
                 "TEXT, muscleGroup TEXT, musclesTargeted TEXT, type TEXT)");
         }
@@ -19,18 +19,18 @@ void Lab::DBConn::createTables() {
             db.exec(
                 "CREATE TABLE workouts ("
                 "workoutName TEXT NOT NULL, exOrderNum INTEGER NOT NULL, "
-                "excercise TEXT NOT NULL, type1 REAL NOT NULL, "
+                "exercise TEXT NOT NULL, type1 REAL NOT NULL, "
                 "type2 INTEGER, PRIMARY KEY (workoutName, exOrderNum), FOREIGN "
-                "KEY(excercise) REFERENCES "
-                "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
+                "KEY(exercise) REFERENCES "
+                "exercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
         }
         if (!db.tableExists("workoutPlans")) {
             db.exec(
                 "CREATE TABLE workoutPlans (ID INTEGER NOT NULL PRIMARY KEY "
                 "AUTOINCREMENT, "
                 "planName TEXT NOT NULL, workoutName TEXT NOT NULL, "
-                "initialExcercise INTEGER NOT NULL, FOREIGN "
-                "KEY(workoutName, initialExcercise) "
+                "initialExercise INTEGER NOT NULL, FOREIGN "
+                "KEY(workoutName, initialExercise) "
                 "REFERENCES "
                 "workouts(workoutName, exOrderNum) ON UPDATE CASCADE ON DELETE "
                 "CASCADE)");
@@ -39,10 +39,10 @@ void Lab::DBConn::createTables() {
             db.exec(
                 "CREATE TABLE history (ID INTEGER NOT NULL PRIMARY KEY, "
                 "date "
-                "INTEGER NOT NULL, workout TEXT, excercise TEXT NOT NULL, "
-                "type1 REAL NOT NULL, type2 INTEGER, FOREIGN KEY(excercise) "
+                "INTEGER NOT NULL, workout TEXT, exercise TEXT NOT NULL, "
+                "type1 REAL NOT NULL, type2 INTEGER, FOREIGN KEY(exercise) "
                 "REFERENCES "
-                "excercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
+                "exercises(name) ON UPDATE CASCADE ON DELETE CASCADE)");
         }
         if (!db.tableExists("bodyCondition")) {
             db.exec(

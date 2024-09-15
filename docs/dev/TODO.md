@@ -13,10 +13,10 @@
   - [x] Database header
   - [x] Database implementation
   - [x] Database unit tests
-- [x] Excercise class
-  - [x] Excercise header
-  - [x] Excercise implementation
-  - [x] Excercise unit tests
+- [x] Exercise class
+  - [x] Exercise header
+  - [x] Exercise implementation
+  - [x] Exercise unit tests
 - [x] History class
   - [x] History header
   - [x] History implementation
@@ -71,7 +71,7 @@
   - [ ] Cli implementation
   - [ ] Cli unit tests
 - [ ] Create GUI 
-- [ ] Review and source all excercise variables
+- [ ] Review and source all exercise variables
 - [x] Create Proper Readme
 - [x] Create Contributing guideline
 - [ ] Properly Comment Code

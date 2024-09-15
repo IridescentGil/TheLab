@@ -3,13 +3,13 @@
 #include <string>
 
 #include "body.h"
-#include "excercise.h"
+#include "exercise.h"
 #include "history.h"
 #include "workout.h"
 
-bool excerEqual(const Lab::Excercise &first, const Lab::Excercise &second) { return first == second; };
+bool excerEqual(const Lab::Exercise &first, const Lab::Exercise &second) { return first == second; };
 
-bool workoutEqual(const Lab::ExcerciseData &first, const Lab::ExcerciseData &second) {
+bool workoutEqual(const Lab::ExerciseData &first, const Lab::ExerciseData &second) {
     const auto [aE, aT1, aT2] = first;
     const auto [bE, bT1, bT2] = second;
 
@@ -25,8 +25,8 @@ bool workoutEqual(const Lab::ExcerciseData &first, const Lab::ExcerciseData &sec
     return true;
 };
 
-testing::AssertionResult AssertExcerciseEqual(const char *firstExpr, const char *secondExpr,
-                                              const Lab::Excercise &first, const Lab::Excercise &second) {
+testing::AssertionResult AssertExerciseEqual(const char *firstExpr, const char *secondExpr,
+                                              const Lab::Exercise &first, const Lab::Exercise &second) {
     if (excerEqual(first, second)) {
         return testing::AssertionSuccess();
     }
@@ -41,7 +41,7 @@ testing::AssertionResult AssertExcerciseEqual(const char *firstExpr, const char 
         return flatString;
     };
 
-    return testing::AssertionFailure() << "Excercises:\n"
+    return testing::AssertionFailure() << "Exercises:\n"
                                        << firstExpr << ":\nName: " << first.getName()
                                        << "\nDescription: " << first.getDescription()
                                        << "\nMuscle Group: " << first.getMuscleGroup()
@@ -56,19 +56,19 @@ testing::AssertionResult AssertExcerciseEqual(const char *firstExpr, const char 
 }
 
 testing::AssertionResult AssertWorkoutEqual(const char *firstExpr, const char *secondExpr,
-                                            const Lab::ExcerciseData &first, const Lab::ExcerciseData &second) {
+                                            const Lab::ExerciseData &first, const Lab::ExerciseData &second) {
     if (workoutEqual(first, second)) {
         return testing::AssertionSuccess();
     }
 
-    return testing::AssertionFailure() << "Expected equality of ExcerciseData:\n"
-                                       << firstExpr << "\n which is:\n ExcerciseData(Excercise(" << first.exc.getName()
+    return testing::AssertionFailure() << "Expected equality of ExerciseData:\n"
+                                       << firstExpr << "\n which is:\n ExerciseData(Exercise(" << first.exc.getName()
                                        << ", " << first.exc.getDescription() << ", " << first.exc.getMuscleGroup()
                                        << ", " << first.exc.getMusclesWorked().size() << ", "
                                        << first.exc.getType().size() << "), " << first.type1 << ", " << first.type2
                                        << ")"
                                        << "\nand\n"
-                                       << secondExpr << " which is:\n ExcerciseData(Excercise(" << second.exc.getName()
+                                       << secondExpr << " which is:\n ExerciseData(Exercise(" << second.exc.getName()
                                        << ", " << second.exc.getDescription() << ", " << second.exc.getMuscleGroup()
                                        << ", " << second.exc.getMusclesWorked().size() << ", "
                                        << second.exc.getType().size() << "), " << second.type1 << ", " << second.type2
@@ -80,15 +80,15 @@ bool historyEqual(const Lab::historyVector &first, const Lab::historyVector &sec
         return false;
     }
     for (auto iter = first.cbegin(), bter = second.cbegin(); iter != first.cend(); ++iter, ++bter) {
-        auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
-        auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
+        auto [dateA, workoutA, exerciseA, type1A, type2A] = *iter;
+        auto [dateB, workoutB, exerciseB, type1B, type2B] = *bter;
         if (dateA != dateB) {
             return false;
         }
         if (workoutA != workoutB) {
             return false;
         }
-        if (!excerEqual(excerciseA, excerciseB)) {
+        if (!excerEqual(exerciseA, exerciseB)) {
             return false;
         }
         if (type1A != type1B) {
@@ -125,8 +125,8 @@ int historyDiff(const Lab::historyVector &first, const Lab::historyVector &secon
         largeVector = second.cbegin();
     }
     for (; smallVector != smallVectorEnd; ++smallVector, ++largeVector) {
-        auto [dateA, workoutA, excerciseA, type1A, type2A] = *smallVector;
-        auto [dateB, workoutB, excerciseB, type1B, type2B] = *largeVector;
+        auto [dateA, workoutA, exerciseA, type1A, type2A] = *smallVector;
+        auto [dateB, workoutB, exerciseB, type1B, type2B] = *largeVector;
         if (dateA != dateB) {
             ++difference;
             continue;
@@ -135,7 +135,7 @@ int historyDiff(const Lab::historyVector &first, const Lab::historyVector &secon
             ++difference;
             continue;
         }
-        if (!excerEqual(excerciseA, excerciseB)) {
+        if (!excerEqual(exerciseA, exerciseB)) {
             ++difference;
             continue;
         }
@@ -162,8 +162,8 @@ std::string historyShowDifferences(const Lab::historyVector &first, const Lab::h
     std::string errorMessage;
     int index = 0;
     for (auto iter = first.cbegin(), bter = second.cbegin(); iter != first.cend(); ++iter, ++bter) {
-        auto [dateA, workoutA, excerciseA, type1A, type2A] = *iter;
-        auto [dateB, workoutB, excerciseB, type1B, type2B] = *bter;
+        auto [dateA, workoutA, exerciseA, type1A, type2A] = *iter;
+        auto [dateB, workoutB, exerciseB, type1B, type2B] = *bter;
         errorMessage += "[" + std::to_string(index) + "]:{\n";
         index++;
         if (dateA != dateB) {
@@ -173,8 +173,8 @@ std::string historyShowDifferences(const Lab::historyVector &first, const Lab::h
         if (workoutA != workoutB) {
             errorMessage += "Workouts are not equal " + workoutA + " and " + workoutB + "\n";
         }
-        if (!excerEqual(excerciseA, excerciseB)) {
-            errorMessage += "Excercises are not equal: " + excerciseA.getName() + " and " + excerciseB.getName() + "\n";
+        if (!excerEqual(exerciseA, exerciseB)) {
+            errorMessage += "Exercises are not equal: " + exerciseA.getName() + " and " + exerciseB.getName() + "\n";
         }
         if (type1A != type1B) {
             errorMessage += "Type 1 are not equal: " + std::to_string(type1A) + " and " + std::to_string(type1B) + "\n";

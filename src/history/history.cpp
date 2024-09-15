@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "database.h"
-#include "excercise.h"
+#include "exercise.h"
 
 namespace {
 enum HISTORY_DATABASE_INDEXES {
@@ -42,32 +42,32 @@ Lab::History::History(Lab::DBConn *newDB) : db(newDB) {
     }
 
     for (auto const &iter : tempHist) {
-        auto const &[date, workoutName, excercise, type1, type2] = iter;
+        auto const &[date, workoutName, exercise, type1, type2] = iter;
         std::vector<std::string> mWorked;
         std::vector<std::string> exType;
-        db->prepare("SELECT * FROM excercises WHERE name = ?", excercise);
+        db->prepare("SELECT * FROM exercises WHERE name = ?", exercise);
         db->retrieve_next_row();
 
         std::stringstream streamMusclesWorked(db->get_column(MUSCLES_WORKED_DB_INDEX));
-        std::stringstream streamExcerciseType(db->get_column(EXCERCISE_TYPE_DB_INDEX));
+        std::stringstream streamExerciseType(db->get_column(EXCERCISE_TYPE_DB_INDEX));
         std::string tempString;
         while (std::getline(streamMusclesWorked, tempString, ',')) {
             mWorked.push_back(tempString);
         }
-        while (std::getline(streamExcerciseType, tempString, ',')) {
+        while (std::getline(streamExerciseType, tempString, ',')) {
             exType.push_back(tempString);
         }
 
         history.push_back(std::make_tuple(
             date, workoutName,
-            Lab::Excercise(db->get_column(EXCERCISE_NAME_DB_INDEX), db->get_column(EXCERCISE_DESCRIPTION_DB_INDEX),
-                           db->get_column(MUSCLE_GROUP_DB_INDEX), mWorked, exType),
+            Lab::Exercise(db->get_column(EXCERCISE_NAME_DB_INDEX), db->get_column(EXCERCISE_DESCRIPTION_DB_INDEX),
+                          db->get_column(MUSCLE_GROUP_DB_INDEX), mWorked, exType),
             type1, type2));
     }
     this->sort();
 }
 Lab::History::History(Lab::DBConn *newDB, historyVector newHistory) : db(newDB), history(std::move(newHistory)) {
-    this->removeExcercisesNotInDB();
+    this->removeExercisesNotInDB();
     this->sort();
 }
 
@@ -97,12 +97,12 @@ Lab::historyTuple Lab::History::getItem(historyVector::iterator iter) const { re
 void Lab::History::setHistory(const historyVector &newHistory) { history = newHistory; }
 
 void Lab::History::addItem(const std::chrono::time_point<std::chrono::system_clock> &date,
-                           const std::string &workoutName, const Lab::Excercise &excercise, const double &type1Val,
+                           const std::string &workoutName, const Lab::Exercise &exercise, const double &type1Val,
                            const unsigned long &type2Val) {
-    Lab::Excercise excerciseComp;
-    excerciseComp.load(db, excercise.getName());
-    if (excercise == excerciseComp) {
-        history.push_back(std::make_tuple(date, workoutName, excercise, type1Val, type2Val));
+    Lab::Exercise exerciseComp;
+    exerciseComp.load(db, exercise.getName());
+    if (exercise == exerciseComp) {
+        history.push_back(std::make_tuple(date, workoutName, exercise, type1Val, type2Val));
     }
     this->sort();
 }
@@ -130,11 +130,11 @@ void Lab::History::sort() {
     }
 }
 
-void Lab::History::removeExcercisesNotInDB() {
+void Lab::History::removeExercisesNotInDB() {
     for (auto historyIter = history.begin(); historyIter != history.end(); ++historyIter) {
-        Lab::Excercise excercise;
-        excercise.load(db, std::get<2>(*historyIter).getName());
-        if (std::get<2>(*historyIter) != excercise) {
+        Lab::Exercise exercise;
+        exercise.load(db, std::get<2>(*historyIter).getName());
+        if (std::get<2>(*historyIter) != exercise) {
             historyIter = history.erase(historyIter);
             --historyIter;
         }
@@ -158,11 +158,11 @@ bool Lab::History::save() {
      * NOTE: unsign long cast to long due SQLiteCPP not recongnizing uint64_t
      */
     for (auto const &iter : history) {
-        const auto &[date, workoutName, excerciseName, type1, type2] = iter;
+        const auto &[date, workoutName, exerciseName, type1, type2] = iter;
         if (index < size) {
             if (db->prepare("UPDATE history SET date = ?, workout = ?, "
-                            "excercise = ?, type1 = ?, type2 = ? WHERE ID = ?",
-                            date.time_since_epoch().count(), workoutName, excerciseName.getName(), type1,
+                            "exercise = ?, type1 = ?, type2 = ? WHERE ID = ?",
+                            date.time_since_epoch().count(), workoutName, exerciseName.getName(), type1,
                             static_cast<long>(type2), static_cast<long>(index)) == -1) {
                 return false;
             }
@@ -170,10 +170,10 @@ bool Lab::History::save() {
                 return false;
             }
         } else {
-            if (db->prepare("INSERT INTO history (ID, date, workout, excercise, "
+            if (db->prepare("INSERT INTO history (ID, date, workout, exercise, "
                             "type1, type2) VALUES (?, ?, ?, ?, ?, ?)",
                             static_cast<long>(index), date.time_since_epoch().count(), workoutName,
-                            excerciseName.getName(), type1, static_cast<long>(type2)) == -1) {
+                            exerciseName.getName(), type1, static_cast<long>(type2)) == -1) {
                 return false;
             }
             if (db->exec_prepared() == -1) {

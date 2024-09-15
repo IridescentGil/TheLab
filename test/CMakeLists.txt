@@ -23,7 +23,7 @@ include(GoogleTest)
 add_executable(
   TheLabUnitTest
   utils/testHelper.cpp
-  unit_tests/excercise_test.cpp
+  unit_tests/exercise_test.cpp
   unit_tests/database_test.cpp
   unit_tests/body_test.cpp
   unit_tests/history_test.cpp

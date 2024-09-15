@@ -7,61 +7,61 @@
 Lab::Workout::Workout(Lab::DBConn *initDB) : db(initDB) {}
 
 Lab::Workout::Workout(Lab::DBConn *initDB, std::string workoutName) : name(std::move(workoutName)), db(initDB) {
-    std::vector<std::string> excerciseNameList;
-    std::vector<Lab::Excercise> excerciseObjects;
-    Lab::Excercise excerciseLoader;
+    std::vector<std::string> exerciseNameList;
+    std::vector<Lab::Exercise> exerciseObjects;
+    Lab::Exercise exerciseLoader;
 
-    db->prepare("SELECT excercise FROM workouts WHERE workoutName = ?", name);
+    db->prepare("SELECT exercise FROM workouts WHERE workoutName = ?", name);
     while (db->retrieve_next_row()) {
-        excerciseNameList.push_back(db->get_column(0));
+        exerciseNameList.push_back(db->get_column(0));
     }
-    for (const auto &excerciseName : excerciseNameList) {
-        excerciseLoader.load(db, excerciseName);
-        excerciseObjects.push_back(excerciseLoader);
+    for (const auto &exerciseName : exerciseNameList) {
+        exerciseLoader.load(db, exerciseName);
+        exerciseObjects.push_back(exerciseLoader);
     }
 
     db->prepare("SELECT * FROM workouts WHERE workoutName = ?", name);
-    auto excercise = excerciseObjects.cbegin();
+    auto exercise = exerciseObjects.cbegin();
     while (db->retrieve_next_row()) {
-        workout.push_back(Lab::ExcerciseData(*excercise, db->get_column(3),
-                                             static_cast<unsigned long>(db->get_column(4).getInt64())));
-        ++excercise;
+        workout.push_back(
+            Lab::ExerciseData(*exercise, db->get_column(3), static_cast<unsigned long>(db->get_column(4).getInt64())));
+        ++exercise;
     }
 }
 
-Lab::Workout::Workout(Lab::DBConn *initDB, std::string workoutName, std::vector<Lab::ExcerciseData> newWorkout)
+Lab::Workout::Workout(Lab::DBConn *initDB, std::string workoutName, std::vector<Lab::ExerciseData> newWorkout)
     : name(std::move(workoutName)), db(initDB), workout(std::move(newWorkout)) {
-    this->removeExcercisesNotInDB();
+    this->removeExercisesNotInDB();
 }
 
-void Lab::Workout::setWorkout(const std::vector<Lab::ExcerciseData> &newWorkout) { workout = newWorkout; }
+void Lab::Workout::setWorkout(const std::vector<Lab::ExerciseData> &newWorkout) { workout = newWorkout; }
 
-void Lab::Workout::addExcercise(const Lab::Excercise &newExcercise, const double &type1Val,
-                                const unsigned long &type2Val) {
-    Lab::Excercise excerciseComp;
-    excerciseComp.load(db, newExcercise.getName());
-    if (newExcercise == excerciseComp) {
-        workout.push_back(Lab::ExcerciseData{newExcercise, type1Val, type2Val});
+void Lab::Workout::addExercise(const Lab::Exercise &newExercise, const double &type1Val,
+                               const unsigned long &type2Val) {
+    Lab::Exercise exerciseComp;
+    exerciseComp.load(db, newExercise.getName());
+    if (newExercise == exerciseComp) {
+        workout.push_back(Lab::ExerciseData{newExercise, type1Val, type2Val});
     }
 }
 
-void Lab::Workout::remExcercise(std::vector<Lab::ExcerciseData>::iterator iter) { workout.erase(iter); }
+void Lab::Workout::remExercise(std::vector<Lab::ExerciseData>::iterator iter) { workout.erase(iter); }
 
-void Lab::Workout::remExcercise(std::vector<Lab::ExcerciseData>::iterator start,
-                                std::vector<Lab::ExcerciseData>::iterator end) {
+void Lab::Workout::remExercise(std::vector<Lab::ExerciseData>::iterator start,
+                               std::vector<Lab::ExerciseData>::iterator end) {
     workout.erase(start, end);
 }
 
-void Lab::Workout::changeExcercise(std::vector<Lab::ExcerciseData>::iterator iter, const Lab::Excercise &newExcercise,
-                                   const double &type1Val, const unsigned long &type2Val) {
-    *iter = Lab::ExcerciseData{newExcercise, type1Val, type2Val};
+void Lab::Workout::changeExercise(std::vector<Lab::ExerciseData>::iterator iter, const Lab::Exercise &newExercise,
+                                  const double &type1Val, const unsigned long &type2Val) {
+    *iter = Lab::ExerciseData{newExercise, type1Val, type2Val};
 }
 
-void Lab::Workout::changeExcercise(std::vector<Lab::ExcerciseData>::iterator start,
-                                   std::vector<Lab::ExcerciseData>::iterator end, const Lab::Excercise &newExcercise,
-                                   const double &type1Val, const unsigned long &type2Val) {
+void Lab::Workout::changeExercise(std::vector<Lab::ExerciseData>::iterator start,
+                                  std::vector<Lab::ExerciseData>::iterator end, const Lab::Exercise &newExercise,
+                                  const double &type1Val, const unsigned long &type2Val) {
     while (start != end) {
-        *start = Lab::ExcerciseData{newExcercise, type1Val, type2Val};
+        *start = Lab::ExerciseData{newExercise, type1Val, type2Val};
         ++start;
     }
 }
@@ -92,13 +92,13 @@ bool Lab::Workout::save() {
          */
         if (index >= size) {
             if (db->prepare("INSERT INTO workouts (workoutName, exOrderNum, "
-                            "excercise, type1, type2) VALUES (?, ?, ?, ?, ?)",
+                            "exercise, type1, type2) VALUES (?, ?, ?, ?, ?)",
                             name, place, exc.getName(), type1, static_cast<long>(type2)) == -1) {
                 return false;
             }
         } else if (index < size) {
             if (db->prepare("UPDATE workouts SET workoutName = ?, exOrderNum = ?, "
-                            "excercise = ?, type1 = ?, type2 = ? WHERE workoutName = ? "
+                            "exercise = ?, type1 = ?, type2 = ? WHERE workoutName = ? "
                             "AND exOrderNum = ?",
                             name, place, exc.getName(), type1, static_cast<long>(type2), name, place) == -1) {
                 return false;
@@ -112,11 +112,11 @@ bool Lab::Workout::save() {
     return true;
 }
 
-void Lab::Workout::removeExcercisesNotInDB() {
+void Lab::Workout::removeExercisesNotInDB() {
     for (auto workoutIter = workout.begin(); workoutIter != workout.end(); ++workoutIter) {
-        Lab::Excercise excercise;
-        excercise.load(db, workoutIter->exc.getName());
-        if (workoutIter->exc != excercise) {
+        Lab::Exercise exercise;
+        exercise.load(db, workoutIter->exc.getName());
+        if (workoutIter->exc != exercise) {
             workoutIter = workout.erase(workoutIter);
             --workoutIter;
         }

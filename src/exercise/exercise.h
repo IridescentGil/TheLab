@@ -10,24 +10,24 @@
 namespace Lab {
 class DBConn;
 
-class Excercise {
+class Exercise {
    public:
-    Excercise();
-    Excercise(std::string name, std::string desc, const std::string &mGroup, const std::vector<std::string> &mWorked,
-              const std::vector<std::string> &eType);
-    Excercise(Excercise &&other) noexcept
+    Exercise();
+    Exercise(std::string name, std::string desc, const std::string &mGroup, const std::vector<std::string> &mWorked,
+             const std::vector<std::string> &eType);
+    Exercise(Exercise &&other) noexcept
         : name(std::move(other.name)),
           description(std::move(other.description)),
           muscleGroup(std::move(other.muscleGroup)),
           musclesWorked(std::move(other.musclesWorked)),
           type(std::move(other.type)) {}
-    Excercise(const Excercise &other)
+    Exercise(const Exercise &other)
         : name(other.name),
           description(other.description),
           muscleGroup(other.muscleGroup),
           musclesWorked(other.musclesWorked),
           type(other.type) {}
-    Excercise &operator=(Excercise &&other) noexcept {
+    Exercise &operator=(Exercise &&other) noexcept {
         if (&other != this) {
             name = std::move(other.name);
             description = std::move(other.description);
@@ -37,7 +37,7 @@ class Excercise {
         }
         return *this;
     }
-    Excercise &operator=(const Excercise &other) {
+    Exercise &operator=(const Exercise &other) {
         if (&other != this) {
             name = other.name;
             description = other.description;
@@ -47,14 +47,14 @@ class Excercise {
         }
         return *this;
     }
-    ~Excercise() = default;
+    ~Exercise() = default;
 
-    inline bool operator==(const Lab::Excercise &compare) const {
+    inline bool operator==(const Lab::Exercise &compare) const {
         return (std::tie(this->name, this->description, this->muscleGroup, this->musclesWorked, this->type) ==
                 std::tie(compare.name, compare.description, compare.muscleGroup, compare.musclesWorked, compare.type));
     }
-    inline bool operator!=(const Lab::Excercise &compare) const { return !(*this == compare); }
-    inline bool operator<(const Lab::Excercise &compare) const {
+    inline bool operator!=(const Lab::Exercise &compare) const { return !(*this == compare); }
+    inline bool operator<(const Lab::Exercise &compare) const {
         return (std::tie(this->name, this->description, this->muscleGroup, this->musclesWorked, this->type) <
                 std::tie(compare.name, compare.description, compare.muscleGroup, compare.musclesWorked, compare.type));
     }
@@ -73,7 +73,7 @@ class Excercise {
     int setMusclesWorked(const std::vector<std::string> &newMW);
     int setType(const std::vector<std::string> &newType);
 
-    bool load(Lab::DBConn *database, const std::string &excercise);
+    bool load(Lab::DBConn *database, const std::string &exercise);
     bool save(Lab::DBConn *database) const;
 
     bool isMuscleGroup(const std::string &mGroup);

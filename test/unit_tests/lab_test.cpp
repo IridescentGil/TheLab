@@ -7,7 +7,7 @@
 #include <tuple>
 #include <vector>
 
-#include "excercise.h"
+#include "exercise.h"
 #include "history.h"
 #include "testHelper.h"
 #include "workout.h"
@@ -15,14 +15,14 @@
 class TheLabTest : public testing::Test {
    protected:
     void SetUp() override {
-        for (auto &excercise : testEx) {
-            excercise.save(testDB.get());
+        for (auto &exercise : testEx) {
+            exercise.save(testDB.get());
         }
 
         testWorkout = {testDB.get(),
                        "Pull Day 1",
-                       {Lab::ExcerciseData(barbellRow, 50, 5), Lab::ExcerciseData(dumbbellFlys, 10, 10),
-                        Lab::ExcerciseData(wideGripPullUps, 10, 0)}};
+                       {Lab::ExerciseData(barbellRow, 50, 5), Lab::ExerciseData(dumbbellFlys, 10, 10),
+                        Lab::ExerciseData(wideGripPullUps, 10, 0)}};
 
         testHistory = {testDB.get(),
                        {std::make_tuple(tpMarch4, "Upper-Body Workout", barbellOverheadPress, 60, 10),
@@ -88,30 +88,30 @@ class TheLabTest : public testing::Test {
     constexpr static std::chrono::time_point<std::chrono::system_clock> tpFeb10 =
         std::chrono::sys_days{std::chrono::February / 10 / 2024} + std::chrono::hours(12);
 
-    Lab::Excercise barbellOverheadPress =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+    Lab::Exercise barbellOverheadPress =
+        Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
                        {"weight", "reps"});
-    Lab::Excercise barbellRow = Lab::Excercise("Barbell Row", "Standing bent over row with Barbell", "Back",
+    Lab::Exercise barbellRow = Lab::Exercise("Barbell Row", "Standing bent over row with Barbell", "Back",
                                                {"Upper-back", "Lats"}, {"weight", "reps"});
-    Lab::Excercise barbellOverheadPressModified =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+    Lab::Exercise barbellOverheadPressModified =
+        Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
                        {"time", "reps"});
-    Lab::Excercise dumbbellFlys = Lab::Excercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards",
+    Lab::Exercise dumbbellFlys = Lab::Exercise("Dumbbell Flys", "Standing bent forward, lift dumbbell outwards",
                                                  "Back", {"Upper-back"}, {"weight", "reps"});
-    Lab::Excercise wideGripPullUps = Lab::Excercise("Wide Grip Pull Ups",
+    Lab::Exercise wideGripPullUps = Lab::Exercise("Wide Grip Pull Ups",
                                                     "Holding the bar with a wide grip, do a "
                                                     "pullup until your chin is over the bar",
                                                     "Back", {"Upper-back"}, {"reps"});
-    Lab::Excercise jumpingJacks = Lab::Excercise(
+    Lab::Exercise jumpingJacks = Lab::Exercise(
         "Jumping Jacks", "Jump and spread your legs and put your arms to the sky", "Cardio", {""}, {"reps"});
-    Lab::Excercise plank = Lab::Excercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
+    Lab::Exercise plank = Lab::Exercise("Plank", "In pushup position, lift yourself on your elbows and toes", "Core",
                                           {"Abs"}, {"time", "reps"});
-    Lab::Excercise running =
-        Lab::Excercise("Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"});
-    Lab::Excercise barbellOverheadPressModifiedTwo =
-        Lab::Excercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
+    Lab::Exercise running =
+        Lab::Exercise("Running (Treadmill)", "Running on a treadmill", "Cardio", {}, {"distance", "time"});
+    Lab::Exercise barbellOverheadPressModifiedTwo =
+        Lab::Exercise("Barbell Overhead Press", "Standing bent over row with Barbell", "Chest", {"Pectoral", "Tricep"},
                        {"weight", "time"});
-    Lab::Excercise calfPress = Lab::Excercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs",
+    Lab::Exercise calfPress = Lab::Exercise("Calf Press", "Lift yourself on your tiptoes with your calf", "Legs",
                                               {"Calf"}, {"weight", "reps"});
 
     const unsigned short AGE = 45;
@@ -120,7 +120,7 @@ class TheLabTest : public testing::Test {
     std::unique_ptr<Lab::DBConn> testDB = std::make_unique<Lab::DBConn>("read.db");
 
     Lab::Body testBody{testDB.get()};
-    std::vector<Lab::Excercise> testEx = {barbellOverheadPress, barbellRow, calfPress, dumbbellFlys,
+    std::vector<Lab::Exercise> testEx = {barbellOverheadPress, barbellRow, calfPress, dumbbellFlys,
                                           jumpingJacks,         plank,      running,   wideGripPullUps};
     Lab::Workout testWorkout{testDB.get()};
     Lab::History testHistory;
@@ -136,11 +136,11 @@ TEST_F(TheLabTest, InitTest) {
 TEST_F(TheLabTest, ReadFromDatabaseTest) {
     Lab::TheLab testLab("read.db", ".");
 
-    auto readExcercise = testLab.getExcercises();
-    EXPECT_EQ(testEx.size(), readExcercise.size());
-    for (auto testExcerciseIter = testEx.cbegin(), readExcerciseIter = readExcercise.cbegin();
-         readExcerciseIter != readExcercise.cend(); ++testExcerciseIter, ++readExcerciseIter) {
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, *testExcerciseIter, *readExcerciseIter);
+    auto readExercise = testLab.getExercises();
+    EXPECT_EQ(testEx.size(), readExercise.size());
+    for (auto testExerciseIter = testEx.cbegin(), readExerciseIter = readExercise.cbegin();
+         readExerciseIter != readExercise.cend(); ++testExerciseIter, ++readExerciseIter) {
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, *testExerciseIter, *readExerciseIter);
     }
 
     auto readWorkout = testLab.getWorkouts();
@@ -171,7 +171,7 @@ TEST_F(TheLabTest, ReadFromDatabaseTest) {
 TEST_F(TheLabTest, WorkoutsSaveRemovesNonexistentWorkoutsTest) {
     std::vector<Lab::Workout> newWorkouts = {
         Lab::Workout(testDB.get(), "Bar Day", {{barbellRow, 40, 6}, {barbellOverheadPress, 70, 2}}),
-        Lab::Workout(testDB.get(), "CrossFit", std::vector<Lab::ExcerciseData>{{running, 3600, 0}, {plank, 60, 0}})};
+        Lab::Workout(testDB.get(), "CrossFit", std::vector<Lab::ExerciseData>{{running, 3600, 0}, {plank, 60, 0}})};
 
     {
         Lab::TheLab testLab("read.db", ".");
@@ -184,44 +184,44 @@ TEST_F(TheLabTest, WorkoutsSaveRemovesNonexistentWorkoutsTest) {
     auto readWorkout = testLab.getWorkouts();
     for (auto readWorkoutIter = readWorkout.cbegin(), newWorkoutIter = newWorkouts.cbegin();
          readWorkoutIter != readWorkout.cend(); ++readWorkoutIter, ++newWorkoutIter) {
-        auto readExcerciseData = readWorkoutIter->getWorkout();
-        auto newExcerciseData = newWorkoutIter->getWorkout();
+        auto readExerciseData = readWorkoutIter->getWorkout();
+        auto newExerciseData = newWorkoutIter->getWorkout();
         EXPECT_EQ(readWorkoutIter->getName(), newWorkoutIter->getName());
-        for (auto readExcerciseDataIter = readExcerciseData.cbegin(), newExcerciseDataIter = newExcerciseData.cbegin();
-             readExcerciseDataIter != readExcerciseData.cend(); ++readExcerciseDataIter, ++newExcerciseDataIter) {
-            EXPECT_PRED_FORMAT2(AssertWorkoutEqual, *readExcerciseDataIter, *newExcerciseDataIter);
+        for (auto readExerciseDataIter = readExerciseData.cbegin(), newExerciseDataIter = newExerciseData.cbegin();
+             readExerciseDataIter != readExerciseData.cend(); ++readExerciseDataIter, ++newExerciseDataIter) {
+            EXPECT_PRED_FORMAT2(AssertWorkoutEqual, *readExerciseDataIter, *newExerciseDataIter);
         }
     }
 }
 
-TEST_F(TheLabTest, ExcercisesSaveRemovedNonExistentExcercisesTest) {
-    std::vector<Lab::Excercise> newExcercises = {calfPress, jumpingJacks, plank, running};
+TEST_F(TheLabTest, ExercisesSaveRemovedNonExistentExercisesTest) {
+    std::vector<Lab::Exercise> newExercises = {calfPress, jumpingJacks, plank, running};
 
     {
         Lab::TheLab testLab("read.db", ".");
-        testLab.setExcercises(newExcercises);
-        EXPECT_TRUE(testLab.saveExcercises());
+        testLab.setExercises(newExercises);
+        EXPECT_TRUE(testLab.saveExercises());
     }
 
     Lab::TheLab testLab("read.db", ".");
-    auto excercises = testLab.getExcercises();
-    EXPECT_EQ(excercises, newExcercises);
+    auto exercises = testLab.getExercises();
+    EXPECT_EQ(exercises, newExercises);
 }
 
-TEST_F(TheLabTest, RemoveExcerciseRemovesExcerciseFromDatabaseTest) {
-    std::vector<Lab::Excercise> compareExcercises = {barbellOverheadPress, barbellRow, calfPress,      dumbbellFlys,
+TEST_F(TheLabTest, RemoveExerciseRemovesExerciseFromDatabaseTest) {
+    std::vector<Lab::Exercise> compareExercises = {barbellOverheadPress, barbellRow, calfPress,      dumbbellFlys,
                                                      jumpingJacks,         running,    wideGripPullUps};
     {
         Lab::TheLab testLab("read.db", ".");
-        auto &excercises = testLab.getExcercises();
-        auto excerciseIter = excercises.begin() + 5;
-        testLab.removeExcercise(excerciseIter);
+        auto &exercises = testLab.getExercises();
+        auto exerciseIter = exercises.begin() + 5;
+        testLab.removeExercise(exerciseIter);
     }
 
     {
         Lab::TheLab testLab("read.db", ".");
-        const auto &excercises = testLab.getExcercises();
-        EXPECT_EQ(excercises, compareExcercises);
+        const auto &exercises = testLab.getExercises();
+        EXPECT_EQ(exercises, compareExercises);
     }
 }
 TEST_F(TheLabTest, RemoveWorkoutRemovesWorkoutFromDatabaseTest) {
@@ -238,25 +238,25 @@ TEST_F(TheLabTest, RemoveWorkoutRemovesWorkoutFromDatabaseTest) {
     }
 }
 
-TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
-    Lab::Excercise excerciseChanged;
+TEST_F(TheLabTest, ExerciseEditPropagatesTest) {
+    Lab::Exercise exerciseChanged;
 
     {
         Lab::TheLab testLab("read.db", ".");
-        auto excercises = testLab.getExcercises();
-        excerciseChanged = excercises.at(3);
+        auto exercises = testLab.getExercises();
+        exerciseChanged = exercises.at(3);
 
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, dumbbellFlys, excerciseChanged);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, dumbbellFlys, exerciseChanged);
 
-        excerciseChanged.setName("Reverse dumbbell flys");
-        excerciseChanged.setMusclesWorked({"Upper-back", "Lats"});
+        exerciseChanged.setName("Reverse dumbbell flys");
+        exerciseChanged.setMusclesWorked({"Upper-back", "Lats"});
     }
 
     {
         Lab::TheLab testLab("read.db", ".");
 
-        auto &excercises = testLab.getExcercises();
-        testLab.EditExcercise(excercises.begin() + 3, excerciseChanged);
+        auto &exercises = testLab.getExercises();
+        testLab.EditExercise(exercises.begin() + 3, exerciseChanged);
 
         const Lab::History historyTest = {
             testDB.get(),
@@ -285,9 +285,9 @@ TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
                 std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
                 std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
                 std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
-                std::make_tuple(tpJan13, "Full-Body Workout", excerciseChanged, 20, 12),
-                std::make_tuple(tpJan13, "Full-Body Workout", excerciseChanged, 20, 12),
-                std::make_tuple(tpJan13, "Full-Body Workout", excerciseChanged, 20, 12),
+                std::make_tuple(tpJan13, "Full-Body Workout", exerciseChanged, 20, 12),
+                std::make_tuple(tpJan13, "Full-Body Workout", exerciseChanged, 20, 12),
+                std::make_tuple(tpJan13, "Full-Body Workout", exerciseChanged, 20, 12),
                 std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
                 std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
                 std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
@@ -308,9 +308,9 @@ TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
         const auto &workouts = testLab.getWorkouts();
         const auto &workoutObject = workouts.at(0);
         const auto &workoutData = workoutObject.getWorkout();
-        const auto &excerciseFromWorkout = workoutData.at(1);
+        const auto &exerciseFromWorkout = workoutData.at(1);
 
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excerciseChanged, excerciseFromWorkout.exc);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, exerciseChanged, exerciseFromWorkout.exc);
     }
 
     {
@@ -343,9 +343,9 @@ TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
                 std::make_tuple(tpFeb20, "Upper-Body Workout", barbellOverheadPress, 40, 15),
                 std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
                 std::make_tuple(tpJan13, "Full-Body Workout", barbellRow, 60, 10),
-                std::make_tuple(tpJan13, "Full-Body Workout", excerciseChanged, 20, 12),
-                std::make_tuple(tpJan13, "Full-Body Workout", excerciseChanged, 20, 12),
-                std::make_tuple(tpJan13, "Full-Body Workout", excerciseChanged, 20, 12),
+                std::make_tuple(tpJan13, "Full-Body Workout", exerciseChanged, 20, 12),
+                std::make_tuple(tpJan13, "Full-Body Workout", exerciseChanged, 20, 12),
+                std::make_tuple(tpJan13, "Full-Body Workout", exerciseChanged, 20, 12),
                 std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
                 std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
                 std::make_tuple(tpJan13, "Full-Body Workout", wideGripPullUps, 10, 0),
@@ -366,20 +366,20 @@ TEST_F(TheLabTest, ExcerciseEditPropagatesTest) {
         const auto &workouts = testLab.getWorkouts();
         const auto &workoutObject = workouts.at(0);
         const auto &workoutData = workoutObject.getWorkout();
-        const auto &excerciseFromWorkout = workoutData.at(1);
+        const auto &exerciseFromWorkout = workoutData.at(1);
 
-        EXPECT_PRED_FORMAT2(AssertExcerciseEqual, excerciseChanged, excerciseFromWorkout.exc);
+        EXPECT_PRED_FORMAT2(AssertExerciseEqual, exerciseChanged, exerciseFromWorkout.exc);
     }
 }
 
-TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
+TEST_F(TheLabTest, ExerciseRemovalPropagatesTest) {
     const int HISTORY_SIZE = 37;
     const int NUMBER_OF_BARBELLROW_IN_HISTORY = 9;
     const int HISTORY_WITHOUT_BARBELLROW_SIZE = HISTORY_SIZE - NUMBER_OF_BARBELLROW_IN_HISTORY;
     const int WORKOUTS_SIZE = 3;
     const int WORKOUTS_WITHOUT_BARBELLROW_SIZE = 2;
     Lab::historyVector historyCompare;
-    std::vector<Lab::ExcerciseData> workoutComparison;
+    std::vector<Lab::ExerciseData> workoutComparison;
     std::string workoutComparisonName;
 
     {
@@ -420,7 +420,7 @@ TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
         const Lab::Workout workoutTest{
             compareDB.get(),
             "Pull Day 1",
-            {Lab::ExcerciseData(dumbbellFlys, 10, 10), Lab::ExcerciseData(wideGripPullUps, 10, 0)}};
+            {Lab::ExerciseData(dumbbellFlys, 10, 10), Lab::ExerciseData(wideGripPullUps, 10, 0)}};
 
         historyCompare = historyTest.getHistory();
         workoutComparison = workoutTest.getWorkout();
@@ -430,10 +430,10 @@ TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
         Lab::TheLab testLab("read.db", ".");
         auto &history = testLab.getHistory();
         auto &workouts = testLab.getWorkouts();
-        auto &excercises = testLab.getExcercises();
-        auto excerciseIter = excercises.begin();
-        for (; excerciseIter != excercises.end(); ++excerciseIter) {
-            if (excerciseIter->getName() == "Barbell Row") {
+        auto &exercises = testLab.getExercises();
+        auto exerciseIter = exercises.begin();
+        for (; exerciseIter != exercises.end(); ++exerciseIter) {
+            if (exerciseIter->getName() == "Barbell Row") {
                 break;
             }
         }
@@ -441,7 +441,7 @@ TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
         EXPECT_EQ(HISTORY_SIZE, history.size());
         EXPECT_EQ(WORKOUTS_SIZE, workouts.at(0).getWorkout().size());
 
-        testLab.removeExcercise(excerciseIter);
+        testLab.removeExercise(exerciseIter);
         const auto &workoutObject = workouts.at(0);
         const auto &workoutVector = workoutObject.getWorkout();
 
@@ -480,7 +480,7 @@ TEST_F(TheLabTest, ExcerciseRemovalPropagatesTest) {
     }
 }
 
-TEST_F(TheLabTest, ExcerciseTypeChangeTest) {
+TEST_F(TheLabTest, ExerciseTypeChangeTest) {
     const int HISTORY_SIZE = 37;
     const int NUMBER_OF_OVERHEADPRESS_IN_HISTORY = 15;
     const int HISTORY_WITHOUT_OVERHEADPRESS_SIZE = HISTORY_SIZE - NUMBER_OF_OVERHEADPRESS_IN_HISTORY;
@@ -517,16 +517,16 @@ TEST_F(TheLabTest, ExcerciseTypeChangeTest) {
 
     {
         Lab::TheLab testLab("read.db", ".");
-        auto &excercises = testLab.getExcercises();
+        auto &exercises = testLab.getExercises();
         auto &history = testLab.getHistory();
         size_t historySize = history.size();
-        /* excercise at 0 expected to be barbell Overhead Press */
-        auto excercisetoChange = excercises.at(0);
-        auto excercisesIter = excercises.begin();
+        /* exercise at 0 expected to be barbell Overhead Press */
+        auto exercisetoChange = exercises.at(0);
+        auto exercisesIter = exercises.begin();
 
         EXPECT_EQ(HISTORY_SIZE, historySize);
-        excercisetoChange.setType({"reps"});
-        testLab.EditExcercise(excercisesIter, excercisetoChange);
+        exercisetoChange.setType({"reps"});
+        testLab.EditExercise(exercisesIter, exercisetoChange);
         EXPECT_EQ(HISTORY_WITHOUT_OVERHEADPRESS_SIZE, history.size());
         EXPECT_PRED_FORMAT2(AssertHistoryEqual, historyCompare, history);
     }
