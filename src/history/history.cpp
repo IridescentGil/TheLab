@@ -1,5 +1,6 @@
 #include "history.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <sstream>
 #include <string>
@@ -112,21 +113,27 @@ void Lab::History::remItem(historyVector::iterator iter) { history.erase(iter); 
 void Lab::History::remItem(historyVector::iterator start, historyVector::iterator end) { history.erase(start, end); }
 
 void Lab::History::sort() {
-    /* FIXME: Make sort() sort by date then workout name
-     * NOTE: Use more efficient sorting algorithm
-     */
-    bool sorted = false;
-    historyTuple temp;
-    while (!sorted) {
-        sorted = true;
-        for (auto historyIter = history.begin(); historyIter != history.end(); ++historyIter) {
-            if (historyIter + 1 != history.end() && std::get<0>(*historyIter) > std::get<0>(*(historyIter + 1))) {
-                temp = *historyIter;
-                *historyIter = *(historyIter + 1);
-                *(historyIter + 1) = temp;
-                sorted = false;
-            }
-        }
+    if (history.empty()) {
+        return;
+    }
+
+    auto getTimeDigit = [](const std::chrono::time_point<std::chrono::system_clock> &date, long digit) {
+        auto time = date.time_since_epoch().count();
+        return (time / digit) % 10;
+    };
+
+    // Maximum number of digits to consider, i.e., maximum milliseconds count from epoch
+    long maxDigit = 1;
+    for (const auto &tuple : history) {
+        auto time = std::get<0>(tuple).time_since_epoch().count();
+        maxDigit = std::max(maxDigit, time);
+    }
+
+    // Radix sort for the date
+    for (long digit = 1; digit <= maxDigit; digit *= 10) {
+        std::stable_sort(history.begin(), history.end(), [&](const historyTuple &first, const historyTuple &second) {
+            return getTimeDigit(std::get<0>(first), digit) < getTimeDigit(std::get<0>(second), digit);
+        });
     }
 }
 
